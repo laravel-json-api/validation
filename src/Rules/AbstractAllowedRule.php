@@ -27,11 +27,6 @@ abstract class AbstractAllowedRule implements Rule
 {
 
     /**
-     * @var bool
-     */
-    private bool $all;
-
-    /**
      * @var Collection
      */
     private Collection $allowed;
@@ -64,16 +59,6 @@ abstract class AbstractAllowedRule implements Rule
     }
 
     /**
-     * @return $this
-     */
-    public function allowAll(): self
-    {
-        $this->all = true;
-
-        return $this;
-    }
-
-    /**
      * Add allowed parameters.
      *
      * @param string ...$params
@@ -81,8 +66,6 @@ abstract class AbstractAllowedRule implements Rule
      */
     public function allow(string ...$params): self
     {
-        $this->all = false;
-
         foreach ($params as $param) {
             $this->allowed->put($param, $param);
         }
@@ -109,10 +92,6 @@ abstract class AbstractAllowedRule implements Rule
     public function passes($attribute, $value)
     {
         $this->value = $value;
-
-        if ($this->all) {
-            return true;
-        }
 
         return $this->extract($value)->every(function ($key) {
             return $this->allowed($key);
