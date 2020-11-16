@@ -27,6 +27,12 @@ return [
     |
     */
 
+    'resource_invalid' => [
+        'title' => 'Onverwerkbare Entiteit',
+        'detail' => 'Het document was goed opgemaakt, maar bevat semantische fouten.',
+        'code' => '',
+    ],
+
     'allowed_field_sets' => [
         'default' => 'Spaarzame veldsets mogen alleen toegestane bevatten.',
         'singular' => 'Spaarzame veldset :values is niet toegestaan.',

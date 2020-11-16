@@ -17,24 +17,20 @@
 
 declare(strict_types=1);
 
-namespace LaravelJsonApi\Validation\Tests\Integration;
+namespace LaravelJsonApi\Validation;
 
-use LaravelJsonApi\Core\ServiceProvider as CoreServiceProvider;
-use LaravelJsonApi\Validation\ServiceProvider;
-use Orchestra\Testbench\TestCase as BaseTestCase;
+use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
-class TestCase extends BaseTestCase
+class ServiceProvider extends BaseServiceProvider
 {
 
     /**
-     * @param \Illuminate\Foundation\Application $app
-     * @return array
+     * Boot application services.
+     *
+     * @return void
      */
-    protected function getPackageProviders($app)
+    public function boot()
     {
-        return [
-            CoreServiceProvider::class,
-            ServiceProvider::class,
-        ];
+        $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'jsonapi');
     }
 }

@@ -27,6 +27,12 @@ return [
     |
     */
 
+    'resource_invalid' => [
+        'title' => 'Unprocessable Entity',
+        'detail' => 'The document was well-formed but contains semantic errors.',
+        'code' => '',
+    ],
+
     'allowed_field_sets' => [
         'default' => 'Sparse field sets must contain only allowed ones.',
         'singular' => 'Sparse field set :values is not allowed.',
