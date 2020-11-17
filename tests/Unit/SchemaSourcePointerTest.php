@@ -22,11 +22,11 @@ namespace LaravelJsonApi\Validation\Tests\Unit;
 use LaravelJsonApi\Contracts\Schema\Attribute;
 use LaravelJsonApi\Contracts\Schema\Relation;
 use LaravelJsonApi\Contracts\Schema\Schema;
-use LaravelJsonApi\Validation\SourcePointer;
+use LaravelJsonApi\Validation\SchemaSourcePointer;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-class SourcePointerTest extends TestCase
+class SchemaSourcePointerTest extends TestCase
 {
 
     /**
@@ -86,7 +86,7 @@ class SourcePointerTest extends TestCase
     {
         $this->assertSame(
             ['pointer' => $expected],
-            SourcePointer::make($this->schema, $key)->jsonSerialize()
+            SchemaSourcePointer::make($this->schema, $key)->jsonSerialize()
         );
     }
 
@@ -100,7 +100,7 @@ class SourcePointerTest extends TestCase
         // @see https://github.com/cloudcreativity/laravel-json-api/issues/255
         $expected = rtrim("/data" . $expected, '/');
 
-        $actual = SourcePointer::make($this->schema, $key)
+        $actual = SchemaSourcePointer::make($this->schema, $key)
             ->withPrefix('/data')
             ->toString();
 

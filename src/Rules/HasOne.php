@@ -23,6 +23,7 @@ use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Support\Str;
 use LaravelJsonApi\Contracts\Schema\PolymorphicRelation;
 use LaravelJsonApi\Contracts\Schema\Schema;
+use LaravelJsonApi\Validation\JsonApiValidation;
 
 class HasOne implements Rule
 {
@@ -72,7 +73,9 @@ class HasOne implements Rule
      */
     public function message()
     {
-        $key = 'jsonapi::validation.' . Str::snake(class_basename($this));;
+        $namespace = JsonApiValidation::$translationNamespace;
+        $name = Str::snake(class_basename($this));
+        $key = "{$namespace}::validation.{$name}";
 
         return trans($key, [
             'types' => collect($this->types)->implode(', '),

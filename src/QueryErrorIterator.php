@@ -19,31 +19,21 @@ declare(strict_types=1);
 
 namespace LaravelJsonApi\Validation;
 
-use Illuminate\Support\ServiceProvider as BaseServiceProvider;
+use LaravelJsonApi\Core\Document\Error;
 
-class ServiceProvider extends BaseServiceProvider
+class QueryErrorIterator extends ErrorIterator
 {
 
     /**
-     * Boot application services.
-     *
-     * @return void
+     * @inheritDoc
      */
-    public function boot(): void
+    protected function createError(string $key, string $message, array $failed): Error
     {
-        $this->loadTranslationsFrom(
-            __DIR__ . '/../resources/lang',
-            JsonApiValidation::$translationNamespace
+        return $this->translator->invalidQueryParameter(
+            $key,
+            $message,
+            $failed
         );
     }
 
-    /**
-     * Bind package services into the service container.
-     *
-     * @return void
-     */
-    public function register(): void
-    {
-        $this->app->singleton(Translator::class);
-    }
 }

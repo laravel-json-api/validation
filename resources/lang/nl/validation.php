@@ -33,6 +33,12 @@ return [
         'code' => '',
     ],
 
+    'query_invalid' => [
+        'title' => 'Ongeldige queryparameter',
+        'detail' => 'De queryparameters van het verzoek zijn ongeldig.',
+        'code' => '',
+    ],
+
     'allowed_field_sets' => [
         'default' => 'Spaarzame veldsets mogen alleen toegestane bevatten.',
         'singular' => 'Spaarzame veldset :values is niet toegestaan.',

@@ -22,6 +22,7 @@ namespace LaravelJsonApi\Validation\Rules;
 use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use LaravelJsonApi\Validation\JsonApiValidation;
 
 abstract class AbstractAllowedRule implements Rule
 {
@@ -103,6 +104,7 @@ abstract class AbstractAllowedRule implements Rule
      */
     public function message()
     {
+        $namespace = JsonApiValidation::$translationNamespace;
         $name = Str::snake(class_basename($this));
         $invalid = $this->invalid();
 
@@ -112,7 +114,7 @@ abstract class AbstractAllowedRule implements Rule
             $key = (1 === $invalid->count()) ? 'singular' : 'plural';
         }
 
-        return trans("jsonapi::validation.{$name}.{$key}", [
+        return trans("{$namespace}::validation.{$name}.{$key}", [
             'values' => $params = $invalid->implode(', '),
         ]);
     }

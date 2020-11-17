@@ -21,6 +21,7 @@ namespace LaravelJsonApi\Validation\Rules;
 
 use DateTime;
 use Illuminate\Contracts\Validation\Rule;
+use LaravelJsonApi\Validation\JsonApiValidation;
 
 class DateTimeIso8601 implements Rule
 {
@@ -48,7 +49,9 @@ class DateTimeIso8601 implements Rule
      */
     public function message()
     {
-        return trans("jsonapi::validation.date_time_iso_8601");
+        $namespace = JsonApiValidation::$translationNamespace;
+
+        return trans("{$namespace}::validation.date_time_iso_8601");
     }
 
     /**

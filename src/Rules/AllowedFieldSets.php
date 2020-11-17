@@ -23,6 +23,7 @@ use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Support\Collection;
 use LaravelJsonApi\Contracts\Schema\Container as SchemaContainer;
 use LaravelJsonApi\Core\Support\Arr;
+use LaravelJsonApi\Validation\JsonApiValidation;
 
 class AllowedFieldSets implements Rule
 {
@@ -135,6 +136,7 @@ class AllowedFieldSets implements Rule
      */
     public function message()
     {
+        $namespace = JsonApiValidation::$translationNamespace;
         $invalid = $this->invalid();
 
         if ($invalid->isEmpty()) {
@@ -143,8 +145,8 @@ class AllowedFieldSets implements Rule
             $key = (1 === $invalid->count()) ? 'singular' : 'plural';
         }
 
-        return trans("jsonapi::validation.allowed_field_sets.{$key}", [
-            'values' => $invalid->implode(', '),
+        return trans("{$namespace}::validation.allowed_field_sets.{$key}", [
+            'values' => $invalid->sort()->implode(', '),
         ]);
     }
 

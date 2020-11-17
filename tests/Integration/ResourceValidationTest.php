@@ -19,27 +19,20 @@ declare(strict_types=1);
 
 namespace LaravelJsonApi\Validation\Tests\Integration;
 
-use Illuminate\Contracts\Validation\Factory;
 use LaravelJsonApi\Contracts\Routing\Route;
 use LaravelJsonApi\Contracts\Schema\Attribute;
 use LaravelJsonApi\Contracts\Schema\Relation;
 use LaravelJsonApi\Contracts\Schema\Schema;
-use LaravelJsonApi\Validation\ErrorIterator;
 use LaravelJsonApi\Validation\Rule;
 use PHPUnit\Framework\MockObject\MockObject;
 
-class ValidationTest extends TestCase
+class ResourceValidationTest extends TestCase
 {
 
     /**
      * @var Schema|MockObject
      */
     private Schema $schema;
-
-    /**
-     * @var Factory
-     */
-    private Factory $factory;
 
     /**
      * @inheritDoc
@@ -71,8 +64,6 @@ class ValidationTest extends TestCase
             ['tags', $tags],
         ]);
 
-        $this->factory = $this->app->make(Factory::class);
-
         $this->app->instance(Route::class, $route = $this->createMock(Route::class));
         $route->method('schema')->willReturn($this->schema);
     }
@@ -95,7 +86,7 @@ class ValidationTest extends TestCase
             ],
         ];
 
-        $validator = $this->factory->make($data, [
+        $validator = $this->validatorFactory->make($data, [
             'title' => ['required', 'string', 'min:3'],
             'content' => ['required', 'string'],
             'publishedAt' => ['required', Rule::dateTime()],
@@ -180,7 +171,7 @@ class ValidationTest extends TestCase
 
         $data[$key] = $value;
 
-        $validator = $this->factory->make($data, [
+        $validator = $this->validatorFactory->make($data, [
             'title' => ['required', 'string', 'min:3'],
             'content' => ['required', 'string'],
             'publishedAt' => ['required', Rule::dateTime()],
@@ -190,7 +181,7 @@ class ValidationTest extends TestCase
 
         $this->assertTrue($validator->fails());
 
-        $errors = ErrorIterator::make($this->schema, $validator);
+        $errors = $this->factory->createErrorsForResource($this->schema, $validator);
 
         $this->assertCount(1, $errors);
         $this->assertSame([
@@ -200,7 +191,7 @@ class ValidationTest extends TestCase
             'title' => 'Unprocessable Entity',
         ], $errors->first()->jsonSerialize());
 
-        $errors->withFailed();
+        $errors->withFailureMeta();
 
         $this->assertSame([
             'detail' => $detail,

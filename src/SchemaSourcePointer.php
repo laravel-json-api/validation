@@ -25,7 +25,7 @@ use JsonSerializable;
 use LaravelJsonApi\Contracts\Schema\Schema;
 use function rtrim;
 
-class SourcePointer implements JsonSerializable, Arrayable
+class SchemaSourcePointer implements JsonSerializable, Arrayable
 {
 
     /**

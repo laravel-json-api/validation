@@ -20,6 +20,7 @@ declare(strict_types=1);
 namespace LaravelJsonApi\Validation\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
+use LaravelJsonApi\Validation\JsonApiValidation;
 
 class ParameterNotSupported implements Rule
 {
@@ -56,7 +57,9 @@ class ParameterNotSupported implements Rule
      */
     public function message()
     {
-        return trans('jsonapi::validation.parameter_not_supported', [
+        $namespace = JsonApiValidation::$translationNamespace;
+
+        return trans("{$namespace}::validation.parameter_not_supported", [
             'name' => $this->name,
         ]);
     }

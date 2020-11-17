@@ -54,7 +54,7 @@ class Translator
      *      rule failure details
      * @return Error
      */
-    public function invalidResource(string $path, ?string $detail = null, array $failed = []): Error
+    public function invalidResource(string $path, string $detail = null, array $failed = []): Error
     {
         return Error::make()
             ->setStatus(422)
@@ -62,6 +62,27 @@ class Translator
             ->setDetail($detail ?: $this->trans('resource_invalid', 'detail'))
             ->setCode($this->trans('resource_invalid', 'code'))
             ->setSource($this->pointer($path))
+            ->setMeta($failed ? compact('failed') : null);
+    }
+
+    /**
+     * Create an error for an invalid query parameter.
+     *
+     * @param string $param
+     * @param string|null $detail
+     *      the validation message (already translated).
+     * @param array $failed
+     *      rule failure details.
+     * @return Error
+     */
+    public function invalidQueryParameter(string $param, string $detail = null, array $failed = []): Error
+    {
+        return Error::make()
+            ->setStatus(400)
+            ->setTitle($this->trans('query_invalid', 'title'))
+            ->setDetail($detail ?: $this->trans('query_invalid', 'detail'))
+            ->setCode($this->trans('query_invalid', 'code'))
+            ->setSourceParameter($param)
             ->setMeta($failed ? compact('failed') : null);
     }
 
@@ -91,8 +112,10 @@ class Translator
      */
     private function trans(string $key, string $member, array $replace = [], ?string $locale = null)
     {
+        $namespace = JsonApiValidation::$translationNamespace;
+
         $value = $this->translator->get(
-            $key = "jsonapi::validation.{$key}.{$member}",
+            $key = "{$namespace}::validation.{$key}.{$member}",
             $replace,
             $locale
         ) ?: null;

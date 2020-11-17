@@ -33,6 +33,12 @@ return [
         'code' => '',
     ],
 
+    'query_invalid' => [
+        'title' => 'Invalid Query Parameter',
+        'detail' => 'The request query parameters are invalid.',
+        'code' => '',
+    ],
+
     'allowed_field_sets' => [
         'default' => 'Sparse field sets must contain only allowed ones.',
         'singular' => 'Sparse field set :values is not allowed.',

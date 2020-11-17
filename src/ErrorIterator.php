@@ -21,57 +21,52 @@ namespace LaravelJsonApi\Validation;
 
 use Countable;
 use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Contracts\Validation\Validator as ValidatorContract;
+use Illuminate\Contracts\Validation\Validator;
 use IteratorAggregate;
-use LaravelJsonApi\Contracts\Schema\Schema;
+use JsonSerializable;
+use LaravelJsonApi\Contracts\ErrorProvider;
 use LaravelJsonApi\Core\Document\Error;
 use LaravelJsonApi\Core\Document\ErrorList;
 
-class ErrorIterator implements IteratorAggregate, Countable, Arrayable, \JsonSerializable
+abstract class ErrorIterator implements IteratorAggregate, Countable, Arrayable, JsonSerializable, ErrorProvider
 {
-
-    /**
-     * @var Schema
-     */
-    private Schema $schema;
-
-    /**
-     * @var ValidatorContract
-     */
-    private ValidatorContract $validator;
 
     /**
      * @var Translator
      */
-    private Translator $translator;
+    protected Translator $translator;
+
+    /**
+     * @var Validator
+     */
+    protected Validator $validator;
 
     /**
      * @var bool
      */
-    private bool $includeFailed = false;
+    private bool $includeFailed;
 
     /**
-     * @param Schema $schema
-     * @param ValidatorContract $validator
-     * @return ErrorIterator
+     * Create a JSON API error.
+     *
+     * @param string $key
+     * @param string $message
+     * @param array $failed
+     * @return Error
      */
-    public static function make(Schema $schema, ValidatorContract $validator): self
-    {
-        return new self($schema, $validator, app(Translator::class));
-    }
+    abstract protected function createError(string $key, string $message, array $failed): Error;
 
     /**
      * ErrorIterator constructor.
      *
-     * @param Schema $schema
-     * @param ValidatorContract $validator
      * @param Translator $translator
+     * @param Validator $validator
      */
-    public function __construct(Schema $schema, ValidatorContract $validator, Translator $translator)
+    public function __construct(Translator $translator, Validator $validator)
     {
-        $this->schema = $schema;
-        $this->validator = $validator;
         $this->translator = $translator;
+        $this->validator = $validator;
+        $this->includeFailed = JsonApiValidation::$validationFailures;
     }
 
     /**
@@ -80,11 +75,21 @@ class ErrorIterator implements IteratorAggregate, Countable, Arrayable, \JsonSer
      * @param bool $failed
      * @return $this
      */
-    public function withFailed(bool $failed = true): self
+    public function withFailureMeta(bool $failed = true): self
     {
         $this->includeFailed = $failed;
 
         return $this;
+    }
+
+    /**
+     * Do not include rule failure meta data.
+     *
+     * @return $this
+     */
+    public function withoutFailureMeta(): self
+    {
+        return $this->withFailureMeta(false);
     }
 
     /**
@@ -97,6 +102,26 @@ class ErrorIterator implements IteratorAggregate, Countable, Arrayable, \JsonSer
         }
 
         return [];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getIterator()
+    {
+        $failed = $this->failed();
+
+        foreach ($this->validator->errors()->messages() as $key => $messages) {
+            $failures = $this->translator->validationFailures($failed[$key] ?? []);
+
+            foreach ($messages as $message) {
+                yield $this->createError(
+                    $key,
+                    $message,
+                    $failures->shift() ?: []
+                );
+            }
+        }
     }
 
     /**
@@ -124,33 +149,11 @@ class ErrorIterator implements IteratorAggregate, Countable, Arrayable, \JsonSer
      */
     public function count()
     {
-        return count($this->validator->errors());
+        return count($this->all());
     }
 
     /**
      * @inheritDoc
-     */
-    public function getIterator()
-    {
-        $failed = $this->failed();
-
-        foreach ($this->validator->errors()->messages() as $key => $messages) {
-            $failures = $this->translator->validationFailures($failed[$key] ?? []);
-
-            foreach ($messages as $message) {
-                $currentFailure = $failures->shift() ?: [];
-
-                yield $this->translator->invalidResource(
-                    SourcePointer::make($this->schema, $key)->withPrefix('/data')->toString(),
-                    $message,
-                    $currentFailure
-                );
-            }
-        }
-    }
-
-    /**
-     * @return ErrorList
      */
     public function toErrors(): ErrorList
     {
@@ -172,5 +175,4 @@ class ErrorIterator implements IteratorAggregate, Countable, Arrayable, \JsonSer
     {
         return collect($this)->jsonSerialize();
     }
-
 }
