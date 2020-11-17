@@ -20,7 +20,6 @@ declare(strict_types=1);
 namespace LaravelJsonApi\Validation\Tests\Integration;
 
 use Illuminate\Contracts\Validation\Factory as ValidatorFactory;
-use LaravelJsonApi\Core\ServiceProvider as CoreServiceProvider;
 use LaravelJsonApi\Validation\Factory;
 use LaravelJsonApi\Validation\ServiceProvider;
 use Orchestra\Testbench\TestCase as BaseTestCase;
@@ -55,7 +54,6 @@ class TestCase extends BaseTestCase
     protected function getPackageProviders($app)
     {
         return [
-            CoreServiceProvider::class,
             ServiceProvider::class,
         ];
     }
