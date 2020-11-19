@@ -41,6 +41,20 @@ class Factory
     }
 
     /**
+     * Create JSON API errors for a Laravel validator.
+     *
+     * @param Validator $validator
+     * @return ValidatorErrorIterator
+     */
+    public function createErrors(Validator $validator): ValidatorErrorIterator
+    {
+        return new ValidatorErrorIterator(
+            $this->translator,
+            $validator
+        );
+    }
+
+    /**
      * Create JSON API errors for a resource validator.
      *
      * @param Schema $schema

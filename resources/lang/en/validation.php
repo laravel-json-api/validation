@@ -27,6 +27,12 @@ return [
     |
     */
 
+    'invalid' => [
+        'title' => 'Unprocessable Entity',
+        'detail' => 'The document was well-formed but contains semantic errors.',
+        'code' => '',
+    ],
+
     'resource_invalid' => [
         'title' => 'Unprocessable Entity',
         'detail' => 'The document was well-formed but contains semantic errors.',

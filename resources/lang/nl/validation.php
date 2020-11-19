@@ -27,6 +27,12 @@ return [
     |
     */
 
+    'invalid' => [
+        'title' => 'Onverwerkbare Entiteit',
+        'detail' => 'Het document was goed opgemaakt, maar bevat semantische fouten.',
+        'code' => '',
+    ],
+
     'resource_invalid' => [
         'title' => 'Onverwerkbare Entiteit',
         'detail' => 'Het document was goed opgemaakt, maar bevat semantische fouten.',

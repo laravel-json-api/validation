@@ -45,23 +45,44 @@ class Translator
     }
 
     /**
-     * Create an error for an invalid resource.
+     * Create a generic validation error.
      *
-     * @param string $path
+     * @param string $pointer
      * @param string|null $detail
      *      the validation message (already translated).
      * @param array $failed
      *      rule failure details
      * @return Error
      */
-    public function invalidResource(string $path, string $detail = null, array $failed = []): Error
+    public function invalid(string $pointer, string $detail = null, array $failed = []): Error
+    {
+        return Error::make()
+            ->setStatus(422)
+            ->setTitle($this->trans('invalid', 'title'))
+            ->setDetail($detail ?: $this->trans('invalid', 'detail'))
+            ->setCode($this->trans('invalid', 'code'))
+            ->setSourcePointer($pointer)
+            ->setMeta($failed ? compact('failed') : null);
+    }
+
+    /**
+     * Create an error for an invalid resource.
+     *
+     * @param string $pointer
+     * @param string|null $detail
+     *      the validation message (already translated).
+     * @param array $failed
+     *      rule failure details
+     * @return Error
+     */
+    public function invalidResource(string $pointer, string $detail = null, array $failed = []): Error
     {
         return Error::make()
             ->setStatus(422)
             ->setTitle($this->trans('resource_invalid', 'title'))
             ->setDetail($detail ?: $this->trans('resource_invalid', 'detail'))
             ->setCode($this->trans('resource_invalid', 'code'))
-            ->setSource($this->pointer($path))
+            ->setSourcePointer($pointer)
             ->setMeta($failed ? compact('failed') : null);
     }
 
@@ -121,22 +142,6 @@ class Translator
         ) ?: null;
 
         return ($key !== $value) ? $value : null;
-    }
-
-    /**
-     * Create a source pointer for the specified path and optional member at that path.
-     *
-     * @param string $path
-     * @param string|null $member
-     * @return array
-     */
-    private function pointer(string $path, ?string $member = null): array
-    {
-        /** Member can be '0' which is an empty string. */
-        $withoutMember = is_null($member) || '' === $member;
-        $pointer = !$withoutMember ? sprintf('%s/%s', rtrim($path, '/'), $member) : $path;
-
-        return compact('pointer');
     }
 
     /**
