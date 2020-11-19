@@ -108,6 +108,22 @@ class Translator
     }
 
     /**
+     * Create an error for a resource delete request failing.
+     *
+     * @param string|null $detail
+     *      the validation message (already translated).
+     * @return Error
+     */
+    public function invalidDeleteRequest(string $detail = null): Error
+    {
+        return Error::make()
+            ->setStatus(422)
+            ->setTitle($this->trans('delete_invalid', 'title'))
+            ->setDetail($detail ?: $this->trans('delete_invalid', 'detail'))
+            ->setCode($this->trans('delete_invalid', 'code'));
+    }
+
+    /**
      * Translate validation failures.
      *
      * @param array $failures

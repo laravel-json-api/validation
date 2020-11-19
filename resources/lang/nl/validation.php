@@ -45,6 +45,12 @@ return [
         'code' => '',
     ],
 
+    'delete_invalid' => [
+        'title' => 'Niet Verwijderbaar',
+        'detail' => 'Deze resource kan niet worden verwijderd.',
+        'code' => '',
+    ],
+
     'allowed_field_sets' => [
         'default' => 'Spaarzame veldsets mogen alleen toegestane bevatten.',
         'singular' => 'Spaarzame veldset :values is niet toegestaan.',

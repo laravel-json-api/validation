@@ -80,4 +80,15 @@ class Factory
     {
         return new QueryErrorIterator($this->translator, $validator);
     }
+
+    /**
+     * Create JSON API errors for a delete resource validator.
+     *
+     * @param Validator $validator
+     * @return ErrorIterator
+     */
+    public function createErrorsForDeleteResource(Validator $validator): ErrorIterator
+    {
+        return new DeleteErrorIterator($this->translator, $validator);
+    }
 }

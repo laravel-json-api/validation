@@ -45,6 +45,12 @@ return [
         'code' => '',
     ],
 
+    'delete_invalid' => [
+        'title' => 'Not Deletable',
+        'detail' => 'The resource cannot be deleted.',
+        'code' => '',
+    ],
+
     'allowed_field_sets' => [
         'default' => 'Sparse field sets must contain only allowed ones.',
         'singular' => 'Sparse field set :values is not allowed.',
