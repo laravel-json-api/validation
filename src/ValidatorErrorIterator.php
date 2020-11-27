@@ -34,6 +34,21 @@ class ValidatorErrorIterator extends ErrorIterator
     private ?Closure $pointer = null;
 
     /**
+     * Use the prefix when converting keys.
+     *
+     * @param string $prefix
+     * @return $this
+     */
+    public function withSourcePrefix(string $prefix): self
+    {
+        $prefix = rtrim($prefix, '/');
+
+        $this->withPointers(
+            fn($key) => sprintf('%s/%s', $prefix, $this->convertKey($key))
+        );
+    }
+
+    /**
      * @param Closure $pointer
      * @return $this
      */
@@ -68,6 +83,15 @@ class ValidatorErrorIterator extends ErrorIterator
             return ($this->pointer)($key);
         }
 
+        return $this->convertKey($key);
+    }
+
+    /**
+     * @param string $key
+     * @return string
+     */
+    protected function convertKey(string $key): string
+    {
         return '/' . str_replace('.', '/', $key);
     }
 

@@ -20,15 +20,16 @@ declare(strict_types=1);
 namespace LaravelJsonApi\Validation;
 
 use Countable;
-use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Contracts\Validation\Validator;
 use IteratorAggregate;
-use JsonSerializable;
 use LaravelJsonApi\Contracts\ErrorProvider;
+use LaravelJsonApi\Contracts\Serializable;
 use LaravelJsonApi\Core\Document\Error;
 use LaravelJsonApi\Core\Document\ErrorList;
+use LaravelJsonApi\Core\Responses\ErrorResponse;
 
-abstract class ErrorIterator implements IteratorAggregate, Countable, Arrayable, JsonSerializable, ErrorProvider
+abstract class ErrorIterator implements IteratorAggregate, Countable, Serializable, ErrorProvider, Responsable
 {
 
     /**
@@ -165,7 +166,7 @@ abstract class ErrorIterator implements IteratorAggregate, Countable, Arrayable,
      */
     public function toArray()
     {
-        return collect($this)->toArray();
+        return $this->toErrors()->toArray();
     }
 
     /**
@@ -173,6 +174,40 @@ abstract class ErrorIterator implements IteratorAggregate, Countable, Arrayable,
      */
     public function jsonSerialize()
     {
-        return collect($this)->jsonSerialize();
+        return $this->toErrors()->jsonSerialize();
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function toJson($options = 0)
+    {
+        return $this->toErrors()->toJson($options);
+    }
+
+    /**
+     * @param $request
+     * @return ErrorResponse
+     */
+    public function prepareResponse($request): ErrorResponse
+    {
+        return $this->toErrors()->prepareResponse($request);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function toResponse($request)
+    {
+        return $this->toErrors()->toResponse($request);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function toString(): string
+    {
+        return $this->toErrors()->toString();
+    }
+
 }
