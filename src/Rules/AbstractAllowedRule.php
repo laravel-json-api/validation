@@ -22,6 +22,7 @@ namespace LaravelJsonApi\Validation\Rules;
 use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use LaravelJsonApi\Core\Support\Arr;
 use LaravelJsonApi\Validation\JsonApiValidation;
 
 abstract class AbstractAllowedRule implements Rule
@@ -85,6 +86,34 @@ abstract class AbstractAllowedRule implements Rule
         $this->allowed->forget($params);
 
         return $this;
+    }
+
+    /**
+     * Forget allowed parameters if the provided check is true.
+     *
+     * @param bool $check
+     * @param string|string[] $paths
+     * @return $this
+     */
+    public function forgetIf(bool $check, $paths): self
+    {
+        if (true === $check) {
+            $this->forget(...Arr::wrap($paths));
+        }
+
+        return $this;
+    }
+
+    /**
+     * Forget allowed parameters, if the provided check is not true.
+     *
+     * @param bool $check
+     * @param string|string[] $paths
+     * @return $this
+     */
+    public function forgetUnless(bool $check, $paths): self
+    {
+        return $this->forgetIf(false === $check, $paths);
     }
 
     /**
