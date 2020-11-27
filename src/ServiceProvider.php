@@ -35,6 +35,11 @@ class ServiceProvider extends BaseServiceProvider
             __DIR__ . '/../resources/lang',
             JsonApiValidation::$translationNamespace
         );
+
+        $this->publishes([
+            __DIR__ . '/../resources/lang' =>
+                resource_path('lang/vendor/' . JsonApiValidation::$translationNamespace),
+        ]);
     }
 
     /**
