@@ -25,6 +25,7 @@ use LaravelJsonApi\Validation\Rules\AllowedFilterParameters;
 use LaravelJsonApi\Validation\Rules\AllowedIncludePaths;
 use LaravelJsonApi\Validation\Rules\AllowedPageParameters;
 use LaravelJsonApi\Validation\Rules\AllowedSortParameters;
+use LaravelJsonApi\Validation\Rules\ClientId;
 use LaravelJsonApi\Validation\Rules\DateTimeIso8601;
 use LaravelJsonApi\Validation\Rules\HasMany;
 use LaravelJsonApi\Validation\Rules\HasOne;
@@ -34,6 +35,18 @@ use function is_null;
 
 class Rule
 {
+
+    /**
+     * Get a validation rule for a client-generated ID.
+     *
+     * @return ClientId
+     */
+    public static function clientId(): ClientId
+    {
+        return new ClientId(
+            JsonApi::route()->schema()
+        );
+    }
 
     /**
      * Get a date time ISO8601 validation rule instance.

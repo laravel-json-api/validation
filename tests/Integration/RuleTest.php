@@ -32,6 +32,7 @@ use LaravelJsonApi\Validation\Rules\AllowedFilterParameters;
 use LaravelJsonApi\Validation\Rules\AllowedIncludePaths;
 use LaravelJsonApi\Validation\Rules\AllowedPageParameters;
 use LaravelJsonApi\Validation\Rules\AllowedSortParameters;
+use LaravelJsonApi\Validation\Rules\ClientId;
 use LaravelJsonApi\Validation\Rules\DateTimeIso8601;
 use LaravelJsonApi\Validation\Rules\HasMany;
 use LaravelJsonApi\Validation\Rules\HasOne;
@@ -390,6 +391,15 @@ class RuleTest extends TestCase
         );
 
         $this->assertEquals(new HasOne($schema), Rule::toOne());
+    }
+
+    public function testClientId(): void
+    {
+        $this->route->expects($this->once())->method('schema')->willReturn(
+            $schema = $this->createMock(Schema::class)
+        );
+
+        $this->assertEquals(new ClientId($schema), Rule::clientId());
     }
 
     /**

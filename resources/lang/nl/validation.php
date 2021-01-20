@@ -81,6 +81,9 @@ return [
         'plural' => 'Pagina-parameters :values zijn niet toegestaan.',
     ],
 
+    /** @TODO requires translation */
+    'client_id' => 'The :attribute format is invalid.',
+
     'date_time_iso_8601' => 'Het attribuut :attribute heeft geen geldig ISO 8601 datum/tijd formaat.',
 
     'disallowed_parameter' => 'Parameter :name is niet toegestaan.',
