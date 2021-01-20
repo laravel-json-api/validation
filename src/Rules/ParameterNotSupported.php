@@ -57,9 +57,7 @@ class ParameterNotSupported implements Rule
      */
     public function message()
     {
-        $namespace = JsonApiValidation::$translationNamespace;
-
-        return trans("{$namespace}::validation.parameter_not_supported", [
+        return trans(JsonApiValidation::translationKeyForRule($this), [
             'name' => $this->name,
         ]);
     }

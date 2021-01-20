@@ -133,8 +133,6 @@ abstract class AbstractAllowedRule implements Rule
      */
     public function message()
     {
-        $namespace = JsonApiValidation::$translationNamespace;
-        $name = Str::snake(class_basename($this));
         $invalid = $this->invalid();
 
         if ($invalid->isEmpty()) {
@@ -143,7 +141,7 @@ abstract class AbstractAllowedRule implements Rule
             $key = (1 === $invalid->count()) ? 'singular' : 'plural';
         }
 
-        return trans("{$namespace}::validation.{$name}.{$key}", [
+        return trans(JsonApiValidation::translationKeyForRule($this, $key), [
             'values' => $params = $invalid->implode(', '),
         ]);
     }

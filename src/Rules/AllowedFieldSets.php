@@ -136,7 +136,6 @@ class AllowedFieldSets implements Rule
      */
     public function message()
     {
-        $namespace = JsonApiValidation::$translationNamespace;
         $invalid = $this->invalid();
 
         if ($invalid->isEmpty()) {
@@ -145,7 +144,7 @@ class AllowedFieldSets implements Rule
             $key = (1 === $invalid->count()) ? 'singular' : 'plural';
         }
 
-        return trans("{$namespace}::validation.allowed_field_sets.{$key}", [
+        return trans(JsonApiValidation::translationKeyForRule($this, $key), [
             'values' => $invalid->sort()->implode(', '),
         ]);
     }

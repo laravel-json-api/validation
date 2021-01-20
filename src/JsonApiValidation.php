@@ -19,6 +19,8 @@ declare(strict_types=1);
 
 namespace LaravelJsonApi\Validation;
 
+use Illuminate\Support\Str;
+
 class JsonApiValidation
 {
 
@@ -63,5 +65,25 @@ class JsonApiValidation
         self::$validationFailures = true;
 
         return new self();
+    }
+
+    /**
+     * Get the translation key for the supplied rule.
+     *
+     * @param string|object $rule
+     * @param string|null $key
+     * @return string
+     */
+    public static function translationKeyForRule($rule, string $key = null): string
+    {
+        $namespace = self::$translationNamespace;
+        $name = Str::snake(class_basename($rule));
+        $path = "{$namespace}::validation.{$name}";
+
+        if ($key) {
+            return "{$path}.$key";
+        }
+
+        return $path;
     }
 }

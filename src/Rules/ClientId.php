@@ -60,10 +60,7 @@ class ClientId implements Rule
      */
     public function message()
     {
-        $namespace = JsonApiValidation::$translationNamespace;
-        $name = Str::snake(class_basename($this));
-
-        return trans("{$namespace}::validation.{$name}");
+        return trans(JsonApiValidation::translationKeyForRule($this));
     }
 
 }

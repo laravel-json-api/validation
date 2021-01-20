@@ -73,11 +73,7 @@ class HasOne implements Rule
      */
     public function message()
     {
-        $namespace = JsonApiValidation::$translationNamespace;
-        $name = Str::snake(class_basename($this));
-        $key = "{$namespace}::validation.{$name}";
-
-        return trans($key, [
+        return trans(JsonApiValidation::translationKeyForRule($this), [
             'types' => collect($this->types)->implode(', '),
         ]);
     }
