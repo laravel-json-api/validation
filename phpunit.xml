@@ -21,13 +21,10 @@
     </coverage>
     <testsuites>
         <testsuite name="Unit">
-            <directory suffix="Test.php">./tests/lib/Unit/</directory>
+            <directory suffix="Test.php">./tests/Unit/</directory>
         </testsuite>
         <testsuite name="Integration">
-            <directory suffix="Test.php">./tests/lib/Integration/</directory>
-        </testsuite>
-        <testsuite name="Acceptance">
-            <directory suffix="Test.php">./tests/lib/Acceptance/</directory>
+            <directory suffix="Test.php">./tests/Integration/</directory>
         </testsuite>
     </testsuites>
     <php>
