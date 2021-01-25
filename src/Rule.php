@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2020 Cloud Creativity Limited
+ * Copyright 2021 Cloud Creativity Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ declare(strict_types=1);
 namespace LaravelJsonApi\Validation;
 
 use Illuminate\Support\Arr;
+use LaravelJsonApi\Core\Facades\JsonApi;
 use LaravelJsonApi\Validation\Rules\AllowedFieldSets;
 use LaravelJsonApi\Validation\Rules\AllowedFilterParameters;
 use LaravelJsonApi\Validation\Rules\AllowedIncludePaths;
@@ -30,7 +31,6 @@ use LaravelJsonApi\Validation\Rules\DateTimeIso8601;
 use LaravelJsonApi\Validation\Rules\HasMany;
 use LaravelJsonApi\Validation\Rules\HasOne;
 use LaravelJsonApi\Validation\Rules\ParameterNotSupported;
-use LaravelJsonApi\Core\Facades\JsonApi;
 use function is_null;
 
 class Rule

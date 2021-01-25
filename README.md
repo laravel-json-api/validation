@@ -1,9 +1,15 @@
 # laravel-json-api/validation
 
-## Status
+Validation for JSON:API resources in [Laravel JSON:API](https://laraveljsonapi.io) packages.
 
-This package is in development.
+## Installation
+
+Install using [Composer](https://getcomposer.org)
+
+```bash
+composer require laravel-json-api/validation
+```
 
 ## License
 
-Laravel JSON API is open-sourced software licensed under the [Apache 2.0 License](./LICENSE).
+Laravel JSON:API is open-sourced software licensed under the [Apache 2.0 License](./LICENSE).

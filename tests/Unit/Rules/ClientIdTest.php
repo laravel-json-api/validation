@@ -19,10 +19,10 @@ declare(strict_types=1);
 
 namespace LaravelJsonApi\Validation\Tests\Unit\Rules;
 
+use LaravelJsonApi\Contracts\Schema\ID;
 use LaravelJsonApi\Contracts\Schema\Schema;
 use LaravelJsonApi\Validation\Rules\ClientId;
 use PHPUnit\Framework\TestCase;
-use LaravelJsonApi\Contracts\Schema\ID;
 
 class ClientIdTest extends TestCase
 {
