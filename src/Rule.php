@@ -20,6 +20,7 @@ declare(strict_types=1);
 namespace LaravelJsonApi\Validation;
 
 use Illuminate\Support\Arr;
+use LaravelJsonApi\Core\Facades\JsonApi;
 use LaravelJsonApi\Validation\Rules\AllowedFieldSets;
 use LaravelJsonApi\Validation\Rules\AllowedFilterParameters;
 use LaravelJsonApi\Validation\Rules\AllowedIncludePaths;
@@ -30,7 +31,6 @@ use LaravelJsonApi\Validation\Rules\DateTimeIso8601;
 use LaravelJsonApi\Validation\Rules\HasMany;
 use LaravelJsonApi\Validation\Rules\HasOne;
 use LaravelJsonApi\Validation\Rules\ParameterNotSupported;
-use LaravelJsonApi\Core\Facades\JsonApi;
 use function is_null;
 
 class Rule

@@ -21,7 +21,6 @@ namespace LaravelJsonApi\Validation\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
 use LaravelJsonApi\Core\Support\Arr;
 use LaravelJsonApi\Validation\JsonApiValidation;
 

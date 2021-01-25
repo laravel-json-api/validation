@@ -20,7 +20,6 @@ declare(strict_types=1);
 namespace LaravelJsonApi\Validation\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
-use Illuminate\Support\Str;
 use LaravelJsonApi\Contracts\Schema\PolymorphicRelation;
 use LaravelJsonApi\Contracts\Schema\Schema;
 use LaravelJsonApi\Validation\JsonApiValidation;
