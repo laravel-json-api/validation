@@ -81,10 +81,7 @@ return [
         'plural' => 'Les paramètres de pagination :values ne sont pas autorisés.',
     ],
 
-    /**
-     * @TODO requires translation
-     */
-    'client_id' => 'The :attribute format is invalid.',
+    'client_id' => "Le format de :attribute n'est pas valide.",
 
     'date_time_iso_8601' => ":attribute n'est pas au format ISO 8601 de date et heure.",
 
