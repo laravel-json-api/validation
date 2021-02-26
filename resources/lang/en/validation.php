@@ -55,6 +55,11 @@ return [
         'default' => 'Sparse field sets must contain only allowed ones.',
         'singular' => 'Sparse field set :values is not allowed.',
         'plural' => 'Sparse field sets :values are not allowed.',
+
+        'unrecognised' => [
+            'singular' => 'Resource type :types is not recognised.',
+            'plural' => 'Resource types :types are not recognised.',
+        ],
     ],
 
     'allowed_filter_parameters' => [

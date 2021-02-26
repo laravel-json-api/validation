@@ -55,6 +55,11 @@ return [
         'default' => 'Spaarzame veldsets mogen alleen toegestane bevatten.',
         'singular' => 'Spaarzame veldset :values is niet toegestaan.',
         'plural' => 'Spaarzame veldsets :values zijn niet toegestaan.',
+
+        'unrecognised' => [
+            'singular' => 'Resource type :type wordt niet herkend.',
+            'plural' => 'Resource types :types worden niet herkend.',
+        ],
     ],
 
     'allowed_filter_parameters' => [
