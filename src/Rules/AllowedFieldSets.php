@@ -136,6 +136,10 @@ class AllowedFieldSets implements Rule
      */
     public function message()
     {
+        if ($message = $this->messageForUnrecognised()) {
+            return $message;
+        }
+
         $invalid = $this->invalid();
 
         if ($invalid->isEmpty()) {
@@ -146,6 +150,24 @@ class AllowedFieldSets implements Rule
 
         return trans(JsonApiValidation::translationKeyForRule($this, $key), [
             'values' => $invalid->sort()->implode(', '),
+        ]);
+    }
+
+    /**
+     * @return string|null
+     */
+    private function messageForUnrecognised(): ?string
+    {
+        $unrecognised = $this->unrecognised();
+
+        if ($unrecognised->isEmpty()) {
+            return null;
+        }
+
+        $key = (1 === $unrecognised->count()) ? 'singular' : 'plural';
+
+        return trans(JsonApiValidation::translationKeyForRule($this, "unrecognised.{$key}"), [
+            'types' => $unrecognised->sort()->implode(', '),
         ]);
     }
 
@@ -188,17 +210,26 @@ class AllowedFieldSets implements Rule
     }
 
     /**
+     * Get the resource types that are not recognised.
+     *
+     * @return Collection
+     */
+    protected function unrecognised(): Collection
+    {
+        return collect($this->value ?? [])
+            ->keys()
+            ->reject(fn(string $resourceType) => $this->isResourceType($resourceType))
+            ->values();
+    }
+
+    /**
      * Get the fields that are invalid.
      *
      * @return Collection
      */
     protected function invalid(): Collection
     {
-        if (!is_array($this->value)) {
-            return collect();
-        }
-
-        return collect($this->value)->map(function ($value, $key) {
+        return collect($this->value ?? [])->map(function ($value, $key) {
             return $this->notAllowed($key, $value);
         })->flatMap(function (Collection $fields, $type) {
             return $fields->map(function ($field) use ($type) {
@@ -213,7 +244,7 @@ class AllowedFieldSets implements Rule
      */
     private function fieldsFor(string $resourceType): array
     {
-        if ($this->schemas && $this->schemas->exists($resourceType)) {
+        if ($this->isResourceType($resourceType)) {
             return collect($this->schemas
                 ->schemaFor($resourceType)
                 ->sparseFields()
@@ -221,6 +252,15 @@ class AllowedFieldSets implements Rule
         }
 
         return [];
+    }
+
+    /**
+     * @param string $resourceType
+     * @return bool
+     */
+    private function isResourceType(string $resourceType): bool
+    {
+        return $this->schemas && $this->schemas->exists($resourceType);
     }
 
 }

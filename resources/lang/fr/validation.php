@@ -55,6 +55,11 @@ return [
         'default' => 'Certains champs soumis ne sont pas autorisés.',
         'singular' => "Le champ soumis :values n'est pas autorisé.",
         'plural' => 'Les champs soumis :values ne sont pas autorisés.',
+
+        'unrecognised' => [
+            'singular' => "Le type de ressource :types n'est pas reconnu.",
+            'plural' => 'Les types de ressources :types ne sont pas reconnus.',
+        ],
     ],
 
     'allowed_filter_parameters' => [

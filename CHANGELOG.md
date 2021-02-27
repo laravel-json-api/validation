@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. This project adheres to
 [Semantic Versioning](http://semver.org/) and [this changelog format](http://keepachangelog.com/).
 
+## [1.0.0-alpha.4] - 2021-02-27
+
+### Added
+
+- The sparse field sets rule now rejects with a specific message indicating if any of the supplied resource types in the
+  `fields` query parameter are not recognised.
+
 ## [1.0.0-alpha.3] - 2021-02-09
 
 ### Added

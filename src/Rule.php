@@ -190,7 +190,7 @@ class Rule
     }
 
     /**
-     * Get a validation rule instance for a to-many relation.
+     * Get a validation rule instance for a to-one relation.
      *
      * @return HasOne
      */

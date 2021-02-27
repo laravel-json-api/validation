@@ -134,10 +134,17 @@ class QueryValidationTest extends TestCase
                 'fields',
                 ['rule' => 'allowed-field-sets'],
             ],
-            'fields:unrecognised' => [
+            'fields:unrecognised.singular' => [
                 'fields',
-                ['foo' => 'bar'],
-                'Sparse field set foo.bar is not allowed.',
+                ['foo' => 'bar', 'posts' => 'title'],
+                'Resource type foo is not recognised.',
+                'fields',
+                ['rule' => 'allowed-field-sets'],
+            ],
+            'fields:unrecognised.plural' => [
+                'fields',
+                ['foo' => 'bar', 'baz' => 'bat', 'posts' => 'title'],
+                'Resource types baz, foo are not recognised.',
                 'fields',
                 ['rule' => 'allowed-field-sets'],
             ],
