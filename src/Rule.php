@@ -125,6 +125,19 @@ class Rule
     }
 
     /**
+     * Get an include paths constraint builder instance for a morph-many relation.
+     *
+     * @return AllowedIncludePaths
+     */
+    public static function includePathsForPolymorph(): AllowedIncludePaths
+    {
+        return AllowedIncludePaths::morphMany(
+            JsonApi::server()->schemas(),
+            JsonApi::route()->relation(),
+        );
+    }
+
+    /**
      * Get a not supported parameter rule instance.
      *
      * @param string|null $name

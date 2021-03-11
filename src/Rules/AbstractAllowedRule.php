@@ -54,7 +54,7 @@ abstract class AbstractAllowedRule implements Rule
      */
     public function __construct(iterable $allowed = [])
     {
-        $values = collect($allowed)->values();
+        $values = collect($allowed)->unique()->values();
         $this->allowed = $values->combine($values);
         $this->all = false;
     }

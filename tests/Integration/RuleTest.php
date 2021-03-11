@@ -224,6 +224,33 @@ class RuleTest extends TestCase
         );
     }
 
+    public function testIncludePathsForPolymorph(): void
+    {
+        $this->route->method('hasRelation')->willReturn(true);
+        $this->route->method('relation')->willReturn($relation = $this->createMock(Relation::class));
+
+        $relation->method('allInverse')->willReturn(['foo', 'bar']);
+
+        $this->app->instance(Server::class, $server = $this->createMock(Server::class));
+        $server->method('schemas')->willReturn($schemas = $this->createMock(Container::class));
+
+        $schemas->method('schemaFor')->willReturnMap([
+            ['foo', $foo = $this->createMock(Schema::class)],
+            ['bar', $bar = $this->createMock(Schema::class)],
+        ]);
+
+        $foo->method('includePaths')->willReturn((function () {
+            yield from ['foo.bar', 'baz.bat', 'foobar.bazbat'];
+        })());
+
+        $bar->method('includePaths')->willReturn(['bar.baz', 'bar.bat', 'foobar.bazbat']);
+
+        $this->assertEquals(
+            new AllowedIncludePaths(['foo.bar', 'baz.bat', 'foobar.bazbat', 'bar.baz', 'bar.bat']),
+            Rule::includePathsForPolymorph()
+        );
+    }
+
     /**
      * @return array
      */
