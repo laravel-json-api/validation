@@ -285,4 +285,40 @@ class QueryValidationTest extends TestCase
         ], $errors->first()->jsonSerialize());
     }
 
+    public function testNotSupported(): void
+    {
+        $data = ['filter' => ['id' => '1,2,3']];
+
+        $validator = $this->validatorFactory->make($data, [
+            'filter' => JsonApiRule::notSupported(),
+        ]);
+
+        $this->assertTrue($validator->fails());
+
+        $errors = $this->factory->createErrorsForQuery($validator);
+
+        $this->assertCount(1, $errors);
+
+        $this->assertSame([
+            'detail' => 'Parameter filter is not allowed.',
+            'source' => ['parameter' => 'filter'],
+            'status' => '400',
+            'title' => 'Invalid Query Parameter',
+        ], $errors->first()->jsonSerialize());
+
+        $errors->withFailureMeta();
+
+        $this->assertSame([
+            'detail' => 'Parameter filter is not allowed.',
+            'meta' => [
+                'failed' => [
+                    'rule' => 'parameter-not-supported',
+                ],
+            ],
+            'source' => ['parameter' => 'filter'],
+            'status' => '400',
+            'title' => 'Invalid Query Parameter',
+        ], $errors->first()->jsonSerialize());
+    }
+
 }

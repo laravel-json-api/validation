@@ -20,6 +20,8 @@ declare(strict_types=1);
 namespace LaravelJsonApi\Validation\Rules;
 
 use Illuminate\Support\Collection;
+use LaravelJsonApi\Contracts\Schema\Container;
+use LaravelJsonApi\Contracts\Schema\Relation;
 use LaravelJsonApi\Contracts\Schema\Schema;
 use function collect;
 
@@ -35,6 +37,22 @@ class AllowedIncludePaths extends AbstractAllowedRule
     public static function make(Schema $schema): self
     {
         return new self($schema->includePaths());
+    }
+
+    /**
+     * Create an allowed include path rule for the relation's inverse resource types.
+     *
+     * @param Container $schemas
+     * @param Relation $relation
+     * @return static
+     */
+    public static function morphMany(Container $schemas, Relation $relation): self
+    {
+        $paths = collect($relation->allInverse())
+            ->map(fn(string $resourceType) => collect($schemas->schemaFor($resourceType)->includePaths()))
+            ->flatten();
+
+        return new self($paths);
     }
 
     /**
