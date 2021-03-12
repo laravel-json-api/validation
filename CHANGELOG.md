@@ -10,6 +10,11 @@ All notable changes to this project will be documented in this file. This projec
 - New `Rule::includePathsForPolymorph()` method. This returns an include path rule that is configured to allow all the
   include paths for every inverse schema that a polymorphic relation has.
 
+### Fixed
+
+- The correct message is now set as the error detail when a query parameter is not supported. Previously the translation
+  key was displayed instead of the translated message.
+
 ## [1.0.0-alpha.4] - 2021-02-27
 
 ### Added

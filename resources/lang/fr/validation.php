@@ -90,7 +90,7 @@ return [
 
     'date_time_iso_8601' => ":attribute n'est pas au format ISO 8601 de date et heure.",
 
-    'disallowed_parameter' => "Le paramètre :name n'est pas autorisé.",
+    'parameter_not_supported' => "Le paramètre :name n'est pas autorisé.",
 
     'has_one' => 'Le champ :attribute doit être une relation "to-one" contenant des ressources de type :types.',
 
