@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. This project adheres to
 [Semantic Versioning](http://semver.org/) and [this changelog format](http://keepachangelog.com/).
 
+## Unreleased
+
+### Added
+
+- New `AllowedCountableFields` rule, which can be created via the `Rule::countable` and `Rule::countableForPolymorph`
+  methods.
+
 ## [1.0.0-alpha.5] - 2021-03-12
 
 ### Added

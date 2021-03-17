@@ -87,6 +87,13 @@ return [
     ],
 
     /** @TODO requires translation */
+    'allowed_countable_fields' => [
+        'default' => 'Count fields must contain only allowed ones.',
+        'singular' => 'Field :values is not countable.',
+        'plural' => 'Fields :values are not countable.',
+    ],
+
+    /** @TODO requires translation */
     'client_id' => 'The :attribute format is invalid.',
 
     'date_time_iso_8601' => 'Het attribuut :attribute heeft geen geldig ISO 8601 datum/tijd formaat.',
