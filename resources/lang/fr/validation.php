@@ -86,6 +86,13 @@ return [
         'plural' => 'Les paramètres de pagination :values ne sont pas autorisés.',
     ],
 
+    /** @TODO requires translation */
+    'allowed_countable_fields' => [
+        'default' => 'Count fields must contain only allowed ones.',
+        'singular' => 'Field :values is not countable.',
+        'plural' => 'Fields :values are not countable.',
+    ],
+
     'client_id' => "Le format de :attribute n'est pas valide.",
 
     'date_time_iso_8601' => ":attribute n'est pas au format ISO 8601 de date et heure.",

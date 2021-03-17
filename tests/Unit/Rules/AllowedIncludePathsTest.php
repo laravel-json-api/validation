@@ -41,7 +41,7 @@ class AllowedIncludePathsTest extends TestCase
             ->forget('id');
 
         $this->assertTrue($rule->passes('include', 'foo,bar'));
-        $this->assertFalse($rule->passes('include', 'foo,baz'));
+        $this->assertFalse($rule->passes('include', 'foo,id'));
     }
 
     public function testSchema(): void
