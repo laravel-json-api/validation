@@ -86,6 +86,12 @@ return [
         'plural' => 'Page parameters :values are not allowed.',
     ],
 
+    'allowed_countable_fields' => [
+        'default' => 'Count fields must contain only allowed ones.',
+        'singular' => 'Field :values is not countable.',
+        'plural' => 'Fields :values are not countable.',
+    ],
+
     'client_id' => 'The :attribute format is invalid.',
 
     'date_time_iso_8601' => 'The :attribute is not a valid ISO 8601 date and time.',

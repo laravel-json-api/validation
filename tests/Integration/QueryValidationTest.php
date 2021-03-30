@@ -43,7 +43,7 @@ class QueryValidationTest extends TestCase
     {
         parent::setUp();
 
-        $this->schema = $this->createMock(Schema::class);
+        $this->schema = $this->createMock(TestSchema::class);
         $this->schema->method('sparseFields')->willReturn(['author', 'createdAt', 'title', 'updatedAt']);
         $this->schema->method('filters')->willReturn([
             $filter = $this->createMock(Filter::class),
@@ -53,6 +53,7 @@ class QueryValidationTest extends TestCase
             $paginator = $this->createMock(Paginator::class)
         );
         $this->schema->method('sortable')->willReturn(['createdAt', 'title', 'updatedAt']);
+        $this->schema->method('countable')->willReturn(['comments', 'likes', 'tags']);
 
         $filter->method('key')->willReturn('title');
         $paginator->method('keys')->willReturn(['number', 'size']);
@@ -81,6 +82,7 @@ class QueryValidationTest extends TestCase
                 'size' => '25',
             ],
             'sort' => 'title,createdAt',
+            'withCount' => 'comments,tags',
         ];
 
         $validator = $this->validatorFactory->make($data, [
@@ -108,6 +110,11 @@ class QueryValidationTest extends TestCase
                 'nullable',
                 'string',
                 JsonApiRule::sort(),
+            ],
+            'withCount' => [
+                'nullable',
+                'string',
+                JsonApiRule::countable(),
             ],
         ]);
 
@@ -204,6 +211,20 @@ class QueryValidationTest extends TestCase
                 'sort',
                 ['rule' => 'allowed-sort-parameters'],
             ],
+            'withCount:singular' => [
+                'withCount',
+                'comments,foo,tags',
+                'Field foo is not countable.',
+                'withCount',
+                ['rule' => 'allowed-countable-fields'],
+            ],
+            'withCount:plural' => [
+                'withCount',
+                'comments,foo,tags,bar',
+                'Fields bar, foo are not countable.',
+                'withCount',
+                ['rule' => 'allowed-countable-fields'],
+            ],
         ];
     }
 
@@ -259,6 +280,11 @@ class QueryValidationTest extends TestCase
                 'nullable',
                 'string',
                 JsonApiRule::sort(),
+            ],
+            'withCount' => [
+                'nullable',
+                'string',
+                JsonApiRule::countable(),
             ],
         ]);
 

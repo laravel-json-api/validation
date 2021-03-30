@@ -21,6 +21,7 @@ namespace LaravelJsonApi\Validation;
 
 use Illuminate\Support\Arr;
 use LaravelJsonApi\Core\Facades\JsonApi;
+use LaravelJsonApi\Validation\Rules\AllowedCountableFields;
 use LaravelJsonApi\Validation\Rules\AllowedFieldSets;
 use LaravelJsonApi\Validation\Rules\AllowedFilterParameters;
 use LaravelJsonApi\Validation\Rules\AllowedIncludePaths;
@@ -45,6 +46,40 @@ class Rule
     {
         return new ClientId(
             JsonApi::route()->schema()
+        );
+    }
+
+    /**
+     * Get a countable fields constraint builder instance.
+     *
+     * @param array|string|null $allowed
+     * @return AllowedCountableFields
+     */
+    public static function countable($allowed = null): AllowedCountableFields
+    {
+        if (!is_null($allowed)) {
+            return new AllowedCountableFields(
+                Arr::wrap($allowed)
+            );
+        }
+
+        $route = JsonApi::route();
+
+        return AllowedCountableFields::make(
+            $route->hasRelation() ? $route->inverse() : $route->schema()
+        );
+    }
+
+    /**
+     * Get a countable fields constraint builder instance for a morph-many relation.
+     *
+     * @return AllowedIncludePaths
+     */
+    public static function countableForPolymorph(): AllowedIncludePaths
+    {
+        return AllowedIncludePaths::morphMany(
+            JsonApi::server()->schemas(),
+            JsonApi::route()->relation(),
         );
     }
 
