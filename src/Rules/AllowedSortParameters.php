@@ -33,7 +33,7 @@ class AllowedSortParameters extends AbstractAllowedRule
      */
     public static function make(Schema $schema): self
     {
-        return new self($schema->sortable());
+        return new self($schema->sortFields());
     }
 
     /**

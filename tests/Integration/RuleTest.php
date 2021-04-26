@@ -372,7 +372,7 @@ class RuleTest extends TestCase
         );
         $this->route->expects($this->never())->method('inverse');
 
-        $schema->method('sortable')->willReturn([
+        $schema->method('sortFields')->willReturn([
             'createdAt',
             'title',
         ]);
@@ -391,7 +391,7 @@ class RuleTest extends TestCase
             $schema = $this->createMock(Schema::class)
         );
 
-        $schema->method('sortable')->willReturn([
+        $schema->method('sortFields')->willReturn([
             'createdAt',
             'title',
         ]);
