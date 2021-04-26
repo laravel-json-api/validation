@@ -50,7 +50,7 @@ class AllowedSortParametersTest extends TestCase
     public function testSchema(): void
     {
         $schema = $this->createMock(Schema::class);
-        $schema->method('sortable')->willReturn(['title', 'createdAt']);
+        $schema->method('sortFields')->willReturn(['title', 'createdAt']);
 
         $this->assertEquals(
             new AllowedSortParameters(['title', 'createdAt']),

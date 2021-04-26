@@ -52,7 +52,7 @@ class QueryValidationTest extends TestCase
         $this->schema->method('pagination')->willReturn(
             $paginator = $this->createMock(Paginator::class)
         );
-        $this->schema->method('sortable')->willReturn(['createdAt', 'title', 'updatedAt']);
+        $this->schema->method('sortFields')->willReturn(['createdAt', 'title', 'updatedAt']);
         $this->schema->method('countable')->willReturn(['comments', 'likes', 'tags']);
 
         $filter->method('key')->willReturn('title');

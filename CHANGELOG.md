@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file. This project adheres to
 [Semantic Versioning](http://semver.org/) and [this changelog format](http://keepachangelog.com/).
 
+## [1.0.0-beta.2] - 2021-04-26
+
+### Changed
+
+- Updated the `AllowedSortParameters` rule class to use renamed method on the `Schema` contract.
+
 ## [1.0.0-beta.1] - 2021-03-30
 
 ### Added
