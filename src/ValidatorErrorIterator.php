@@ -41,10 +41,10 @@ class ValidatorErrorIterator extends ErrorIterator
      */
     public function withSourcePrefix(string $prefix): self
     {
-        $prefix = rtrim($prefix, '/');
+        $prefix = trim($prefix, '/');
 
         $this->withPointers(
-            fn($key) => sprintf('%s/%s', $prefix, $this->convertKey($key))
+            fn($key) => sprintf('/%s%s', $prefix, $this->convertKey($key))
         );
         
         return $this;
