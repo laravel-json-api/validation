@@ -46,6 +46,8 @@ class ValidatorErrorIterator extends ErrorIterator
         $this->withPointers(
             fn($key) => sprintf('%s/%s', $prefix, $this->convertKey($key))
         );
+        
+        return $this;
     }
 
     /**
