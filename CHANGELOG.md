@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file. This project adheres to
 [Semantic Versioning](http://semver.org/) and [this changelog format](http://keepachangelog.com/).
 
+## [1.0.0-beta.3] - 2021-07-10
+
+### Fixed
+
+- [#4](https://github.com/laravel-json-api/validation/issues/4) Ensure JSON pointer does not have a double slash when
+  using the `withSourcePrefix()` method on the `ValidatorErrorIterator` class.
+- [#3](https://github.com/laravel-json-api/validation/pull/3) Add missing return statement to the
+  `ValidatorErrorIterator::withSourcePrefix()` method.
+
 ## [1.0.0-beta.2] - 2021-04-26
 
 ### Changed
