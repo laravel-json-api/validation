@@ -149,7 +149,7 @@ class SchemaSourcePointer implements JsonSerializable, Arrayable
     /**
      * @inheritDoc
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return $this->toArray();
     }
