@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file. This projec
 
 ### Changed
 
+- Package now supports Laravel 9.
 - Added return types to internal methods to remove deprecation messages in PHP 8.1.
 - Minimum `laravel-json-api/core` dependency version is now `2.0`.
 
