@@ -31,6 +31,7 @@ use LaravelJsonApi\Validation\Rules\ClientId;
 use LaravelJsonApi\Validation\Rules\DateTimeIso8601;
 use LaravelJsonApi\Validation\Rules\HasMany;
 use LaravelJsonApi\Validation\Rules\HasOne;
+use LaravelJsonApi\Validation\Rules\JsonNumber;
 use LaravelJsonApi\Validation\Rules\ParameterNotSupported;
 use function is_null;
 
@@ -181,6 +182,18 @@ class Rule
     public static function notSupported(string $name = null): ParameterNotSupported
     {
         return new ParameterNotSupported($name);
+    }
+
+    /**
+     * Get a JSON number rule.
+     *
+     * This rule validates that the value is a number in JSON, i.e. an integer or a float.
+     *
+     * @return JsonNumber
+     */
+    public static function number(): JsonNumber
+    {
+        return new JsonNumber();
     }
 
     /**

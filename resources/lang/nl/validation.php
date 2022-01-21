@@ -98,6 +98,8 @@ return [
 
     'date_time_iso_8601' => 'Het attribuut :attribute heeft geen geldig ISO 8601 datum/tijd formaat.',
 
+    'json_number' => 'Het :attribute moet een nummer zijn.',
+
     'parameter_not_supported' => 'Parameter :name is niet toegestaan.',
 
     'has_one' => 'Het veld :attribute moet een naar-één relatie zijn die :types resources bevat.',

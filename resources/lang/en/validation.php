@@ -96,6 +96,8 @@ return [
 
     'date_time_iso_8601' => 'The :attribute is not a valid ISO 8601 date and time.',
 
+    'json_number' => 'The :attribute field must be a number.',
+
     'parameter_not_supported' => 'Parameter :name is not allowed.',
 
     'has_one' => 'The :attribute field must be a to-one relationship containing :types resources.',
