@@ -33,16 +33,23 @@ class ValueTest extends TestCase
      */
     private array $rules;
 
+    /**
+     * @return void
+     */
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->data = [
             'total' => 100,
+            'boolean' => true,
+            'boolean_string' => 'true',
         ];
 
         $this->rules = [
             'total' => [Rule::number()],
+            'boolean' => [Rule::boolean()],
+            'boolean_string' => [Rule::boolean()->asString()],
         ];
     }
 
@@ -60,6 +67,8 @@ class ValueTest extends TestCase
     {
         return [
             'number' => ['total', 'foo', 'The total field must be a number.'],
+            'boolean' => ['boolean', 'true', 'The boolean field must be a boolean.'],
+            'boolean_string' => ['boolean_string', 'blah', 'The boolean string field must be true or false.'],
         ];
     }
 

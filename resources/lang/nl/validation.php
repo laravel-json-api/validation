@@ -93,10 +93,14 @@ return [
         'plural' => 'Fields :values are not countable.',
     ],
 
+    'boolean_string' => 'Het :attribute moet waar of onwaar zijn.',
+
     /** @TODO requires translation */
     'client_id' => 'The :attribute format is invalid.',
 
     'date_time_iso_8601' => 'Het attribuut :attribute heeft geen geldig ISO 8601 datum/tijd formaat.',
+
+    'json_boolean' => 'Het :attribute moet een boolean zijn.',
 
     'json_number' => 'Het :attribute moet een nummer zijn.',
 

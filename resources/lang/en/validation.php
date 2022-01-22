@@ -92,9 +92,13 @@ return [
         'plural' => 'Fields :values are not countable.',
     ],
 
+    'boolean_string' => 'The :attribute field must be true or false.',
+
     'client_id' => 'The :attribute format is invalid.',
 
     'date_time_iso_8601' => 'The :attribute is not a valid ISO 8601 date and time.',
+
+    'json_boolean' => 'The :attribute field must be a boolean.',
 
     'json_number' => 'The :attribute field must be a number.',
 

@@ -21,17 +21,42 @@ namespace LaravelJsonApi\Validation\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
 use LaravelJsonApi\Validation\JsonApiValidation;
-use function is_float;
-use function is_int;
+use function filter_var;
+use function is_bool;
 
-class JsonNumber implements Rule
+class JsonBoolean implements Rule
 {
+    /**
+     * @var bool
+     */
+    private bool $asString = false;
+
+    /**
+     * Mark the rule as validating a string boolean (e.g. from query parameters).
+     *
+     * @return $this
+     */
+    public function asString(): self
+    {
+        $this->asString = true;
+
+        return $this;
+    }
+
     /**
      * @inheritDoc
      */
     public function passes($attribute, $value): bool
     {
-        return is_int($value) || is_float($value);
+        if (true === $this->asString) {
+            return is_bool(filter_var(
+                $value,
+                FILTER_VALIDATE_BOOLEAN,
+                FILTER_NULL_ON_FAILURE,
+            ));
+        }
+
+        return is_bool($value);
     }
 
     /**
@@ -39,6 +64,10 @@ class JsonNumber implements Rule
      */
     public function message(): string
     {
-        return  trans(JsonApiValidation::translationKeyForRule($this));
+        $key = $this->asString ?
+            JsonApiValidation::qualifyTranslationKey('boolean_string') :
+            JsonApiValidation::translationKeyForRule($this);
+
+        return trans($key);
     }
 }

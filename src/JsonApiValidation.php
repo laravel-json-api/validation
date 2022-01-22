@@ -71,19 +71,32 @@ class JsonApiValidation
      * Get the translation key for the supplied rule.
      *
      * @param string|object $rule
-     * @param string|null $key
+     * @param string|null $path
      * @return string
      */
-    public static function translationKeyForRule($rule, string $key = null): string
+    public static function translationKeyForRule($rule, string $path = null): string
+    {
+        $name = Str::snake(class_basename($rule));
+
+        return self::qualifyTranslationKey($name, $path);
+    }
+
+    /**
+     * Turn a package translation key into a fully qualified translation key.
+     *
+     * @param string $key
+     * @param string|null $path
+     * @return string
+     */
+    public static function qualifyTranslationKey(string $key, string $path = null): string
     {
         $namespace = self::$translationNamespace;
-        $name = Str::snake(class_basename($rule));
-        $path = "{$namespace}::validation.{$name}";
+        $qualified = "{$namespace}::validation.{$key}";
 
-        if ($key) {
-            return "{$path}.$key";
+        if ($path) {
+            return "{$qualified}.$path";
         }
 
-        return $path;
+        return $qualified;
     }
 }

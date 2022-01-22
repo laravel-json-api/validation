@@ -31,12 +31,32 @@ use LaravelJsonApi\Validation\Rules\ClientId;
 use LaravelJsonApi\Validation\Rules\DateTimeIso8601;
 use LaravelJsonApi\Validation\Rules\HasMany;
 use LaravelJsonApi\Validation\Rules\HasOne;
+use LaravelJsonApi\Validation\Rules\JsonBoolean;
 use LaravelJsonApi\Validation\Rules\JsonNumber;
 use LaravelJsonApi\Validation\Rules\ParameterNotSupported;
 use function is_null;
 
 class Rule
 {
+    /**
+     * Get a validation rule for a boolean.
+     *
+     * This rule validates that the value is a boolean, which is what we expect a boolean
+     * in JSON to be. This is different from the Laravel boolean rule, which is looser i.e.
+     * it accepts strings and integers in addition to "real" booleans.
+     *
+     * This rule can also be used to validate booleans from query parameters, which are
+     * always strings. Just call the `asString()` method on the rule to configure it to
+     * validate a boolean string. This is better than the Laravel boolean rule, as that
+     * does not accept the strings "true" and "false", whereas this rule does accept
+     * those.
+     *
+     * @return JsonBoolean
+     */
+    public static function boolean(): JsonBoolean
+    {
+        return new JsonBoolean();
+    }
 
     /**
      * Get a validation rule for a client-generated ID.
