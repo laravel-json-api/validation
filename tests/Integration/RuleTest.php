@@ -36,6 +36,8 @@ use LaravelJsonApi\Validation\Rules\ClientId;
 use LaravelJsonApi\Validation\Rules\DateTimeIso8601;
 use LaravelJsonApi\Validation\Rules\HasMany;
 use LaravelJsonApi\Validation\Rules\HasOne;
+use LaravelJsonApi\Validation\Rules\JsonBoolean;
+use LaravelJsonApi\Validation\Rules\JsonNumber;
 use LaravelJsonApi\Validation\Rules\ParameterNotSupported;
 use PHPUnit\Framework\MockObject\MockObject;
 
@@ -427,6 +429,23 @@ class RuleTest extends TestCase
         );
 
         $this->assertEquals(new ClientId($schema), Rule::clientId());
+    }
+
+    public function testBoolean(): void
+    {
+        $this->assertEquals(new JsonBoolean(), Rule::boolean());
+    }
+
+    public function testNumber(): void
+    {
+        $this->assertEquals(new JsonNumber(), Rule::number());
+    }
+
+    public function testInteger(): void
+    {
+        $expected = (new JsonNumber())->onlyIntegers();
+
+        $this->assertEquals($expected, Rule::integer());
     }
 
     /**

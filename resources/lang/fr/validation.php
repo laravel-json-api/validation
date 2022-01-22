@@ -93,9 +93,17 @@ return [
         'plural' => 'Fields :values are not countable.',
     ],
 
+    'boolean_string' => 'Le champ :attribute doit être vrai ou faux.',
+
     'client_id' => "Le format de :attribute n'est pas valide.",
 
     'date_time_iso_8601' => ":attribute n'est pas au format ISO 8601 de date et heure.",
+
+    'json_boolean' => 'Le champ :attribute doit être un booléen.',
+
+    'json_integer' => 'Le champ :attribute doit être un entier.',
+
+    'json_number' => 'Le champ :attribute doit être un nombre.',
 
     'parameter_not_supported' => "Le paramètre :name n'est pas autorisé.",
 
