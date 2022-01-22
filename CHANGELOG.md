@@ -11,6 +11,15 @@ All notable changes to this project will be documented in this file. This projec
 - Added return types to internal methods to remove deprecation messages in PHP 8.1.
 - Minimum `laravel-json-api/core` dependency version is now `2.0`.
 
+## [1.1.0] - 2022-01-22
+
+### Added
+
+- New validation rules:
+    - `JsonNumber` validates that the value is a number in JSON (i.e. integer or float), or just an integer.
+    - `JsonBoolean` validates that the value is a boolean in JSON. It can also be used for query string parameters that
+      will be filtered to booleans via its `asString()` method.
+
 ## [1.0.0] - 2021-07-31
 
 Initial stable release, with no changes from `1.0.0-beta.3`.
