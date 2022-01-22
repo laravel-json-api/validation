@@ -194,6 +194,16 @@ class Rule
     }
 
     /**
+     * Get a rule to validate integers in JSON.
+     *
+     * @return JsonNumber
+     */
+    public static function integer(): JsonNumber
+    {
+        return (new JsonNumber())->onlyIntegers();
+    }
+
+    /**
      * Get a not supported parameter rule instance.
      *
      * @param string|null $name

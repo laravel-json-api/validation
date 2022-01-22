@@ -8,7 +8,7 @@ All notable changes to this project will be documented in this file. This projec
 ### Added
 
 - New validation rules:
-    - `JsonNumber` validates that the value is a number in JSON (i.e. integer or float).
+    - `JsonNumber` validates that the value is a number in JSON (i.e. integer or float), or just an integer.
     - `JsonBoolean` validates that the value is a boolean in JSON. It can also be used for query string parameters that
       will be filtered to booleans via its `asString()` method.
 

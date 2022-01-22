@@ -101,6 +101,8 @@ return [
 
     'json_boolean' => 'Le champ :attribute doit être un booléen.',
 
+    'json_integer' => 'Le champ :attribute doit être un entier.',
+
     'json_number' => 'Le champ :attribute doit être un nombre.',
 
     'parameter_not_supported' => "Le paramètre :name n'est pas autorisé.",

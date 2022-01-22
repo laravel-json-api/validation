@@ -27,10 +27,29 @@ use function is_int;
 class JsonNumber implements Rule
 {
     /**
+     * @var bool
+     */
+    private bool $onlyIntegers = false;
+
+    /**
+     * @return $this
+     */
+    public function onlyIntegers(): self
+    {
+        $this->onlyIntegers = true;
+
+        return $this;
+    }
+
+    /**
      * @inheritDoc
      */
     public function passes($attribute, $value): bool
     {
+        if (true === $this->onlyIntegers) {
+            return is_int($value);
+        }
+
         return is_int($value) || is_float($value);
     }
 
@@ -39,6 +58,8 @@ class JsonNumber implements Rule
      */
     public function message(): string
     {
-        return  trans(JsonApiValidation::translationKeyForRule($this));
+        $key = $this->onlyIntegers ? 'json_integer' : 'json_number';
+
+        return  trans(JsonApiValidation::qualifyTranslationKey($key));
     }
 }

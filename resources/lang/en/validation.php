@@ -100,6 +100,8 @@ return [
 
     'json_boolean' => 'The :attribute field must be a boolean.',
 
+    'json_integer' => 'The :attribute field must be an integer.',
+
     'json_number' => 'The :attribute field must be a number.',
 
     'parameter_not_supported' => 'Parameter :name is not allowed.',

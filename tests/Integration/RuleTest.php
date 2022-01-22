@@ -441,6 +441,13 @@ class RuleTest extends TestCase
         $this->assertEquals(new JsonNumber(), Rule::number());
     }
 
+    public function testInteger(): void
+    {
+        $expected = (new JsonNumber())->onlyIntegers();
+
+        $this->assertEquals($expected, Rule::integer());
+    }
+
     /**
      * @return void
      */

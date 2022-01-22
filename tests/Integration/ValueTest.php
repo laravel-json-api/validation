@@ -42,12 +42,14 @@ class ValueTest extends TestCase
 
         $this->data = [
             'total' => 100,
+            'weight' => 66.5,
             'boolean' => true,
             'boolean_string' => 'true',
         ];
 
         $this->rules = [
-            'total' => [Rule::number()],
+            'total' => [Rule::integer()],
+            'weight' => [Rule::number()],
             'boolean' => [Rule::boolean()],
             'boolean_string' => [Rule::boolean()->asString()],
         ];
@@ -66,7 +68,8 @@ class ValueTest extends TestCase
     public function invalidProvider(): array
     {
         return [
-            'number' => ['total', 'foo', 'The total field must be a number.'],
+            'integer' => ['total', 5.5, 'The total field must be an integer.'],
+            'number' => ['weight', 'foo', 'The weight field must be a number.'],
             'boolean' => ['boolean', 'true', 'The boolean field must be a boolean.'],
             'boolean_string' => ['boolean_string', 'blah', 'The boolean string field must be true or false.'],
         ];

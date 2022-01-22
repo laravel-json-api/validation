@@ -62,4 +62,34 @@ class JsonNumberTest extends TestCase
         $rule = new JsonNumber();
         $this->assertSame($expected, $rule->passes('value', $value));
     }
+
+    /**
+     * @return array
+     */
+    public function integerProvider(): array
+    {
+        return [
+            'integer1' => [0],
+            'integer2' => [1],
+            'integer3' => [-1],
+            'integer4' => [-0],
+            'float' => [1.0],
+            'string' => ['1'],
+            'boolean' => [true],
+            'array' => [['foo', 'bar']],
+            'object' => [(object) ['foo' => 'bar']],
+        ];
+    }
+
+    /**
+     * @param mixed $value
+     * @return void
+     * @dataProvider integerProvider
+     */
+    public function testInteger($value): void
+    {
+        $rule = (new JsonNumber())->onlyIntegers();
+
+        $this->assertSame(is_int($value), $rule->passes('value', $value));
+    }
 }

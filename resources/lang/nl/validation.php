@@ -100,9 +100,11 @@ return [
 
     'date_time_iso_8601' => 'Het attribuut :attribute heeft geen geldig ISO 8601 datum/tijd formaat.',
 
-    'json_boolean' => 'Het :attribute moet een boolean zijn.',
+    'json_boolean' => 'Het veld :attribute moet een boolean zijn.',
 
-    'json_number' => 'Het :attribute moet een nummer zijn.',
+    'json_integer' => 'Het veld :attribute moet een geheel getal zijn.',
+
+    'json_number' => 'Het veld :attribute moet een nummer zijn.',
 
     'parameter_not_supported' => 'Parameter :name is niet toegestaan.',
 
