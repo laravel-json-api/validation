@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2021 Cloud Creativity Limited
+ * Copyright 2022 Cloud Creativity Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@ use LaravelJsonApi\Contracts\Serializable;
 use LaravelJsonApi\Core\Document\Error;
 use LaravelJsonApi\Core\Document\ErrorList;
 use LaravelJsonApi\Core\Responses\ErrorResponse;
+use Traversable;
 
 abstract class ErrorIterator implements IteratorAggregate, Countable, Serializable, ErrorProvider, Responsable
 {
@@ -108,7 +109,7 @@ abstract class ErrorIterator implements IteratorAggregate, Countable, Serializab
     /**
      * @inheritDoc
      */
-    public function getIterator()
+    public function getIterator(): Traversable
     {
         $failed = $this->failed();
 
@@ -148,7 +149,7 @@ abstract class ErrorIterator implements IteratorAggregate, Countable, Serializab
     /**
      * @return int
      */
-    public function count()
+    public function count(): int
     {
         return count($this->all());
     }
@@ -172,7 +173,7 @@ abstract class ErrorIterator implements IteratorAggregate, Countable, Serializab
     /**
      * @inheritDoc
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return $this->toErrors()->jsonSerialize();
     }

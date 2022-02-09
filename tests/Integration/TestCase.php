@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2021 Cloud Creativity Limited
+ * Copyright 2022 Cloud Creativity Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,12 +20,14 @@ declare(strict_types=1);
 namespace LaravelJsonApi\Validation\Tests\Integration;
 
 use Illuminate\Contracts\Validation\Factory as ValidatorFactory;
+use Illuminate\Foundation\Testing\Concerns\InteractsWithDeprecationHandling;
 use LaravelJsonApi\Validation\Factory;
 use LaravelJsonApi\Validation\ServiceProvider;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 
 class TestCase extends BaseTestCase
 {
+    use InteractsWithDeprecationHandling;
 
     /**
      * @var Factory
@@ -43,6 +45,9 @@ class TestCase extends BaseTestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        $this->withoutDeprecationHandling();
+
         $this->factory = $this->app->make(Factory::class);
         $this->validatorFactory = $this->app->make(ValidatorFactory::class);
     }

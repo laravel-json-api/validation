@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file. This project adheres to
 [Semantic Versioning](http://semver.org/) and [this changelog format](http://keepachangelog.com/).
 
+## [2.0.0] - 2022-02-09
+
+### Changed
+
+- Package now supports Laravel 9.
+- Added return types to internal methods to remove deprecation messages in PHP 8.1.
+- Minimum `laravel-json-api/core` dependency version is now `2.0`.
+
 ## [1.2.0] - 2022-02-04
 
 ### Added
