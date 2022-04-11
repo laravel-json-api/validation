@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file. This project adheres to
 [Semantic Versioning](http://semver.org/) and [this changelog format](http://keepachangelog.com/).
 
+## [2.1.0] - 2022-04-11
+
+### Added
+
+- [#8](https://github.com/laravel-json-api/validation/pull/8) Add Spanish and Brazilian Portuguese translations.
+
 ## [2.0.0] - 2022-02-09
 
 ### Changed
