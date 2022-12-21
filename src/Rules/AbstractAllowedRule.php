@@ -56,7 +56,6 @@ abstract class AbstractAllowedRule implements Rule
     {
         $values = collect($allowed)->unique()->values();
         $this->allowed = $values->combine($values);
-        $this->all = false;
     }
 
     /**
