@@ -27,7 +27,6 @@ use LaravelJsonApi\Validation\JsonApiValidation;
 
 class AllowedFieldSets implements Rule
 {
-
     /**
      * @var Collection
      */
@@ -66,7 +65,7 @@ class AllowedFieldSets implements Rule
      */
     public function __construct(iterable $allowed = [])
     {
-        $this->allowed = collect($allowed);
+        $this->allowed = Collection::make($allowed);
     }
 
     /**
@@ -117,7 +116,7 @@ class AllowedFieldSets implements Rule
     /**
      * @inheritDoc
      */
-    public function passes($attribute, $value)
+    public function passes($attribute, $value): bool
     {
         $this->value = $value;
 
@@ -125,8 +124,8 @@ class AllowedFieldSets implements Rule
             return false;
         }
 
-        return collect($value)->every(function ($value, $key) {
-            return $this->allowed($key, (string) $value);
+        return Collection::make($value)->every(function ($value, $key) {
+            return $this->allowed($key, $value);
         });
     }
 
@@ -174,10 +173,10 @@ class AllowedFieldSets implements Rule
      * Are the fields allowed for the specified resource type?
      *
      * @param string $resourceType
-     * @param string $fields
+     * @param string|null $fields
      * @return bool
      */
-    protected function allowed(string $resourceType, string $fields): bool
+    protected function allowed(string $resourceType, ?string $fields): bool
     {
         return $this->notAllowed($resourceType, $fields)->isEmpty();
     }
@@ -186,12 +185,12 @@ class AllowedFieldSets implements Rule
      * Get the invalid fields for the resource type.
      *
      * @param string $resourceType
-     * @param string $fields
+     * @param string|null $fields
      * @return Collection
      */
-    protected function notAllowed(string $resourceType, string $fields): Collection
+    protected function notAllowed(string $resourceType, ?string $fields): Collection
     {
-        $fields = collect(explode(',', $fields));
+        $fields = empty($fields) ? Collection::make() : Collection::make(explode(',', $fields));
 
         if (!$this->allowed->has($resourceType)) {
             $this->allowed[$resourceType] = $this->fieldsFor($resourceType);
@@ -199,11 +198,11 @@ class AllowedFieldSets implements Rule
 
         $allowed = $this->allowed->get($resourceType);
 
-        if (is_null($allowed)) {
-            return collect();
+        if ($allowed === null) {
+            return Collection::make();
         }
 
-        $allowed = collect(Arr::wrap($allowed));
+        $allowed = Collection::make(Arr::wrap($allowed));
 
         return $fields->reject(fn($value) => $allowed->contains($value));
     }
@@ -215,7 +214,7 @@ class AllowedFieldSets implements Rule
      */
     protected function unrecognised(): Collection
     {
-        return collect($this->value ?? [])
+        return Collection::make($this->value ?? [])
             ->keys()
             ->reject(fn(string $resourceType) => $this->isResourceType($resourceType))
             ->values();
@@ -228,7 +227,7 @@ class AllowedFieldSets implements Rule
      */
     protected function invalid(): Collection
     {
-        return collect($this->value ?? [])->map(function ($value, $key) {
+        return Collection::make($this->value ?? [])->map(function ($value, $key) {
             return $this->notAllowed($key, $value);
         })->flatMap(function (Collection $fields, $type) {
             return $fields->map(function ($field) use ($type) {
@@ -244,7 +243,7 @@ class AllowedFieldSets implements Rule
     private function fieldsFor(string $resourceType): array
     {
         if ($this->isResourceType($resourceType)) {
-            return collect($this->schemas
+            return Collection::make($this->schemas
                 ->schemaFor($resourceType)
                 ->sparseFields()
             )->all();
@@ -261,5 +260,4 @@ class AllowedFieldSets implements Rule
     {
         return $this->schemas && $this->schemas->exists($resourceType);
     }
-
 }
