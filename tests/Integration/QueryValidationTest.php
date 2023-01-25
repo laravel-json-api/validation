@@ -67,24 +67,53 @@ class QueryValidationTest extends TestCase
         $schemas->method('exists')->willReturnCallback(fn($value) => 'posts' === $value);
     }
 
-    public function testValid(): void
+    /**
+     * @return array
+     */
+    public function validProvider(): array
     {
-        $data = [
-            'fields' => [
-                'posts' => 'title,author',
+        return [
+            'all' => [
+                [
+                    'fields' => [
+                        'posts' => 'title,author',
+                    ],
+                    'filter' => [
+                        'title' => 'Hello*',
+                    ],
+                    'include' => 'author',
+                    'page' => [
+                        'number' => '1',
+                        'size' => '25',
+                    ],
+                    'sort' => 'title,createdAt',
+                    'withCount' => 'comments,tags',
+                ],
             ],
-            'filter' => [
-                'title' => 'Hello*',
+            'fields:null' => [
+                [
+                    'fields' => [
+                        'posts' => null,
+                    ],
+                ],
             ],
-            'include' => 'author',
-            'page' => [
-                'number' => '1',
-                'size' => '25',
+            'fields:empty' => [
+                [
+                    'fields' => [
+                        'posts' => '',
+                    ],
+                ],
             ],
-            'sort' => 'title,createdAt',
-            'withCount' => 'comments,tags',
         ];
+    }
 
+    /**
+     * @param array $data
+     * @return void
+     * @dataProvider validProvider
+     */
+    public function testValid(array $data): void
+    {
         $validator = $this->validatorFactory->make($data, [
             'fields' => [
                 'nullable',
