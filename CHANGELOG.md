@@ -9,7 +9,7 @@ All notable changes to this project will be documented in this file. This projec
 
 - Upgraded to Laravel 10 and set minimum PHP version to `8.1`.
 
-## [2.1.2] - 2023-01-24
+## [2.1.2] - 2023-01-25
 
 ### Fixed
 
