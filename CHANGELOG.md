@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. This project adheres to
 [Semantic Versioning](http://semver.org/) and [this changelog format](http://keepachangelog.com/).
 
+## [2.1.2] - 2023-01-24
+
+### Fixed
+
+- [laravel#225](https://github.com/laravel-json-api/laravel/issues/225) Fix `AllowedFieldSets` validation of an empty
+  value (empty string or `null`) for a resource type's fields.
+
 ## [2.1.1] - 2023-01-15
 
 ### Fixed
