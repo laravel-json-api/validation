@@ -147,10 +147,10 @@ abstract class AbstractAllowedRule implements Rule
     /**
      * Is the parameter allowed?
      *
-     * @param string $param
+     * @param mixed $param
      * @return bool
      */
-    protected function allowed(string $param): bool
+    protected function allowed(mixed $param): bool
     {
         return $this->allowed->has($param);
     }
