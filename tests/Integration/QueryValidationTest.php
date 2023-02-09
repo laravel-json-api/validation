@@ -104,6 +104,21 @@ class QueryValidationTest extends TestCase
                     ],
                 ],
             ],
+            'include:empty' => [
+                [
+                    'include' => '',
+                ],
+            ],
+            'sort:empty' => [
+                [
+                    'sort' => '',
+                ],
+            ],
+            'withCount:empty' => [
+                [
+                    'withCount' => '',
+                ],
+            ],
         ];
     }
 
