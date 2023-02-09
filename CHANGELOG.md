@@ -3,7 +3,7 @@
 All notable changes to this project will be documented in this file. This project adheres to
 [Semantic Versioning](http://semver.org/) and [this changelog format](http://keepachangelog.com/).
 
-## Unreleased
+## [2.1.3] - 2023-02-09
 
 ### Fixed
 
@@ -11,7 +11,7 @@ All notable changes to this project will be documented in this file. This projec
     - `AllowedFieldSets`
     - `AllowedPageParameters`
     - `AllowedFilterParameters`
-- The `AllowedCountableFields` rule now passes an empty string.
+- The `AllowedCountableFields` rule now correctly passes an empty string.
 
 ## [2.1.2] - 2023-01-25
 
