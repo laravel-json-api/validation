@@ -9,6 +9,16 @@ All notable changes to this project will be documented in this file. This projec
 
 - Upgraded to Laravel 10 and set minimum PHP version to `8.1`.
 
+## [2.1.3] - 2023-02-09
+
+### Fixed
+
+- The following rules all previously errored if a non-array value was provided. This is now fixed:
+    - `AllowedFieldSets`
+    - `AllowedPageParameters`
+    - `AllowedFilterParameters`
+- The `AllowedCountableFields` rule now correctly passes an empty string.
+
 ## [2.1.2] - 2023-01-25
 
 ### Fixed

@@ -37,13 +37,13 @@ class ValidatorErrorIteratorTest extends TestCase
 
         $this->assertSame([
             [
-                'detail' => 'The foo must be at least 4 characters.',
+                'detail' => 'The foo field must be at least 4 characters.',
                 'source' => ['pointer' => '/foo'],
                 'status' => '422',
                 'title' => 'Unprocessable Entity',
             ],
             [
-                'detail' => 'The baz must be an integer.',
+                'detail' => 'The baz field must be an integer.',
                 'source' => ['pointer' => '/baz'],
                 'status' => '422',
                 'title' => 'Unprocessable Entity',
@@ -84,13 +84,13 @@ class ValidatorErrorIteratorTest extends TestCase
 
         $this->assertSame([
             [
-                'detail' => 'The foo must be at least 4 characters.',
+                'detail' => 'The foo field must be at least 4 characters.',
                 'source' => ['pointer' => "{$expected}/foo"],
                 'status' => '422',
                 'title' => 'Unprocessable Entity',
             ],
             [
-                'detail' => 'The baz must be an integer.',
+                'detail' => 'The baz field must be an integer.',
                 'source' => ['pointer' => "{$expected}/baz"],
                 'status' => '422',
                 'title' => 'Unprocessable Entity',

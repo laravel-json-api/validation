@@ -118,11 +118,8 @@ class AllowedFieldSets implements Rule
      */
     public function passes($attribute, $value): bool
     {
+        $value = is_array($value) ? $value : [];
         $this->value = $value;
-
-        if (!is_array($value)) {
-            return false;
-        }
 
         return Collection::make($value)->every(function ($value, $key) {
             return $this->allowed($key, $value);

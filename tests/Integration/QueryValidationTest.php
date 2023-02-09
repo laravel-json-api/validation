@@ -104,6 +104,21 @@ class QueryValidationTest extends TestCase
                     ],
                 ],
             ],
+            'include:empty' => [
+                [
+                    'include' => '',
+                ],
+            ],
+            'sort:empty' => [
+                [
+                    'sort' => '',
+                ],
+            ],
+            'withCount:empty' => [
+                [
+                    'withCount' => '',
+                ],
+            ],
         ];
     }
 
@@ -156,6 +171,13 @@ class QueryValidationTest extends TestCase
     public function invalidProvider(): array
     {
         return [
+            'fields:not array' => [
+                'fields',
+                'blah',
+                'The fields field must be an array.',
+                'fields',
+                ['rule' => 'array'],
+            ],
             'fields:singular' => [
                 'fields',
                 ['posts' => 'title,content'],
@@ -184,6 +206,13 @@ class QueryValidationTest extends TestCase
                 'fields',
                 ['rule' => 'allowed-field-sets'],
             ],
+            'filter:not array' => [
+                'filter',
+                'blah',
+                'The filter field must be an array.',
+                'filter',
+                ['rule' => 'array'],
+            ],
             'filter:singular' => [
                 'filter',
                 ['foo' => 'bar'],
@@ -197,6 +226,13 @@ class QueryValidationTest extends TestCase
                 'Filter parameters baz, foo are not allowed.',
                 'filter',
                 ['rule' => 'allowed-filter-parameters'],
+            ],
+            'include:not string' => [
+                'include',
+                ['foo' => 'bar'],
+                'The include field must be a string.',
+                'include',
+                ['rule' => 'string'],
             ],
             'include:singular' => [
                 'include',
@@ -212,6 +248,13 @@ class QueryValidationTest extends TestCase
                 'include',
                 ['rule' => 'allowed-include-paths'],
             ],
+            'page:not array' => [
+                'page',
+                'blah',
+                'The page field must be an array.',
+                'page',
+                ['rule' => 'array'],
+            ],
             'page:singular' => [
                 'page',
                 ['number' => '1', 'size' => '25', 'foo' => 'bar'],
@@ -226,6 +269,13 @@ class QueryValidationTest extends TestCase
                 'page',
                 ['rule' => 'allowed-page-parameters'],
             ],
+            'sort:not string' => [
+                'sort',
+                ['foo' => 'bar'],
+                'The sort field must be a string.',
+                'sort',
+                ['rule' => 'string'],
+            ],
             'sort:singular' => [
                 'sort',
                 'title,createdAt,foo',
@@ -239,6 +289,13 @@ class QueryValidationTest extends TestCase
                 'Sort parameters bar, foo are not allowed.',
                 'sort',
                 ['rule' => 'allowed-sort-parameters'],
+            ],
+            'withCount:not string' => [
+                'withCount',
+                ['foo' => 'bar'],
+                'The with count field must be a string.',
+                'withCount',
+                ['rule' => 'string'],
             ],
             'withCount:singular' => [
                 'withCount',

@@ -22,7 +22,6 @@ namespace LaravelJsonApi\Validation\Rules;
 use Illuminate\Support\Collection;
 use LaravelJsonApi\Contracts\Schema\Filter;
 use LaravelJsonApi\Contracts\Schema\Schema;
-use function collect;
 
 class AllowedFilterParameters extends AbstractAllowedRule
 {
@@ -44,7 +43,7 @@ class AllowedFilterParameters extends AbstractAllowedRule
      */
     public static function forFilters(Filter ...$filters): self
     {
-        return new self(collect($filters)->map(
+        return new self(Collection::make($filters)->map(
             fn(Filter $filter) => $filter->key()
         ));
     }
@@ -54,7 +53,8 @@ class AllowedFilterParameters extends AbstractAllowedRule
      */
     protected function extract($value): Collection
     {
-        return collect($value)->keys();
-    }
+        $value = is_array($value) ? $value : [];
 
+        return Collection::make($value)->keys();
+    }
 }
