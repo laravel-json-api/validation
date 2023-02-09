@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file. This project adheres to
 [Semantic Versioning](http://semver.org/) and [this changelog format](http://keepachangelog.com/).
 
+## Unreleased
+
+### Fixed
+
+- The following rules all previously errored if a non-array value was provided. This is now fixed:
+    - `AllowedFieldSets`
+    - `AllowedPageParameters`
+    - `AllowedFilterParameters`
+- The `AllowedCountableFields` rule now passes an empty string.
+
 ## [2.1.2] - 2023-01-25
 
 ### Fixed

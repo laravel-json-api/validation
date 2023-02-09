@@ -69,8 +69,8 @@ class AllowedCountableFields extends AbstractAllowedRule
      */
     protected function extract($value): Collection
     {
-        $paths = is_string($value) ? explode(',', $value) : [];
+        $paths = (is_string($value) && !empty($value)) ? explode(',', $value) : [];
 
-        return collect($paths);
+        return new Collection($paths);
     }
 }

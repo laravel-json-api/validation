@@ -45,7 +45,8 @@ class AllowedPageParameters extends AbstractAllowedRule
      */
     protected function extract($value): Collection
     {
-        return collect($value)->keys();
-    }
+        $value = is_array($value) ? $value : [];
 
+        return Collection::make($value)->keys();
+    }
 }
