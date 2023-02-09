@@ -33,8 +33,15 @@ class AllowedCountableFieldsTest extends TestCase
     {
         $rule = new AllowedCountableFields(['comments', 'tags']);
 
-        $this->assertTrue($rule->passes('include', 'comments,tags'));
-        $this->assertFalse($rule->passes('include', 'comments,baz'));
+        $this->assertTrue($rule->passes('withCount', 'comments,tags'));
+        $this->assertFalse($rule->passes('withCount', 'comments,baz'));
+    }
+
+    public function testWithEmptyString(): void
+    {
+        $rule = new AllowedCountableFields(['comments', 'tags']);
+
+        $this->assertTrue($rule->passes('withCount', ''));
     }
 
     public function testWithMethods(): void
@@ -43,8 +50,8 @@ class AllowedCountableFieldsTest extends TestCase
             ->allow('comments', 'tags', 'foobar')
             ->forget('foobar');
 
-        $this->assertTrue($rule->passes('include', 'comments,tags'));
-        $this->assertFalse($rule->passes('include', 'comments,foobar'));
+        $this->assertTrue($rule->passes('withCount', 'comments,tags'));
+        $this->assertFalse($rule->passes('withCount', 'comments,foobar'));
     }
 
     public function testSchema(): void

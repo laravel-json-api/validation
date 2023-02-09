@@ -41,9 +41,9 @@ class AllowedSortParameters extends AbstractAllowedRule
      */
     protected function extract($value): Collection
     {
-        $params = is_string($value) ? explode(',', $value) : [];
+        $params = (is_string($value) && !empty($value)) ? explode(',', $value) : [];
 
-        return collect($params)->map(function ($param) {
+        return Collection::make($params)->map(function ($param) {
             return ltrim($param, '+-');
         })->unique()->values();
     }

@@ -23,11 +23,9 @@ use Illuminate\Support\Collection;
 use LaravelJsonApi\Contracts\Schema\Container;
 use LaravelJsonApi\Contracts\Schema\Relation;
 use LaravelJsonApi\Contracts\Schema\Schema;
-use function collect;
 
 class AllowedIncludePaths extends AbstractAllowedRule
 {
-
     /**
      * Create an allowed include path rule for the supplied schema.
      *
@@ -48,8 +46,10 @@ class AllowedIncludePaths extends AbstractAllowedRule
      */
     public static function morphMany(Container $schemas, Relation $relation): self
     {
-        $paths = collect($relation->allInverse())
-            ->map(fn(string $resourceType) => collect($schemas->schemaFor($resourceType)->includePaths()))
+        $paths = Collection::make($relation->allInverse())
+            ->map(static fn(string $resourceType) => Collection::make(
+                $schemas->schemaFor($resourceType)->includePaths(),
+            ))
             ->flatten();
 
         return new self($paths);
@@ -60,9 +60,9 @@ class AllowedIncludePaths extends AbstractAllowedRule
      */
     protected function extract($value): Collection
     {
-        $paths = is_string($value) ? explode(',', $value) : [];
+        $paths = (is_string($value) && !empty($value)) ? explode(',', $value) : [];
 
-        return collect($paths);
+        return new Collection($paths);
     }
 
 }
