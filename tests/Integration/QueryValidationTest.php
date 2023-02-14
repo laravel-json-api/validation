@@ -174,7 +174,7 @@ class QueryValidationTest extends TestCase
             'fields:not array' => [
                 'fields',
                 'blah',
-                'The fields must be an array.',
+                'The fields field must be an array.',
                 'fields',
                 ['rule' => 'array'],
             ],
@@ -209,7 +209,7 @@ class QueryValidationTest extends TestCase
             'filter:not array' => [
                 'filter',
                 'blah',
-                'The filter must be an array.',
+                'The filter field must be an array.',
                 'filter',
                 ['rule' => 'array'],
             ],
@@ -230,7 +230,7 @@ class QueryValidationTest extends TestCase
             'include:not string' => [
                 'include',
                 ['foo' => 'bar'],
-                'The include must be a string.',
+                'The include field must be a string.',
                 'include',
                 ['rule' => 'string'],
             ],
@@ -251,7 +251,7 @@ class QueryValidationTest extends TestCase
             'page:not array' => [
                 'page',
                 'blah',
-                'The page must be an array.',
+                'The page field must be an array.',
                 'page',
                 ['rule' => 'array'],
             ],
@@ -272,7 +272,7 @@ class QueryValidationTest extends TestCase
             'sort:not string' => [
                 'sort',
                 ['foo' => 'bar'],
-                'The sort must be a string.',
+                'The sort field must be a string.',
                 'sort',
                 ['rule' => 'string'],
             ],
@@ -293,7 +293,7 @@ class QueryValidationTest extends TestCase
             'withCount:not string' => [
                 'withCount',
                 ['foo' => 'bar'],
-                'The with count must be a string.',
+                'The with count field must be a string.',
                 'withCount',
                 ['rule' => 'string'],
             ],

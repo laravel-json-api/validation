@@ -106,7 +106,7 @@ class ResourceValidationTest extends TestCase
             [
                 'title',
                 'HW',
-                'The title must be at least 3 characters.',
+                'The title field must be at least 3 characters.',
                 '/data/attributes/title',
                 ['rule' => 'min', 'options' => ['3']],
             ],
