@@ -35,13 +35,34 @@ class AllowedFilterParametersTest extends TestCase
         $this->assertFalse($rule->passes('filter', ['foo' => 'foobar', 'baz' => 'bazbat']));
     }
 
-    public function testWithMethods(): void
+    public function testAllowAndForget(): void
     {
-        $rule = (new AllowedFilterParameters())
-            ->allow('foo', 'bar', 'id')
+        $rule = (new AllowedFilterParameters(['id', 'foobar', 'bazbat']))
+            ->allow('foo', 'bar')
             ->forget('id');
 
-        $this->assertTrue($rule->passes('filter', ['foo' => 'foobar', 'bar' => 'bazbat']));
+        $this->assertTrue($rule->passes('filter', [
+            'foo' => 'foobar',
+            'bar' => 'bazbat',
+            'foobar' => 'blah',
+            'bazbat' => 'blah',
+        ]));
+        $this->assertFalse($rule->passes('filter', ['foo' => 'foobar', 'baz' => 'bazbat']));
+        $this->assertFalse($rule->passes('filter', ['id' => '1']));
+    }
+
+    public function testForgetAndAllow(): void
+    {
+        $rule = (new AllowedFilterParameters(['id', 'foobar', 'bazbat']))
+            ->forget('id')
+            ->allow('foo', 'bar');
+
+        $this->assertTrue($rule->passes('filter', [
+            'foo' => 'foobar',
+            'bar' => 'bazbat',
+            'foobar' => 'blah',
+            'bazbat' => 'blah',
+        ]));
         $this->assertFalse($rule->passes('filter', ['foo' => 'foobar', 'baz' => 'bazbat']));
         $this->assertFalse($rule->passes('filter', ['id' => '1']));
     }
