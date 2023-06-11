@@ -49,5 +49,13 @@ class ServiceProvider extends BaseServiceProvider
     public function register(): void
     {
         $this->app->singleton(Translator::class);
+        $this->app->bind(
+            \LaravelJsonApi\Contracts\Validation\ResourceErrorFactory::class,
+            ResourceErrorFactory::class,
+        );
+        $this->app->bind(
+            \LaravelJsonApi\Contracts\Validation\QueryErrorFactory::class,
+            QueryErrorFactory::class,
+        );
     }
 }

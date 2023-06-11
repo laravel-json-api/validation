@@ -22,6 +22,9 @@ namespace LaravelJsonApi\Validation;
 use Illuminate\Contracts\Validation\Validator;
 use LaravelJsonApi\Contracts\Schema\Schema;
 
+/**
+ * @deprecated 4.0
+ */
 class Factory
 {
 
