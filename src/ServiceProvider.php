@@ -57,5 +57,9 @@ class ServiceProvider extends BaseServiceProvider
             \LaravelJsonApi\Contracts\Validation\QueryErrorFactory::class,
             QueryErrorFactory::class,
         );
+        $this->app->bind(
+            \LaravelJsonApi\Contracts\Validation\DestroyErrorFactory::class,
+            DestroyErrorFactory::class,
+        );
     }
 }
