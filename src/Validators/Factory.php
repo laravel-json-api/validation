@@ -19,16 +19,16 @@ declare(strict_types=1);
 
 namespace LaravelJsonApi\Validation\Validators;
 
+use Illuminate\Contracts\Validation\Factory as ValidatorFactory;
 use LaravelJsonApi\Contracts\Schema\Schema;
 use LaravelJsonApi\Contracts\Server\Server;
 use LaravelJsonApi\Contracts\Validation\Factory as FactoryContract;
-use LaravelJsonApi\Contracts\Validation\QueryManyValidator;
-use LaravelJsonApi\Contracts\Validation\QueryOneValidator;
-use Illuminate\Contracts\Validation\Factory as ValidatorFactory;
 use LaravelJsonApi\Validation\Extractors\CreationExtractor;
 use LaravelJsonApi\Validation\Extractors\DeleteExtractor;
 use LaravelJsonApi\Validation\Extractors\RelationshipExtractor;
 use LaravelJsonApi\Validation\Extractors\UpdateExtractor;
+use LaravelJsonApi\Validation\QueryRules;
+use LaravelJsonApi\Validation\ValidatedQuery;
 use LaravelJsonApi\Validation\ValidatedSchema;
 
 class Factory implements FactoryContract
@@ -50,17 +50,37 @@ class Factory implements FactoryContract
     /**
      * @inheritDoc
      */
-    public function queryMany(): QueryManyValidator
+    public function queryOne(): QueryOneValidator
     {
-        // TODO: Implement queryMany() method.
+        $relation = null; // @TODO
+
+        return new QueryOneValidator(
+            $this->validatorFactory,
+            new ValidatedQuery($this->schema->query(), $relation),
+            new QueryRules(
+                $this->server->schemas(),
+                $this->schema,
+                $relation,
+            ),
+        );
     }
 
     /**
      * @inheritDoc
      */
-    public function queryOne(): QueryOneValidator
+    public function queryMany(): QueryManyValidator
     {
-        // TODO: Implement queryOne() method.
+        $relation = null; // @TODO
+
+        return new QueryManyValidator(
+            $this->validatorFactory,
+            new ValidatedQuery($this->schema->query(), $relation),
+            new QueryRules(
+                $this->server->schemas(),
+                $this->schema,
+                $relation,
+            ),
+        );
     }
 
     /**

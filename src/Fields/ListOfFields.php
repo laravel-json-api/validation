@@ -36,6 +36,8 @@ class ListOfFields implements IteratorAggregate
     private readonly array $fields;
 
     /**
+     * ListOfFields constructor
+     *
      * @param Field ...$fields
      */
     public function __construct(Field ...$fields)

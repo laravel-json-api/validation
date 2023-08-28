@@ -28,6 +28,11 @@ use LaravelJsonApi\Validation\Fields\ListOfFields;
 class ValidatedSchema
 {
     /**
+     * @var ListOfFields|null
+     */
+    private ?ListOfFields $fields = null;
+
+    /**
      * ValidatedSchema constructor
      *
      * @param Schema $schema
@@ -41,7 +46,11 @@ class ValidatedSchema
      */
     public function fields(): ListOfFields
     {
-        return new ListOfFields(
+        if ($this->fields) {
+            return $this->fields;
+        }
+
+        return $this->fields = new ListOfFields(
             ...$this->schema->attributes(),
             ...$this->schema->relationships(),
         );
