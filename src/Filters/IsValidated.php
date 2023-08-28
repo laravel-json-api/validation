@@ -21,6 +21,7 @@ namespace LaravelJsonApi\Validation\Filters;
 
 use Closure;
 use Illuminate\Http\Request;
+use LaravelJsonApi\Core\Query\Input\Query;
 
 interface IsValidated
 {
@@ -31,9 +32,10 @@ interface IsValidated
      * the filter not being validated.
      *
      * @param Request|null $request
+     * @param Query $query
      * @return Closure|array|null
      */
-    public function rulesForOne(?Request $request): Closure|array|null;
+    public function rulesForOne(?Request $request, Query $query): Closure|array|null;
 
     /**
      * Get validation rules for the filter when the response will contain zero-to-many resources.
@@ -42,7 +44,8 @@ interface IsValidated
      *  the filter not being validated.
      *
      * @param Request|null $request
+     * @param Query $query
      * @return Closure|array|null
      */
-    public function rulesForMany(?Request $request): Closure|array|null;
+    public function rulesForMany(?Request $request, Query $query): Closure|array|null;
 }

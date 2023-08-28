@@ -20,6 +20,7 @@ declare(strict_types=1);
 namespace LaravelJsonApi\Validation\Validators;
 
 use Illuminate\Contracts\Validation\Factory as ValidatorFactory;
+use Illuminate\Http\Request;
 use LaravelJsonApi\Contracts\Schema\Schema;
 use LaravelJsonApi\Contracts\Server\Server;
 use LaravelJsonApi\Contracts\Validation\Factory as FactoryContract;
@@ -33,6 +34,11 @@ use LaravelJsonApi\Validation\ValidatedSchema;
 
 class Factory implements FactoryContract
 {
+    /**
+     * @var Request|null
+     */
+    private ?Request $request = null;
+
     /**
      * Factory constructor
      *
@@ -50,17 +56,28 @@ class Factory implements FactoryContract
     /**
      * @inheritDoc
      */
+    public function withRequest(?Request $request): static
+    {
+        $this->request = $request;
+
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function queryOne(): QueryOneValidator
     {
-        $relation = null; // @TODO
-
         return new QueryOneValidator(
             $this->validatorFactory,
-            new ValidatedQuery($this->schema->query(), $relation),
+            new ValidatedQuery(
+                $this->server->schemas(),
+                $this->schema->query(),
+                $this->request,
+            ),
             new QueryRules(
                 $this->server->schemas(),
                 $this->schema,
-                $relation,
             ),
         );
     }
@@ -70,15 +87,16 @@ class Factory implements FactoryContract
      */
     public function queryMany(): QueryManyValidator
     {
-        $relation = null; // @TODO
-
         return new QueryManyValidator(
             $this->validatorFactory,
-            new ValidatedQuery($this->schema->query(), $relation),
+            new ValidatedQuery(
+                $this->server->schemas(),
+                $this->schema->query(),
+                $this->request,
+            ),
             new QueryRules(
                 $this->server->schemas(),
                 $this->schema,
-                $relation,
             ),
         );
     }

@@ -20,8 +20,8 @@ declare(strict_types=1);
 namespace LaravelJsonApi\Validation;
 
 use LaravelJsonApi\Contracts\Schema\Container as SchemaContainer;
-use LaravelJsonApi\Contracts\Schema\Relation;
 use LaravelJsonApi\Contracts\Schema\Schema;
+use LaravelJsonApi\Core\Query\Input\Query;
 use LaravelJsonApi\Validation\Rules\AllowedCountableFields;
 use LaravelJsonApi\Validation\Rules\AllowedFieldSets;
 use LaravelJsonApi\Validation\Rules\AllowedFilterParameters;
@@ -36,12 +36,10 @@ class QueryRules
      *
      * @param SchemaContainer $schemas
      * @param Schema $schema
-     * @param Relation|null $relation
      */
     public function __construct(
         private readonly SchemaContainer $schemas,
         private readonly Schema $schema,
-        private readonly ?Relation $relation
     ) {
     }
 
@@ -54,11 +52,19 @@ class QueryRules
     }
 
     /**
+     * @param Query $query
      * @return AllowedFilterParameters
      */
-    public function filters(): AllowedFilterParameters
+    public function filters(Query $query): AllowedFilterParameters
     {
-        $related = $this->relation?->filters() ?? [];
+        $related = [];
+
+        if ($fieldName = $query->getFieldName()) {
+            $related = $this->schemas
+                ->schemaFor($query->type)
+                ->relationship($fieldName)
+                ->filters();
+        }
 
         return AllowedFilterParameters::forFilters(
             ...$this->schema->query()->filters(),

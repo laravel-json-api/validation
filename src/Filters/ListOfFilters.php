@@ -24,6 +24,7 @@ use Generator;
 use Illuminate\Http\Request;
 use IteratorAggregate;
 use LaravelJsonApi\Contracts\Schema\Filter;
+use LaravelJsonApi\Core\Query\Input\Query;
 
 /**
  * @implements IteratorAggregate<int,Filter&IsValidated>
@@ -36,6 +37,11 @@ class ListOfFilters implements IteratorAggregate
     private readonly array $filters;
 
     /**
+     * @var Request|null
+     */
+    private ?Request $request = null;
+
+    /**
      * ListOfFilters constructor
      *
      * @param Filter ...$filters
@@ -43,6 +49,17 @@ class ListOfFilters implements IteratorAggregate
     public function __construct(Filter ...$filters)
     {
         $this->filters = $filters;
+    }
+
+    /**
+     * @param Request|null $request
+     * @return $this
+     */
+    public function withRequest(?Request $request): self
+    {
+        $this->request = $request;
+
+        return $this;
     }
 
     /**
@@ -58,45 +75,52 @@ class ListOfFilters implements IteratorAggregate
     }
 
     /**
+     * @return Filter[]
+     */
+    public function all(): array
+    {
+        return $this->filters;
+    }
+
+    /**
      * Get validation rules for querying zero-to-one resources.
      *
-     * @param Request|null $request
+     * @param Query $query
      * @return array
      */
-    public function forOne(?Request $request): array
+    public function forOne(Query $query): array
     {
         return iterator_to_array($this->cursor(
-            static fn (Filter&IsValidated $field): Closure|array|null => $field->rulesForOne($request),
-            $request,
+            static fn (Filter&IsValidated $field): Closure|array|null => $field->rulesForOne($this->request, $query),
+            $query,
         ));
     }
 
     /**
      * Get validation rules for querying zero-to-many resources.
      *
-     * @param Request|null $request
      * @return array
      */
-    public function forMany(?Request $request): array
+    public function forMany(Query $query): array
     {
         return iterator_to_array($this->cursor(
-            static fn(Filter&IsValidated $field): Closure|array|null => $field->rulesForMany($request),
-            $request,
+            static fn(Filter&IsValidated $field): Closure|array|null => $field->rulesForMany($this->request, $query),
+            $query,
         ));
     }
 
     /**
      * @param Closure(Filter&IsValidated): (Closure|array|null) $callback
-     * @param Request|null $request
+     * @param Query $query
      * @return Generator
      */
-    private function cursor(Closure $callback, ?Request $request): Generator
+    private function cursor(Closure $callback, Query $query): Generator
     {
         foreach ($this as $filter) {
             $rules = $callback($filter);
 
             if ($rules instanceof Closure) {
-                $rules = $rules($request);
+                $rules = $rules($this->request, $query);
                 assert($rules === null || is_array($rules), sprintf(
                     'Validation rules closure for filter %s must return an array or null.',
                     $filter->key(),

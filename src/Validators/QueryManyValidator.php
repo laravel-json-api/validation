@@ -21,9 +21,12 @@ namespace LaravelJsonApi\Validation\Validators;
 
 use Illuminate\Contracts\Validation\Factory as ValidatorFactory;
 use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Http\Request;
 use LaravelJsonApi\Contracts\Validation\QueryManyValidator as QueryManyValidatorContract;
 use LaravelJsonApi\Core\Query\Custom\ExtendedQueryParameters;
+use LaravelJsonApi\Core\Query\Input\Query;
+use LaravelJsonApi\Core\Query\Input\QueryMany;
+use LaravelJsonApi\Core\Query\Input\QueryRelated;
+use LaravelJsonApi\Core\Query\Input\QueryRelationship;
 use LaravelJsonApi\Validation\QueryRules;
 use LaravelJsonApi\Validation\Rules\ParameterNotSupported;
 use LaravelJsonApi\Validation\ValidatedQuery;
@@ -47,53 +50,53 @@ class QueryManyValidator implements QueryManyValidatorContract
     /**
      * @inheritDoc
      */
-    public function forRequest(Request $request): Validator
+    public function make(QueryMany|QueryRelated|QueryRelationship $query): Validator
     {
-        return $this->make($request, (array) $request->query());
-    }
+        if ($fieldName = $query->getFieldName()) {
+            $this->schema->withRelation(
+                $query->type,
+                $fieldName,
+            );
+        }
 
-    /**
-     * @inheritDoc
-     */
-    public function make(?Request $request, array $parameters): Validator
-    {
         $validator = $this->factory->make(
-            $parameters,
-            $this->rules($request),
+            $query->parameters,
+            $this->rules($query),
             $this->schema->messages(),
             $this->schema->attributes(),
         );
 
-        $this->schema->withValidator($validator, $request);
-        $this->schema->withToManyValidator($validator, $request);
+        $this->schema->withValidator($validator, $query);
+        $this->schema->withToManyValidator($validator, $query);
 
-        $validator->after(function (Validator $v) use ($request): void {
-            $this->schema->afterValidation($v, $request);
-            $this->schema->afterToManyValidation($v, $request);
+        $validator->after(function (Validator $v) use ($query): void {
+            $this->schema->afterValidation($v, $query);
+            $this->schema->afterToManyValidation($v, $query);
         });
 
         return $validator;
     }
 
     /**
-     * @param Request|null $request
+     * @param Query $query
      * @return array
      */
-    private function rules(?Request $request): array
+    private function rules(Query $query): array
     {
-        $page = $this->schema->pagination()?->rules($request) ?? [];
+        $page = $this->schema->pagination()?->rules($query) ?? [];
 
         return [
-            ...$this->defaultRules(),
-            ...$this->schema->filters()->forOne($request),
+            ...$this->defaultRules($query),
+            ...$this->schema->filters()->forOne($query),
             ...$page,
         ];
     }
 
     /**
+     * @param Query $query
      * @return array
      */
-    private function defaultRules(): array
+    private function defaultRules(Query $query): array
     {
         return [
             'fields' => [
@@ -104,7 +107,7 @@ class QueryManyValidator implements QueryManyValidatorContract
             'filter' => [
                 'nullable',
                 'array',
-                $this->rules->filters(),
+                $this->rules->filters($query),
             ],
             'include' => [
                 'nullable',

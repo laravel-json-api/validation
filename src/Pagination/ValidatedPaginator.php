@@ -22,6 +22,7 @@ namespace LaravelJsonApi\Validation\Pagination;
 use Closure;
 use Illuminate\Http\Request;
 use LaravelJsonApi\Contracts\Pagination\Paginator;
+use LaravelJsonApi\Core\Query\Input\Query;
 
 class ValidatedPaginator
 {
@@ -29,22 +30,25 @@ class ValidatedPaginator
      * ValidatedPaginator constructor
      *
      * @param Paginator $paginator
+     * @param Request|null $request
      */
-    public function __construct(private readonly Paginator $paginator)
-    {
+    public function __construct(
+        private readonly Paginator $paginator,
+        private readonly ?Request $request,
+    ) {
     }
 
     /**
      * Get validation rules for the paginator.
      *
-     * @param Request|null $request
+     * @param Query $query
      * @return array
      */
-    public function rules(?Request $request): array
+    public function rules(Query $query): array
     {
         $rules = [];
 
-        foreach ($this->validationRules($request) as $key => $value) {
+        foreach ($this->validationRules($query) as $key => $value) {
             $path = 'page.' . $key;
             $rules[$path] = $value;
         }
@@ -53,19 +57,19 @@ class ValidatedPaginator
     }
 
     /**
-     * @param Request|null $request
+     * @param Query $query
      * @return array
      */
-    private function validationRules(?Request $request): array
+    private function validationRules(Query $query): array
     {
         $rules = null;
 
         if ($this->paginator instanceof IsValidated) {
-            $rules = $this->paginator->validationRules($request) ?? [];
+            $rules = $this->paginator->validationRules($this->request, $query) ?? [];
         }
 
         if ($rules instanceof Closure) {
-            $rules = $rules($request);
+            $rules = $rules($this->request, $query);
             assert($rules === null || is_array($rules), sprintf(
                 'Validation rules closure for paginator %s must return an array or null.',
                 $this->paginator::class,

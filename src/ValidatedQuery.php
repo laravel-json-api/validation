@@ -21,18 +21,16 @@ namespace LaravelJsonApi\Validation;
 
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Request;
-use LaravelJsonApi\Contracts\Schema\Query;
+use LaravelJsonApi\Contracts\Schema\Container as SchemaContainer;
+use LaravelJsonApi\Contracts\Schema\Query as QuerySchema;
 use LaravelJsonApi\Contracts\Schema\Relation;
+use LaravelJsonApi\Core\Query\Input\Query;
+use LaravelJsonApi\Core\Values\ResourceType;
 use LaravelJsonApi\Validation\Filters\ListOfFilters;
 use LaravelJsonApi\Validation\Pagination\ValidatedPaginator;
 
 class ValidatedQuery
 {
-    /**
-     * @var ListOfFilters|null
-     */
-    private ?ListOfFilters $filters = null;
-
     /**
      * @var bool
      */
@@ -44,15 +42,34 @@ class ValidatedQuery
     private ?ValidatedPaginator $paginator = null;
 
     /**
+     * @var Relation|null
+     */
+    private ?Relation $relation = null;
+
+    /**
      * ValidatedQuery constructor
      *
-     * @param Query $schema
-     * @param Relation|null $relation
+     * @param SchemaContainer $schemas
+     * @param QuerySchema $schema
+     * @param Request|null $request
      */
     public function __construct(
-        private readonly Query $schema,
-        private readonly ?Relation $relation = null,
+        private readonly SchemaContainer $schemas,
+        private readonly QuerySchema $schema,
+        private readonly ?Request $request,
     ) {
+    }
+
+    /**
+     * @param ResourceType $type
+     * @param string $fieldName
+     * @return void
+     */
+    public function withRelation(ResourceType $type, string $fieldName): void
+    {
+        $this->relation = $this->schemas
+            ->schemaFor($type)
+            ->relationship($fieldName);
     }
 
     /**
@@ -60,16 +77,14 @@ class ValidatedQuery
      */
     public function filters(): ListOfFilters
     {
-        if ($this->filters) {
-            return $this->filters;
-        }
-
         $related = $this->relation?->filters() ?? [];
 
-        return $this->filters = new ListOfFilters(
+        $filters = new ListOfFilters(
             ...$this->schema->filters(),
             ...$related,
         );
+
+        return $filters->withRequest($this->request);
     }
 
     /**
@@ -84,7 +99,7 @@ class ValidatedQuery
         $paginator = $this->schema->pagination();
         $this->hasPaginator = true;
 
-        return $this->paginator = $paginator ? new ValidatedPaginator($paginator) : null;
+        return $this->paginator = $paginator ? new ValidatedPaginator($paginator, $this->request) : null;
     }
 
     /**
@@ -113,73 +128,73 @@ class ValidatedQuery
 
     /**
      * @param Validator $validator
-     * @param Request|null $request
+     * @param Query $query
      * @return void
      */
-    public function withValidator(Validator $validator, ?Request $request): void
+    public function withValidator(Validator $validator, Query $query): void
     {
         if (method_exists($this->schema, 'withValidator')) {
-            $this->schema->withValidator($validator, $request);
+            $this->schema->withValidator($validator, $this->request, $query);
         }
     }
 
     /**
      * @param Validator $validator
-     * @param Request|null $request
+     * @param Query $query
      * @return void
      */
-    public function withToOneValidator(Validator $validator, ?Request $request): void
+    public function withToOneValidator(Validator $validator, Query $query): void
     {
         if (method_exists($this->schema, 'withToOneValidator')) {
-            $this->schema->withToOneValidator($validator, $request);
+            $this->schema->withToOneValidator($validator, $this->request, $query);
         }
     }
 
     /**
      * @param Validator $validator
-     * @param Request|null $request
+     * @param Query $query
      * @return void
      */
-    public function withToManyValidator(Validator $validator, ?Request $request): void
+    public function withToManyValidator(Validator $validator, Query $query): void
     {
         if (method_exists($this->schema, 'withToManyValidator')) {
-            $this->schema->withToManyValidator($validator, $request);
+            $this->schema->withToManyValidator($validator, $this->request, $query);
         }
     }
 
     /**
      * @param Validator $validator
-     * @param Request|null $request
+     * @param Query $query
      * @return void
      */
-    public function afterValidation(Validator $validator, ?Request $request): void
+    public function afterValidation(Validator $validator, Query $query): void
     {
         if (method_exists($this->schema, 'afterValidation')) {
-            $this->schema->afterValidation($validator, $request);
+            $this->schema->afterValidation($validator, $this->request, $query);
         }
     }
 
     /**
      * @param Validator $validator
-     * @param Request|null $request
+     * @param Query $query
      * @return void
      */
-    public function afterToOneValidation(Validator $validator, ?Request $request): void
+    public function afterToOneValidation(Validator $validator, Query $query): void
     {
         if (method_exists($this->schema, 'afterToOneValidation')) {
-            $this->schema->afterToOneValidation($validator, $request);
+            $this->schema->afterToOneValidation($validator, $this->request, $query);
         }
     }
 
     /**
      * @param Validator $validator
-     * @param Request|null $request
+     * @param Query $query
      * @return void
      */
-    public function afterToManyValidation(Validator $validator, ?Request $request): void
+    public function afterToManyValidation(Validator $validator, Query $query): void
     {
         if (method_exists($this->schema, 'afterToManyValidation')) {
-            $this->schema->afterToManyValidation($validator, $request);
+            $this->schema->afterToManyValidation($validator, $this->request, $query);
         }
     }
 }
