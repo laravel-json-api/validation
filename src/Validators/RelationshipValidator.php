@@ -21,11 +21,11 @@ namespace LaravelJsonApi\Validation\Validators;
 
 use Illuminate\Contracts\Validation\Factory as ValidatorFactory;
 use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Http\Request;
 use LaravelJsonApi\Contracts\Validation\RelationshipValidator as RelationshipValidatorContract;
 use LaravelJsonApi\Core\Extensions\Atomic\Operations\UpdateToMany;
 use LaravelJsonApi\Core\Extensions\Atomic\Operations\UpdateToOne;
 use LaravelJsonApi\Validation\Extractors\RelationshipExtractor;
+use LaravelJsonApi\Validation\Fields\UpdateRulesParser;
 use LaravelJsonApi\Validation\ValidatedSchema;
 
 class RelationshipValidator implements RelationshipValidatorContract
@@ -36,40 +36,47 @@ class RelationshipValidator implements RelationshipValidatorContract
      * @param ValidatorFactory $factory
      * @param ValidatedSchema $schema
      * @param RelationshipExtractor $extractor
+     * @param UpdateRulesParser $parser
      */
     public function __construct(
         private readonly ValidatorFactory $factory,
         private readonly ValidatedSchema $schema,
         private readonly RelationshipExtractor $extractor,
+        private readonly UpdateRulesParser $parser,
     ){
     }
 
     /**
      * @inheritDoc
      */
-    public function extract(?Request $request, object $model, UpdateToOne|UpdateToMany $operation): array
+    public function extract(UpdateToOne|UpdateToMany $operation, object $model): array
     {
-        return $this->extractor->extract($model, $operation);
+        return $this->extractor->extract($operation, $model);
     }
 
     /**
      * @inheritDoc
      */
-    public function make(?Request $request, object $model, UpdateToOne|UpdateToMany $operation): Validator
+    public function make(UpdateToOne|UpdateToMany $operation, object $model): Validator
     {
         $fieldName = $operation->getFieldName();
+        $rules = $this->parser->parse([
+            $this->schema->relationship($fieldName),
+        ]);
+
+        assert(!empty($rules), 'Expecting validation rules for relationship ' . $fieldName);
 
         $validator = $this->factory->make(
-            $this->extract($request, $model, $operation),
-            $this->schema->fields()->forRelation($request, $model, $fieldName),
+            $this->extract($operation, $model),
+            $rules,
             $this->schema->messages(),
             $this->schema->attributes(),
         );
 
-        $this->schema->withRelationshipValidator($validator, $request, $model, $fieldName);
+        $this->schema->withRelationshipValidator($validator, $operation, $model);
 
-        $validator->after(function (Validator $v) use ($request, $model, $fieldName): void {
-            $this->schema->afterRelationshipValidator($v, $request, $model, $fieldName);
+        $validator->after(function (Validator $v) use ($operation, $model): void {
+            $this->schema->afterRelationshipValidator($v, $operation, $model);
         });
 
         return $validator;

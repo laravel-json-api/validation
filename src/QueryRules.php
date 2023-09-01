@@ -58,15 +58,25 @@ class QueryRules
     public function filters(Query $query): AllowedFilterParameters
     {
         $related = [];
+        $isOne = $query->isOne();
 
         if ($fieldName = $query->getFieldName()) {
-            $related = $this->schemas
+            $relation = $this->schemas
                 ->schemaFor($query->type)
-                ->relationship($fieldName)
-                ->filters();
+                ->relationship($fieldName);
+
+            $related = $relation->filters();
+            $isOne = $relation->toOne();
         }
 
-        return AllowedFilterParameters::forFilters(
+        if ($isOne) {
+            return AllowedFilterParameters::forOne(
+                ...$this->schema->query()->filters(),
+                ...$related,
+            );
+        }
+
+        return AllowedFilterParameters::forMany(
             ...$this->schema->query()->filters(),
             ...$related,
         );

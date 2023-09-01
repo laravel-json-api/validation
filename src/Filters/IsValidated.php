@@ -26,7 +26,7 @@ use LaravelJsonApi\Core\Query\Input\Query;
 interface IsValidated
 {
     /**
-     * Get validation rules for the filter when the response will contain zero-to-one resources.
+     * Get validation rules for the filter.
      *
      * If the method returns an empty array or null, this MUST be interpreted as
      * the filter not being validated.
@@ -35,17 +35,19 @@ interface IsValidated
      * @param Query $query
      * @return Closure|array|null
      */
-    public function rulesForOne(?Request $request, Query $query): Closure|array|null;
+    public function validationRules(?Request $request, Query $query): Closure|array|null;
 
     /**
-     * Get validation rules for the filter when the response will contain zero-to-many resources.
+     * Is the filter validated when a query will return zero-to-one resources?
      *
-     *  If the method returns an empty array or null, this MUST be interpreted as
-     *  the filter not being validated.
-     *
-     * @param Request|null $request
-     * @param Query $query
-     * @return Closure|array|null
+     * @return bool
      */
-    public function rulesForMany(?Request $request, Query $query): Closure|array|null;
+    public function isValidatedForOne(): bool;
+
+    /**
+     * Is the filter validated when a query will return zero-to-many resources?
+     *
+     * @return bool
+     */
+    public function isValidatedForMany(): bool;
 }

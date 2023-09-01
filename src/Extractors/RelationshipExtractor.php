@@ -39,11 +39,11 @@ class RelationshipExtractor
     }
 
     /**
-     * @param object $model
      * @param UpdateToOne|UpdateToMany $operation
+     * @param object $model
      * @return array
      */
-    public function extract(object $model, UpdateToOne|UpdateToMany $operation): array
+    public function extract(UpdateToOne|UpdateToMany $operation, object $model): array
     {
         $type = ResourceType::cast($this->schema->type());
 

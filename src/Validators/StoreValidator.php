@@ -21,10 +21,10 @@ namespace LaravelJsonApi\Validation\Validators;
 
 use Illuminate\Contracts\Validation\Factory as ValidatorFactory;
 use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Http\Request;
 use LaravelJsonApi\Contracts\Validation\StoreValidator as StoreValidatorContract;
 use LaravelJsonApi\Core\Extensions\Atomic\Operations\Create;
 use LaravelJsonApi\Validation\Extractors\CreationExtractor;
+use LaravelJsonApi\Validation\Fields\CreationRulesParser;
 use LaravelJsonApi\Validation\ValidatedSchema;
 
 class StoreValidator implements StoreValidatorContract
@@ -35,18 +35,20 @@ class StoreValidator implements StoreValidatorContract
      * @param ValidatorFactory $factory
      * @param ValidatedSchema $schema
      * @param CreationExtractor $extractor
+     * @param CreationRulesParser $parser
      */
     public function __construct(
         private readonly ValidatorFactory $factory,
         private readonly ValidatedSchema $schema,
         private readonly CreationExtractor $extractor,
+        private readonly CreationRulesParser $parser,
     ) {
     }
 
     /**
      * @inheritDoc
      */
-    public function extract(?Request $request, Create $operation): array
+    public function extract(Create $operation): array
     {
         return $this->extractor->extract($operation);
     }
@@ -54,21 +56,21 @@ class StoreValidator implements StoreValidatorContract
     /**
      * @inheritDoc
      */
-    public function make(?Request $request, Create $operation): Validator
+    public function make(Create $operation): Validator
     {
         $validator = $this->factory->make(
-            $this->extract($request, $operation),
-            $this->schema->fields()->forCreate($request),
+            $this->extract($operation),
+            $this->parser->parse($this->schema->fields()),
             $this->schema->messages(),
             $this->schema->attributes(),
         );
 
-        $this->schema->withValidator($validator, $request);
-        $this->schema->withCreationValidator($validator, $request);
+        $this->schema->withValidator($validator, $operation);
+        $this->schema->withCreationValidator($validator, $operation);
 
-        $validator->after(function (Validator $v) use ($request): void {
-            $this->schema->afterValidation($v, $request);
-            $this->schema->afterCreationValidation($v, $request);
+        $validator->after(function (Validator $v) use ($operation): void {
+            $this->schema->afterValidation($v, $operation);
+            $this->schema->afterCreationValidation($v, $operation);
         });
 
         return $validator;

@@ -21,10 +21,10 @@ namespace LaravelJsonApi\Validation\Validators;
 
 use Illuminate\Contracts\Validation\Factory as ValidatorFactory;
 use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Http\Request;
 use LaravelJsonApi\Contracts\Validation\UpdateValidator as UpdateValidatorContract;
 use LaravelJsonApi\Core\Extensions\Atomic\Operations\Update;
 use LaravelJsonApi\Validation\Extractors\UpdateExtractor;
+use LaravelJsonApi\Validation\Fields\UpdateRulesParser;
 use LaravelJsonApi\Validation\ValidatedSchema;
 
 class UpdateValidator implements UpdateValidatorContract
@@ -35,40 +35,42 @@ class UpdateValidator implements UpdateValidatorContract
      * @param ValidatorFactory $factory
      * @param ValidatedSchema $schema
      * @param UpdateExtractor $extractor
+     * @param UpdateRulesParser $parser
      */
     public function __construct(
         private readonly ValidatorFactory $factory,
         private readonly ValidatedSchema $schema,
         private readonly UpdateExtractor $extractor,
+        private readonly UpdateRulesParser $parser,
     ) {
     }
 
     /**
      * @inheritDoc
      */
-    public function extract(?Request $request, object $model, Update $operation): array
+    public function extract(Update $operation, object $model): array
     {
-        return $this->extractor->extract($request, $model, $operation);
+        return $this->extractor->extract($operation, $model);
     }
 
     /**
      * @inheritDoc
      */
-    public function make(?Request $request, object $model, Update $operation): Validator
+    public function make(Update $operation, object $model): Validator
     {
         $validator = $this->factory->make(
-            $this->extract($request, $model, $operation),
-            $this->schema->fields()->forUpdate($request, $model),
+            $this->extract($operation, $model),
+            $this->parser->parse($this->schema->fields()),
             $this->schema->messages(),
             $this->schema->attributes(),
         );
 
-        $this->schema->withValidator($validator, $request);
-        $this->schema->withUpdateValidator($validator, $request, $model);
+        $this->schema->withValidator($validator, $operation);
+        $this->schema->withUpdateValidator($validator, $operation, $model);
 
-        $validator->after(function (Validator $v) use ($request, $model): void {
-            $this->schema->afterValidation($v, $request);
-            $this->schema->afterUpdateValidation($v, $request, $model);
+        $validator->after(function (Validator $v) use ($operation, $model): void {
+            $this->schema->afterValidation($v, $operation);
+            $this->schema->afterUpdateValidation($v, $operation, $model);
         });
 
         return $validator;

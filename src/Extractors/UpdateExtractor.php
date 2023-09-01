@@ -35,24 +35,25 @@ class UpdateExtractor
      *
      * @param Schema $schema
      * @param Encoder $encoder
+     * @param Request|null $request
      */
     public function __construct(
         private readonly Schema $schema,
         private readonly Encoder $encoder,
+        private readonly Request|null $request,
     ) {
     }
 
     /**
      * Extract data to validate.
      *
-     * @param Request|null $request
-     * @param object $model
      * @param Update $operation
+     * @param object $model
      * @return array
      */
-    public function extract(?Request $request, object $model, Update $operation): array
+    public function extract(Update $operation, object $model): array
     {
-        $existing = $this->existing($request, $model);
+        $existing = $this->existing($model);
         $input = $operation->data->toArray();
 
         return ResourceObject::fromArray($existing)
@@ -61,14 +62,13 @@ class UpdateExtractor
     }
 
     /**
-     * @param Request|null $request
      * @param object $model
      * @return array
      */
-    public function existing(?Request $request, object $model): array
+    public function existing(object $model): array
     {
         $values = $this->encoder
-            ->withRequest($request)
+            ->withRequest($this->request)
             ->withIncludePaths($this->includePaths())
             ->withResource($model)
             ->toArray()['data'];

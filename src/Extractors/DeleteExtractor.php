@@ -30,26 +30,27 @@ class DeleteExtractor
      *
      * @param Schema $schema
      * @param UpdateExtractor $updateExtractor
+     * @param Request|null $request
      */
     public function __construct(
         private readonly Schema $schema,
         private readonly UpdateExtractor $updateExtractor,
+        private readonly Request|null $request,
     ) {
     }
 
     /**
-     * @param Request|null $request
      * @param object $model
      * @return array
      */
-    public function extract(?Request $request, object $model): array
+    public function extract(object $model): array
     {
-        $resource = $this->updateExtractor->existing($request, $model);
+        $resource = $this->updateExtractor->existing($model);
         $fields = ResourceObject::fromArray($resource)->all();
         $meta = [];
 
         if (method_exists($this->schema, 'metaForDelete')) {
-            $meta = (array) $this->schema->metaForDelete($request, $model);
+            $meta = (array) $this->schema->metaForDelete($this->request, $model);
         }
 
         $fields['meta'] = array_merge(

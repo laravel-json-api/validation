@@ -28,6 +28,7 @@ use LaravelJsonApi\Core\Query\Input\QueryOne;
 use LaravelJsonApi\Core\Query\Input\QueryRelated;
 use LaravelJsonApi\Core\Query\Input\QueryRelationship;
 use LaravelJsonApi\Core\Query\Input\WillQueryOne;
+use LaravelJsonApi\Validation\Filters\QueryOneParser;
 use LaravelJsonApi\Validation\QueryRules;
 use LaravelJsonApi\Validation\Rules\ParameterNotSupported;
 use LaravelJsonApi\Validation\ValidatedQuery;
@@ -39,11 +40,13 @@ class QueryOneValidator implements QueryOneValidatorContract
      *
      * @param ValidatorFactory $factory
      * @param ValidatedQuery $schema
+     * @param QueryOneParser $filterParser
      * @param QueryRules $rules
      */
     public function __construct(
         private readonly ValidatorFactory $factory,
         private readonly ValidatedQuery $schema,
+        private readonly QueryOneParser $filterParser,
         private readonly QueryRules $rules,
     ) {
     }
@@ -86,7 +89,7 @@ class QueryOneValidator implements QueryOneValidatorContract
     {
         return [
             ...$this->defaultRules($query),
-            ...$this->schema->filters()->forOne($query),
+            ...$this->filterParser->parse($this->schema->filters()),
         ];
     }
 

@@ -19,41 +19,46 @@ declare(strict_types=1);
 
 namespace LaravelJsonApi\Validation;
 
+use Generator;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Request;
+use LaravelJsonApi\Contracts\Schema\Relation;
 use LaravelJsonApi\Contracts\Schema\Schema;
+use LaravelJsonApi\Core\Extensions\Atomic\Operations\Create;
+use LaravelJsonApi\Core\Extensions\Atomic\Operations\Delete;
+use LaravelJsonApi\Core\Extensions\Atomic\Operations\Update;
+use LaravelJsonApi\Core\Extensions\Atomic\Operations\UpdateToMany;
+use LaravelJsonApi\Core\Extensions\Atomic\Operations\UpdateToOne;
 use LaravelJsonApi\Core\Support\Str;
-use LaravelJsonApi\Validation\Fields\ListOfFields;
 
 class ValidatedSchema
 {
     /**
-     * @var ListOfFields|null
-     */
-    private ?ListOfFields $fields = null;
-
-    /**
      * ValidatedSchema constructor
      *
      * @param Schema $schema
+     * @param Request|null $request
      */
-    public function __construct(private readonly Schema $schema)
+    public function __construct(private readonly Schema $schema, private readonly Request|null $request)
     {
     }
 
     /**
-     * @return ListOfFields
+     * @return Generator
      */
-    public function fields(): ListOfFields
+    public function fields(): Generator
     {
-        if ($this->fields) {
-            return $this->fields;
-        }
+        yield from $this->schema->attributes();
+        yield from $this->schema->relationships();
+    }
 
-        return $this->fields = new ListOfFields(
-            ...$this->schema->attributes(),
-            ...$this->schema->relationships(),
-        );
+    /**
+     * @param string $fieldName
+     * @return Relation
+     */
+    public function relationship(string $fieldName): Relation
+    {
+        return $this->schema->relationship($fieldName);
     }
 
     /**
@@ -82,131 +87,128 @@ class ValidatedSchema
 
     /**
      * @param Validator $validator
-     * @param Request|null $request
+     * @param Create|Update $operation
      * @return void
      */
-    public function withValidator(Validator $validator, ?Request $request): void
+    public function withValidator(Validator $validator, Create|Update $operation): void
     {
         if (method_exists($this->schema, 'withValidator')) {
-            $this->schema->withValidator($validator, $request);
+            $this->schema->withValidator($validator, $this->request, $operation);
         }
     }
 
     /**
      * @param Validator $validator
-     * @param Request|null $request
+     * @param Create $operation
      * @return void
      */
-    public function withCreationValidator(Validator $validator, ?Request $request): void
+    public function withCreationValidator(Validator $validator, Create $operation): void
     {
         if (method_exists($this->schema, 'withCreationValidator')) {
-            $this->schema->withCreationValidator($validator, $request);
+            $this->schema->withCreationValidator($validator, $this->request, $operation);
         }
     }
 
     /**
      * @param Validator $validator
-     * @param Request|null $request
+     * @param Update $operation
      * @param object $model
      * @return void
      */
-    public function withUpdateValidator(Validator $validator, ?Request $request, object $model): void
+    public function withUpdateValidator(Validator $validator, Update $operation, object $model): void
     {
         if (method_exists($this->schema, 'withUpdateValidator')) {
-            $this->schema->withUpdateValidator($validator, $request, $model);
+            $this->schema->withUpdateValidator($validator, $this->request, $operation, $model);
         }
     }
 
     /**
      * @param Validator $validator
-     * @param Request|null $request
+     * @param UpdateToOne|UpdateToMany $operation
      * @param object $model
-     * @param string $fieldName
      * @return void
      */
     public function withRelationshipValidator(
         Validator $validator,
-        ?Request $request,
+        UpdateToOne|UpdateToMany $operation,
         object $model,
-        string $fieldName,
     ): void
     {
+        $fieldName = $operation->getFieldName();
         $fn = 'with' . Str::classify($fieldName) . 'Validator';
 
         if (method_exists($this->schema, $fn)) {
-            $this->schema->{$fn}($validator, $request, $model);
+            $this->schema->{$fn}($validator, $this->request, $operation, $model);
         }
     }
 
     /**
      * @param Validator $validator
-     * @param Request|null $request
+     * @param Create|Update $operation
      * @return void
      */
-    public function afterValidation(Validator $validator, ?Request $request): void
+    public function afterValidation(Validator $validator, Create|Update $operation): void
     {
         if (method_exists($this->schema, 'afterValidation')) {
-            $this->schema->afterValidation($validator, $request);
+            $this->schema->afterValidation($validator, $this->request, $operation);
         }
     }
 
     /**
      * @param Validator $validator
-     * @param Request|null $request
+     * @param Create $operation
      * @return void
      */
-    public function afterCreationValidation(Validator $validator, ?Request $request): void
+    public function afterCreationValidation(Validator $validator, Create $operation): void
     {
         if (method_exists($this->schema, 'afterCreationValidation')) {
-            $this->schema->afterCreationValidation($validator, $request);
+            $this->schema->afterCreationValidation($validator, $this->request, $operation);
         }
     }
 
     /**
      * @param Validator $validator
-     * @param Request|null $request
+     * @param Update $operation
      * @param object $model
      * @return void
      */
-    public function afterUpdateValidation(Validator $validator, ?Request $request, object $model): void
+    public function afterUpdateValidation(Validator $validator, Update $operation, object $model): void
     {
         if (method_exists($this->schema, 'afterUpdateValidation')) {
-            $this->schema->afterUpdateValidation($validator, $request, $model);
+            $this->schema->afterUpdateValidation($validator, $this->request, $operation, $model);
         }
     }
 
     /**
      * @param Validator $validator
-     * @param Request|null $request
+     * @param UpdateToOne|UpdateToMany $operation
      * @param object $model
-     * @param string $fieldName
      * @return void
      */
     public function afterRelationshipValidator(
         Validator $validator,
-        ?Request $request,
+        UpdateToOne|UpdateToMany $operation,
         object $model,
-        string $fieldName,
     ): void
     {
+        $fieldName = $operation->getFieldName();
         $fn = 'after' . Str::classify($fieldName) . 'Validation';
 
         if (method_exists($this->schema, $fn)) {
-            $this->schema->{$fn}($validator, $request, $model);
+            $this->schema->{$fn}($validator, $this->request, $operation, $model);
         }
     }
 
     /**
      * Get the rules for deleting a resource.
      *
-     * @param Request|null $request
      * @param object $model
      * @return array
      */
-    public function deleteRules(?Request $request, object $model): array
+    public function deleteRules(object $model): array
     {
         if (method_exists($this->schema, 'deleteRules')) {
-            return $this->schema->deleteRules($request, $model);
+            return $this->schema->deleteRules($this->request, $model);
         }
 
         return [];
@@ -244,27 +246,27 @@ class ValidatedSchema
 
     /**
      * @param Validator $validator
-     * @param Request|null $request
+     * @param Delete $operation
      * @param object $model
      * @return void
      */
-    public function withDeleteValidator(Validator $validator, ?Request $request, object $model): void
+    public function withDeleteValidator(Validator $validator, Delete $operation, object $model): void
     {
         if (method_exists($this->schema, 'withDeleteValidator')) {
-            $this->schema->withDeleteValidator($validator, $request, $model);
+            $this->schema->withDeleteValidator($validator, $this->request, $operation, $model);
         }
     }
 
     /**
      * @param Validator $validator
-     * @param Request|null $request
+     * @param Delete $operation
      * @param object $model
      * @return void
      */
-    public function afterDeleteValidation(Validator $validator, ?Request $request, object $model): void
+    public function afterDeleteValidation(Validator $validator, Delete $operation, object $model): void
     {
         if (method_exists($this->schema, 'afterDeleteValidation')) {
-            $this->schema->afterDeleteValidation($validator, $request, $model);
+            $this->schema->afterDeleteValidation($validator, $operation, $model);
         }
     }
 }

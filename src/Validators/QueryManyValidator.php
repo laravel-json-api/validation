@@ -27,6 +27,7 @@ use LaravelJsonApi\Core\Query\Input\Query;
 use LaravelJsonApi\Core\Query\Input\QueryMany;
 use LaravelJsonApi\Core\Query\Input\QueryRelated;
 use LaravelJsonApi\Core\Query\Input\QueryRelationship;
+use LaravelJsonApi\Validation\Filters\QueryManyParser;
 use LaravelJsonApi\Validation\QueryRules;
 use LaravelJsonApi\Validation\Rules\ParameterNotSupported;
 use LaravelJsonApi\Validation\ValidatedQuery;
@@ -38,11 +39,13 @@ class QueryManyValidator implements QueryManyValidatorContract
      *
      * @param ValidatorFactory $factory
      * @param ValidatedQuery $schema
+     * @param QueryManyParser $filterParser
      * @param QueryRules $rules
      */
     public function __construct(
         private readonly ValidatorFactory $factory,
         private readonly ValidatedQuery $schema,
+        private readonly QueryManyParser $filterParser,
         private readonly QueryRules $rules,
     ) {
     }
@@ -87,7 +90,7 @@ class QueryManyValidator implements QueryManyValidatorContract
 
         return [
             ...$this->defaultRules($query),
-            ...$this->schema->filters()->forOne($query),
+            ...$this->filterParser->parse($this->schema->filters()),
             ...$page,
         ];
     }

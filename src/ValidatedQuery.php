@@ -19,6 +19,7 @@ declare(strict_types=1);
 
 namespace LaravelJsonApi\Validation;
 
+use Generator;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Request;
 use LaravelJsonApi\Contracts\Schema\Container as SchemaContainer;
@@ -26,7 +27,6 @@ use LaravelJsonApi\Contracts\Schema\Query as QuerySchema;
 use LaravelJsonApi\Contracts\Schema\Relation;
 use LaravelJsonApi\Core\Query\Input\Query;
 use LaravelJsonApi\Core\Values\ResourceType;
-use LaravelJsonApi\Validation\Filters\ListOfFilters;
 use LaravelJsonApi\Validation\Pagination\ValidatedPaginator;
 
 class ValidatedQuery
@@ -73,18 +73,12 @@ class ValidatedQuery
     }
 
     /**
-     * @return ListOfFilters
+     * @return Generator
      */
-    public function filters(): ListOfFilters
+    public function filters(): Generator
     {
-        $related = $this->relation?->filters() ?? [];
-
-        $filters = new ListOfFilters(
-            ...$this->schema->filters(),
-            ...$related,
-        );
-
-        return $filters->withRequest($this->request);
+        yield from $this->schema->filters();
+        yield from $this->relation?->filters() ?? [];
     }
 
     /**

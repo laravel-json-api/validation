@@ -22,10 +22,10 @@ namespace LaravelJsonApi\Validation\Rules;
 use Illuminate\Support\Collection;
 use LaravelJsonApi\Contracts\Schema\Filter;
 use LaravelJsonApi\Contracts\Schema\Schema;
+use LaravelJsonApi\Validation\Filters\IsValidated;
 
 class AllowedFilterParameters extends AbstractAllowedRule
 {
-
     /**
      * Create an allowed filter parameters rule from the supplied schema.
      *
@@ -35,6 +35,32 @@ class AllowedFilterParameters extends AbstractAllowedRule
     public static function make(Schema $schema): self
     {
         return static::forFilters(...$schema->filters());
+    }
+
+    /**
+     * @param Filter ...$filters
+     * @return self
+     */
+    public static function forOne(Filter ...$filters): self
+    {
+        $filters = Collection::make($filters)
+            ->filter(fn($filter): bool => $filter instanceof IsValidated && $filter->isValidatedForOne())
+            ->map(fn (Filter $filter) => $filter->key());
+
+        return new self($filters);
+    }
+
+    /**
+     * @param Filter ...$filters
+     * @return self
+     */
+    public static function forMany(Filter ...$filters): self
+    {
+        $filters = Collection::make($filters)
+            ->filter(fn($filter): bool => $filter instanceof IsValidated && $filter->isValidatedForMany())
+            ->map(fn (Filter $filter) => $filter->key());
+
+        return new self($filters);
     }
 
     /**

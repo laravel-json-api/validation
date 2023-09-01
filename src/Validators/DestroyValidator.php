@@ -21,7 +21,6 @@ namespace LaravelJsonApi\Validation\Validators;
 
 use Illuminate\Contracts\Validation\Factory as ValidatorFactory;
 use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Http\Request;
 use LaravelJsonApi\Contracts\Validation\DestroyValidator as DestroyValidatorContract;
 use LaravelJsonApi\Core\Extensions\Atomic\Operations\Delete;
 use LaravelJsonApi\Validation\Extractors\DeleteExtractor;
@@ -46,27 +45,27 @@ class DestroyValidator implements DestroyValidatorContract
     /**
      * @inheritDoc
      */
-    public function extract(?Request $request, object $model, Delete $operation): array
+    public function extract(Delete $operation, object $model): array
     {
-        return $this->extractor->extract($request, $model);
+        return $this->extractor->extract($model);
     }
 
     /**
      * @inheritDoc
      */
-    public function make(?Request $request, object $model, Delete $operation): Validator
+    public function make(Delete $operation, object $model): Validator
     {
         $validator = $this->factory->make(
-            $this->extract($request, $model, $operation),
-            $this->schema->deleteRules($request, $model),
+            $this->extract($operation, $model),
+            $this->schema->deleteRules($model),
             $this->schema->deleteMessages(),
             $this->schema->deleteAttributes(),
         );
 
-        $this->schema->withDeleteValidator($validator, $request, $model);
+        $this->schema->withDeleteValidator($validator, $operation, $model);
 
-        $validator->after(function (Validator $v) use ($request, $model): void {
-            $this->schema->afterDeleteValidation($v, $request, $model);
+        $validator->after(function (Validator $v) use ($operation, $model): void {
+            $this->schema->afterDeleteValidation($v, $operation, $model);
         });
 
         return $validator;
