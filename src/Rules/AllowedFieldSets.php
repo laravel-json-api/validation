@@ -242,6 +242,7 @@ class AllowedFieldSets implements Rule
         if ($this->isResourceType($resourceType)) {
             return Collection::make($this->schemas
                 ->schemaFor($resourceType)
+                ->query()
                 ->sparseFields()
             )->all();
         }

@@ -139,7 +139,7 @@ class Rule
      */
     public static function filter($allowed = null): AllowedFilterParameters
     {
-        if (!is_null($allowed)) {
+        if ($allowed !== null) {
             return new AllowedFilterParameters(
                 Arr::wrap($allowed)
             );
@@ -149,7 +149,7 @@ class Rule
 
         if ($route->hasRelation()) {
             return AllowedFilterParameters::forFilters(
-                ...$route->inverse()->filters(),
+                ...$route->inverse()->query()->filters(),
                 ...$route->relation()->filters()
             );
         }

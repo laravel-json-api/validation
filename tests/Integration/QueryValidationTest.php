@@ -23,6 +23,7 @@ use LaravelJsonApi\Contracts\Pagination\Paginator;
 use LaravelJsonApi\Contracts\Routing\Route;
 use LaravelJsonApi\Contracts\Schema\Container;
 use LaravelJsonApi\Contracts\Schema\Filter;
+use LaravelJsonApi\Contracts\Schema\Query;
 use LaravelJsonApi\Contracts\Schema\Schema;
 use LaravelJsonApi\Contracts\Server\Server;
 use LaravelJsonApi\Validation\Rule as JsonApiRule;
@@ -30,12 +31,6 @@ use PHPUnit\Framework\MockObject\MockObject;
 
 class QueryValidationTest extends TestCase
 {
-
-    /**
-     * @var Schema|MockObject
-     */
-    private Schema $schema;
-
     /**
      * @inheritDoc
      */
@@ -43,27 +38,29 @@ class QueryValidationTest extends TestCase
     {
         parent::setUp();
 
-        $this->schema = $this->createMock(TestSchema::class);
-        $this->schema->method('sparseFields')->willReturn(['author', 'createdAt', 'title', 'updatedAt']);
-        $this->schema->method('filters')->willReturn([
+        $schema = $this->createMock(TestSchema::class);
+        $schema->method('query')->willReturn($query = $this->createMock(Query::class));
+
+        $query->method('sparseFields')->willReturn(['author', 'createdAt', 'title', 'updatedAt']);
+        $query->method('filters')->willReturn([
             $filter = $this->createMock(Filter::class),
         ]);
-        $this->schema->method('includePaths')->willReturn(['author']);
-        $this->schema->method('pagination')->willReturn(
+        $query->method('includePaths')->willReturn(['author']);
+        $query->method('pagination')->willReturn(
             $paginator = $this->createMock(Paginator::class)
         );
-        $this->schema->method('sortFields')->willReturn(['createdAt', 'title', 'updatedAt']);
-        $this->schema->method('countable')->willReturn(['comments', 'likes', 'tags']);
+        $query->method('sortFields')->willReturn(['createdAt', 'title', 'updatedAt']);
+        $schema->method('countable')->willReturn(['comments', 'likes', 'tags']);
 
         $filter->method('key')->willReturn('title');
         $paginator->method('keys')->willReturn(['number', 'size']);
 
         $this->app->instance(Route::class, $route = $this->createMock(Route::class));
-        $route->method('schema')->willReturn($this->schema);
+        $route->method('schema')->willReturn($schema);
 
         $this->app->instance(Server::class, $server = $this->createMock(Server::class));
         $server->method('schemas')->willReturn($schemas = $this->createMock(Container::class));
-        $schemas->method('schemaFor')->with('posts')->willReturn($this->schema);
+        $schemas->method('schemaFor')->with('posts')->willReturn($schema);
         $schemas->method('exists')->willReturnCallback(fn($value) => 'posts' === $value);
     }
 

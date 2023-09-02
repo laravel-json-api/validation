@@ -20,6 +20,7 @@ declare(strict_types=1);
 namespace LaravelJsonApi\Validation\Tests\Unit\Rules;
 
 use LaravelJsonApi\Contracts\Schema\Filter;
+use LaravelJsonApi\Contracts\Schema\Query;
 use LaravelJsonApi\Contracts\Schema\Schema;
 use LaravelJsonApi\Validation\Rules\AllowedFilterParameters;
 use PHPUnit\Framework\TestCase;
@@ -70,7 +71,8 @@ class AllowedFilterParametersTest extends TestCase
     public function testSchema(): void
     {
         $schema = $this->createMock(Schema::class);
-        $schema->method('filters')->willReturn([
+        $schema->method('query')->willReturn($query = $this->createMock(Query::class));
+        $query->method('filters')->willReturn([
             $a = $this->createMock(Filter::class),
             $b = $this->createMock(Filter::class),
         ]);

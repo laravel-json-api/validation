@@ -34,7 +34,7 @@ class AllowedFilterParameters extends AbstractAllowedRule
      */
     public static function make(Schema $schema): self
     {
-        return static::forFilters(...$schema->filters());
+        return static::forFilters(...$schema->query()->filters());
     }
 
     /**

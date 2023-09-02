@@ -33,7 +33,7 @@ class AllowedPageParameters extends AbstractAllowedRule
      */
     public static function make(Schema $schema): self
     {
-        if ($paginator = $schema->pagination()) {
+        if ($paginator = $schema->query()->pagination()) {
             return new self($paginator->keys());
         }
 
