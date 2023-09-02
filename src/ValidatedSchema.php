@@ -19,9 +19,9 @@ declare(strict_types=1);
 
 namespace LaravelJsonApi\Validation;
 
-use Generator;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use LaravelJsonApi\Contracts\Schema\Relation;
 use LaravelJsonApi\Contracts\Schema\Schema;
 use LaravelJsonApi\Core\Extensions\Atomic\Operations\Create;
@@ -29,6 +29,7 @@ use LaravelJsonApi\Core\Extensions\Atomic\Operations\Delete;
 use LaravelJsonApi\Core\Extensions\Atomic\Operations\Update;
 use LaravelJsonApi\Core\Extensions\Atomic\Operations\UpdateToMany;
 use LaravelJsonApi\Core\Extensions\Atomic\Operations\UpdateToOne;
+use LaravelJsonApi\Core\Query\IncludePaths;
 use LaravelJsonApi\Core\Support\Str;
 
 class ValidatedSchema
@@ -44,9 +45,9 @@ class ValidatedSchema
     }
 
     /**
-     * @return Generator
+     * @return iterable
      */
-    public function fields(): Generator
+    public function fields(): iterable
     {
         yield from $this->schema->attributes();
         yield from $this->schema->relationships();
@@ -59,6 +60,21 @@ class ValidatedSchema
     public function relationship(string $fieldName): Relation
     {
         return $this->schema->relationship($fieldName);
+    }
+
+    /**
+     * Get include paths for loading existing data.
+     *
+     * @return IncludePaths
+     */
+    public function includePaths(): IncludePaths
+    {
+        $paths = Collection::make($this->schema->relationships())
+            ->filter(static fn (Relation $relation): bool => $relation->isValidated())
+            ->map(static fn (Relation $relation): string => $relation->name())
+            ->values();
+
+        return IncludePaths::fromArray($paths);
     }
 
     /**
@@ -83,6 +99,22 @@ class ValidatedSchema
         }
 
         return [];
+    }
+
+    /**
+     * Get the existing resource values.
+     *
+     * @param object $model
+     * @param array $resource
+     * @return array|null
+     */
+    public function withExisting(object $model, array $resource): ?array
+    {
+        if (method_exists($this->schema, 'withExisting')) {
+            return $this->schema->withExisting($model, $resource);
+        }
+
+        return null;
     }
 
     /**
@@ -185,7 +217,7 @@ class ValidatedSchema
      * @param object $model
      * @return void
      */
-    public function afterRelationshipValidator(
+    public function afterRelationshipValidation(
         Validator $validator,
         UpdateToOne|UpdateToMany $operation,
         object $model,
@@ -209,6 +241,19 @@ class ValidatedSchema
     {
         if (method_exists($this->schema, 'deleteRules')) {
             return $this->schema->deleteRules($this->request, $model);
+        }
+
+        return [];
+    }
+
+    /**
+     * @param object $model
+     * @return array
+     */
+    public function metaForDelete(object $model): array
+    {
+        if (method_exists($this->schema, 'metaForDelete')) {
+            return (array) $this->schema->metaForDelete($this->request, $model);
         }
 
         return [];

@@ -54,6 +54,17 @@ abstract class FilterRulesParser
     }
 
     /**
+     * @param Query $query
+     * @return $this
+     */
+    public function with(Query $query): self
+    {
+        $this->query = $query;
+
+        return $this;
+    }
+
+    /**
      * @param iterable $filters
      * @return array
      */
@@ -100,9 +111,9 @@ abstract class FilterRulesParser
 
     /**
      * @param Filter $filter
-     * @return array|null
+     * @return Closure|array|null
      */
-    private function validationRules(Filter $filter): ?array
+    private function validationRules(Filter $filter): Closure|array|null
     {
         if ($filter instanceof IsValidated && $this->isValidated($filter)) {
             return $filter->validationRules($this->request, $this->query);

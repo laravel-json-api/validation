@@ -19,44 +19,29 @@ declare(strict_types=1);
 
 namespace LaravelJsonApi\Validation\Extractors;
 
-use LaravelJsonApi\Contracts\Resources\Container;
-use LaravelJsonApi\Contracts\Schema\Schema;
-use LaravelJsonApi\Core\Document\ResourceObject;
 use LaravelJsonApi\Core\Extensions\Atomic\Operations\UpdateToMany;
 use LaravelJsonApi\Core\Extensions\Atomic\Operations\UpdateToOne;
-use LaravelJsonApi\Core\Values\ResourceType;
 
 class RelationshipExtractor
 {
     /**
-     * @param Schema $schema
-     * @param Container $resources
-     */
-    public function __construct(
-        private readonly Schema $schema,
-        private readonly Container $resources,
-    ) {
-    }
-
-    /**
      * @param UpdateToOne|UpdateToMany $operation
-     * @param object $model
      * @return array
      */
-    public function extract(UpdateToOne|UpdateToMany $operation, object $model): array
+    public function extract(UpdateToOne|UpdateToMany $operation): array
     {
-        $type = ResourceType::cast($this->schema->type());
+        $ref = $operation->ref();
+
+        assert($ref->id !== null, 'Expecting a resource id.');
 
         $input = [
-            'type' => $type->value,
-            'id' => $this->resources->idForType($type, $model),
-            'relationships' => [
-                $operation->getFieldName() => [
-                    'data' => $operation->data?->toArray(),
-                ],
-            ],
+            'type' => $ref->type->value,
+            'id' => $ref->id->value,
+            $operation->getFieldName() => $operation->data?->toArray(),
         ];
 
-        return ResourceObject::fromArray($input)->all();
+        ksort($input);
+
+        return $input;
     }
 }

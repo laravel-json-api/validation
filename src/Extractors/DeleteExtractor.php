@@ -19,23 +19,20 @@ declare(strict_types=1);
 
 namespace LaravelJsonApi\Validation\Extractors;
 
-use Illuminate\Http\Request;
-use LaravelJsonApi\Contracts\Schema\Schema;
 use LaravelJsonApi\Core\Document\ResourceObject;
+use LaravelJsonApi\Validation\ValidatedSchema;
 
 class DeleteExtractor
 {
     /**
      * DeleteExtractor constructor
      *
-     * @param Schema $schema
+     * @param ValidatedSchema $schema
      * @param UpdateExtractor $updateExtractor
-     * @param Request|null $request
      */
     public function __construct(
-        private readonly Schema $schema,
+        private readonly ValidatedSchema $schema,
         private readonly UpdateExtractor $updateExtractor,
-        private readonly Request|null $request,
     ) {
     }
 
@@ -47,17 +44,15 @@ class DeleteExtractor
     {
         $resource = $this->updateExtractor->existing($model);
         $fields = ResourceObject::fromArray($resource)->all();
-        $meta = [];
+        $meta = $this->schema->metaForDelete($model);
 
-        if (method_exists($this->schema, 'metaForDelete')) {
-            $meta = (array) $this->schema->metaForDelete($this->request, $model);
-        }
+        $fields['meta'] = [
+            ...$resource['meta'] ?? [],
+            ...$meta,
+        ];
 
-        $fields['meta'] = array_merge(
-            $resource['meta'] ?? [],
-            $fields['meta'] ?? [],
-            $meta,
-        );
+        ksort($fields);
+        ksort($fields['meta']);
 
         return $fields;
     }

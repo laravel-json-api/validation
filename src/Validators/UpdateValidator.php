@@ -60,7 +60,7 @@ class UpdateValidator implements UpdateValidatorContract
     {
         $validator = $this->factory->make(
             $this->extract($operation, $model),
-            $this->parser->parse($this->schema->fields()),
+            $this->parser->with($model)->parse($this->schema->fields()),
             $this->schema->messages(),
             $this->schema->attributes(),
         );

@@ -29,7 +29,6 @@ use LaravelJsonApi\Core\Query\Input\QueryRelated;
 use LaravelJsonApi\Core\Query\Input\QueryRelationship;
 use LaravelJsonApi\Validation\Filters\QueryManyParser;
 use LaravelJsonApi\Validation\QueryRules;
-use LaravelJsonApi\Validation\Rules\ParameterNotSupported;
 use LaravelJsonApi\Validation\ValidatedQuery;
 
 class QueryManyValidator implements QueryManyValidatorContract
@@ -88,11 +87,15 @@ class QueryManyValidator implements QueryManyValidatorContract
     {
         $page = $this->schema->pagination()?->rules($query) ?? [];
 
-        return [
+        $rules = [
             ...$this->defaultRules($query),
-            ...$this->filterParser->parse($this->schema->filters()),
+            ...$this->filterParser->with($query)->parse($this->schema->filters()),
             ...$page,
         ];
+
+        ksort($rules);
+
+        return $rules;
     }
 
     /**
@@ -121,7 +124,7 @@ class QueryManyValidator implements QueryManyValidatorContract
                 'nullable',
                 'array',
                 $this->rules->page(),
-            ] : new ParameterNotSupported(),
+            ] : $this->rules->notSupported(),
             'sort' => [
                 'nullable',
                 'string',

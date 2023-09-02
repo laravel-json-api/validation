@@ -28,6 +28,7 @@ use LaravelJsonApi\Validation\Rules\AllowedFilterParameters;
 use LaravelJsonApi\Validation\Rules\AllowedIncludePaths;
 use LaravelJsonApi\Validation\Rules\AllowedPageParameters;
 use LaravelJsonApi\Validation\Rules\AllowedSortParameters;
+use LaravelJsonApi\Validation\Rules\ParameterNotSupported;
 
 class QueryRules
 {
@@ -112,5 +113,13 @@ class QueryRules
     public function countable(): AllowedCountableFields
     {
         return AllowedCountableFields::make($this->schema);
+    }
+
+    /**
+     * @return ParameterNotSupported
+     */
+    public function notSupported(): ParameterNotSupported
+    {
+        return new ParameterNotSupported();
     }
 }

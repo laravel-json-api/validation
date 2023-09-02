@@ -89,7 +89,7 @@ class QueryOneValidator implements QueryOneValidatorContract
     {
         return [
             ...$this->defaultRules($query),
-            ...$this->filterParser->parse($this->schema->filters()),
+            ...$this->filterParser->with($query)->parse($this->schema->filters()),
         ];
     }
 

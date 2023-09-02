@@ -74,16 +74,9 @@ class Factory implements FactoryContract
     {
         return new QueryOneValidator(
             $this->validatorFactory,
-            new ValidatedQuery(
-                $this->server->schemas(),
-                $this->schema->query(),
-                $this->request,
-            ),
+            $this->query(),
             new QueryOneParser($this->request),
-            new QueryRules(
-                $this->server->schemas(),
-                $this->schema,
-            ),
+            new QueryRules($this->server->schemas(), $this->schema),
         );
     }
 
@@ -94,16 +87,9 @@ class Factory implements FactoryContract
     {
         return new QueryManyValidator(
             $this->validatorFactory,
-            new ValidatedQuery(
-                $this->server->schemas(),
-                $this->schema->query(),
-                $this->request,
-            ),
+            $this->query(),
             new QueryManyParser($this->request),
-            new QueryRules(
-                $this->server->schemas(),
-                $this->schema,
-            ),
+            new QueryRules($this->server->schemas(), $this->schema),
         );
     }
 
@@ -114,7 +100,7 @@ class Factory implements FactoryContract
     {
         return new StoreValidator(
             $this->validatorFactory,
-            new ValidatedSchema($this->schema, $this->request),
+            $this->schema(),
             new CreationExtractor(),
             new CreationRulesParser($this->request),
         );
@@ -127,8 +113,8 @@ class Factory implements FactoryContract
     {
         return new UpdateValidator(
             $this->validatorFactory,
-            new ValidatedSchema($this->schema, $this->request),
-            new UpdateExtractor($this->schema, $this->server->encoder(), $this->request),
+            $schema = $this->schema(),
+            new UpdateExtractor($schema, $this->server->encoder(), $this->request),
             new UpdateRulesParser($this->request),
         );
     }
@@ -141,11 +127,10 @@ class Factory implements FactoryContract
         if (method_exists($this->schema, 'deleteRules')) {
             return new DestroyValidator(
                 $this->validatorFactory,
-                new ValidatedSchema($this->schema, $this->request),
+                $schema = $this->schema(),
                 new DeleteExtractor(
-                    $this->schema,
-                    new UpdateExtractor($this->schema, $this->server->encoder(), $this->request),
-                    $this->request,
+                    $schema,
+                    new UpdateExtractor($schema, $this->server->encoder(), $this->request),
                 ),
             );
         }
@@ -160,9 +145,29 @@ class Factory implements FactoryContract
     {
         return new RelationshipValidator(
             $this->validatorFactory,
-            new ValidatedSchema($this->schema, $this->request),
+            $this->schema(),
             new RelationshipExtractor($this->schema, $this->server->resources()),
             new UpdateRulesParser($this->request),
+        );
+    }
+
+    /**
+     * @return ValidatedSchema
+     */
+    private function schema(): ValidatedSchema
+    {
+        return new ValidatedSchema($this->schema, $this->request);
+    }
+
+    /**
+     * @return ValidatedQuery
+     */
+    private function query(): ValidatedQuery
+    {
+        return new ValidatedQuery(
+            $this->server->schemas(),
+            $this->schema->query(),
+            $this->request,
         );
     }
 }

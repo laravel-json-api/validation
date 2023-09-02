@@ -20,25 +20,22 @@ declare(strict_types=1);
 namespace LaravelJsonApi\Validation\Extractors;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 use LaravelJsonApi\Contracts\Encoder\Encoder;
-use LaravelJsonApi\Contracts\Schema\Relation;
-use LaravelJsonApi\Contracts\Schema\Schema;
 use LaravelJsonApi\Core\Document\ResourceObject;
 use LaravelJsonApi\Core\Extensions\Atomic\Operations\Update;
-use LaravelJsonApi\Core\Query\IncludePaths;
+use LaravelJsonApi\Validation\ValidatedSchema;
 
 class UpdateExtractor
 {
     /**
      * UpdateExtractor constructor
      *
-     * @param Schema $schema
+     * @param ValidatedSchema $schema
      * @param Encoder $encoder
      * @param Request|null $request
      */
     public function __construct(
-        private readonly Schema $schema,
+        private readonly ValidatedSchema $schema,
         private readonly Encoder $encoder,
         private readonly Request|null $request,
     ) {
@@ -69,27 +66,10 @@ class UpdateExtractor
     {
         $values = $this->encoder
             ->withRequest($this->request)
-            ->withIncludePaths($this->includePaths())
+            ->withIncludePaths($this->schema->includePaths())
             ->withResource($model)
             ->toArray()['data'];
 
-        if (method_exists($this->schema, 'withExisting')) {
-            $values = $this->schema->withExisting($model, $values) ?? $values;
-        }
-
-        return $values;
-    }
-
-    /**
-     * @return IncludePaths
-     */
-    private function includePaths(): IncludePaths
-    {
-        $paths = Collection::make($this->schema->relationships())
-            ->filter(static fn (Relation $relation): bool => $relation->isValidated())
-            ->map(static fn (Relation $relation): string => $relation->name())
-            ->values();
-
-        return IncludePaths::fromArray($paths);
+        return $this->schema->withExisting($model, $values) ?? $values;
     }
 }

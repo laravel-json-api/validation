@@ -60,7 +60,7 @@ class RelationshipValidator implements RelationshipValidatorContract
     public function make(UpdateToOne|UpdateToMany $operation, object $model): Validator
     {
         $fieldName = $operation->getFieldName();
-        $rules = $this->parser->parse([
+        $rules = $this->parser->with($model)->parse([
             $this->schema->relationship($fieldName),
         ]);
 
@@ -76,7 +76,7 @@ class RelationshipValidator implements RelationshipValidatorContract
         $this->schema->withRelationshipValidator($validator, $operation, $model);
 
         $validator->after(function (Validator $v) use ($operation, $model): void {
-            $this->schema->afterRelationshipValidator($v, $operation, $model);
+            $this->schema->afterRelationshipValidation($v, $operation, $model);
         });
 
         return $validator;
