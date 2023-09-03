@@ -65,7 +65,7 @@ abstract class FieldRulesParser
      * @param iterable $values
      * @return Generator
      */
-    protected function cursor(iterable $values): Generator
+    private function cursor(iterable $values): Generator
     {
         foreach ($values as $key => $value) {
             if ($value instanceof Field) {
