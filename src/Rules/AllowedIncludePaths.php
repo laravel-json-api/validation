@@ -34,7 +34,7 @@ class AllowedIncludePaths extends AbstractAllowedRule
      */
     public static function make(Schema $schema): self
     {
-        return new self($schema->includePaths());
+        return new self($schema->query()->includePaths());
     }
 
     /**
@@ -48,7 +48,7 @@ class AllowedIncludePaths extends AbstractAllowedRule
     {
         $paths = Collection::make($relation->allInverse())
             ->map(static fn(string $resourceType) => Collection::make(
-                $schemas->schemaFor($resourceType)->includePaths(),
+                $schemas->schemaFor($resourceType)->query()->includePaths(),
             ))
             ->flatten();
 

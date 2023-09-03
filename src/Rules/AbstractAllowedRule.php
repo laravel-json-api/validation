@@ -30,7 +30,7 @@ abstract class AbstractAllowedRule implements Rule
     /**
      * @var Collection
      */
-    private Collection $allowed;
+    protected Collection $allowed;
 
     /**
      * The last value that was validated.
@@ -54,7 +54,7 @@ abstract class AbstractAllowedRule implements Rule
      */
     public function __construct(iterable $allowed = [])
     {
-        $values = collect($allowed)->unique()->values();
+        $values = Collection::make($allowed)->unique()->values();
         $this->allowed = $values->combine($values);
     }
 

@@ -20,6 +20,7 @@ declare(strict_types=1);
 namespace LaravelJsonApi\Validation\Tests\Unit\Rules;
 
 use LaravelJsonApi\Contracts\Pagination\Paginator;
+use LaravelJsonApi\Contracts\Schema\Query;
 use LaravelJsonApi\Contracts\Schema\Schema;
 use LaravelJsonApi\Validation\Rules\AllowedPageParameters;
 use PHPUnit\Framework\TestCase;
@@ -52,7 +53,8 @@ class AllowedPageParametersTest extends TestCase
         $paginator->method('keys')->willReturn(['number', 'size']);
 
         $schema = $this->createMock(Schema::class);
-        $schema->method('pagination')->willReturn($paginator);
+        $schema->method('query')->willReturn($query = $this->createMock(Query::class));
+        $query->method('pagination')->willReturn($paginator);
 
         $this->assertEquals(
             new AllowedPageParameters(['number', 'size']),

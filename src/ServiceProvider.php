@@ -23,7 +23,6 @@ use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
 class ServiceProvider extends BaseServiceProvider
 {
-
     /**
      * Boot application services.
      *
@@ -60,6 +59,10 @@ class ServiceProvider extends BaseServiceProvider
         $this->app->bind(
             \LaravelJsonApi\Contracts\Validation\DestroyErrorFactory::class,
             DestroyErrorFactory::class,
+        );
+        $this->app->bind(
+            \LaravelJsonApi\Contracts\Validation\Container::class,
+            Container::class,
         );
     }
 }

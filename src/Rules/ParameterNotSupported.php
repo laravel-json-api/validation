@@ -24,20 +24,13 @@ use LaravelJsonApi\Validation\JsonApiValidation;
 
 class ParameterNotSupported implements Rule
 {
-
     /**
-     * @var string|null
-     */
-    private ?string $name;
-
-    /**
-     * DisallowedParameter constructor.
+     * ParameterNotSupported constructor.
      *
-     * @param string $name
+     * @param string|null $name
      */
-    public function __construct(string $name = null)
+    public function __construct(private ?string $name = null)
     {
-        $this->name = $name;
     }
 
     /**
@@ -45,7 +38,7 @@ class ParameterNotSupported implements Rule
      */
     public function passes($attribute, $value)
     {
-        if (!$this->name) {
+        if ($this->name === null) {
             $this->name = $attribute;
         }
 

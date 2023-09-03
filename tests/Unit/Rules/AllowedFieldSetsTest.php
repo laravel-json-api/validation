@@ -18,6 +18,7 @@
 namespace LaravelJsonApi\Validation\Tests\Unit\Rules;
 
 use LaravelJsonApi\Contracts\Schema\Container;
+use LaravelJsonApi\Contracts\Schema\Query;
 use LaravelJsonApi\Contracts\Schema\Schema;
 use LaravelJsonApi\Validation\Rules\AllowedFieldSets;
 use PHPUnit\Framework\TestCase;
@@ -112,10 +113,12 @@ class AllowedFieldSetsTest extends TestCase
     public function testUsesSchemas(array $fields, bool $expected): void
     {
         $posts = $this->createMock(Schema::class);
-        $posts->method('sparseFields')->willReturn(['title', 'content', 'author']);
+        $posts->method('query')->willReturn($postsQuery = $this->createMock(Query::class));
+        $postsQuery->method('sparseFields')->willReturn(['title', 'content', 'author']);
 
         $users = $this->createMock(Schema::class);
-        $users->method('sparseFields')->willReturn(['name', 'email']);
+        $users->method('query')->willReturn($usersQuery = $this->createMock(Query::class));
+        $usersQuery->method('sparseFields')->willReturn(['name', 'email']);
 
         $schemas = $this->createMock(Container::class);
         $schemas->method('exists')->willReturnCallback(fn ($value) => in_array($value, ['posts', 'users']));

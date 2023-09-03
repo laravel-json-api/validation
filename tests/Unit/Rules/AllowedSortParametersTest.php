@@ -19,6 +19,7 @@ declare(strict_types=1);
 
 namespace LaravelJsonApi\Validation\Tests\Unit\Rules;
 
+use LaravelJsonApi\Contracts\Schema\Query;
 use LaravelJsonApi\Contracts\Schema\Schema;
 use LaravelJsonApi\Validation\Rules\AllowedSortParameters;
 use PHPUnit\Framework\TestCase;
@@ -50,7 +51,8 @@ class AllowedSortParametersTest extends TestCase
     public function testSchema(): void
     {
         $schema = $this->createMock(Schema::class);
-        $schema->method('sortFields')->willReturn(['title', 'createdAt']);
+        $schema->method('query')->willReturn($query = $this->createMock(Query::class));
+        $query->method('sortFields')->willReturn(['title', 'createdAt']);
 
         $this->assertEquals(
             new AllowedSortParameters(['title', 'createdAt']),

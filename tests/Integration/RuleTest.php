@@ -23,6 +23,7 @@ use LaravelJsonApi\Contracts\Pagination\Paginator;
 use LaravelJsonApi\Contracts\Routing\Route;
 use LaravelJsonApi\Contracts\Schema\Container;
 use LaravelJsonApi\Contracts\Schema\Filter;
+use LaravelJsonApi\Contracts\Schema\Query;
 use LaravelJsonApi\Contracts\Schema\Relation;
 use LaravelJsonApi\Contracts\Schema\Schema;
 use LaravelJsonApi\Contracts\Server\Server;
@@ -123,7 +124,8 @@ class RuleTest extends TestCase
         $this->route->expects($this->never())->method('inverse');
         $this->route->expects($this->never())->method('relation');
 
-        $schema->method('filters')->willReturn([
+        $schema->method('query')->willReturn($query = $this->createMock(Query::class));
+        $query->method('filters')->willReturn([
             $a = $this->createMock(Filter::class),
             $b = $this->createMock(Filter::class),
         ]);
@@ -148,7 +150,8 @@ class RuleTest extends TestCase
             $relation = $this->createMock(Relation::class)
         );
 
-        $schema->method('filters')->willReturn([
+        $schema->method('query')->willReturn($query = $this->createMock(Query::class));
+        $query->method('filters')->willReturn([
             $a = $this->createMock(Filter::class),
             $b = $this->createMock(Filter::class),
         ]);
@@ -202,7 +205,8 @@ class RuleTest extends TestCase
         );
         $this->route->expects($this->never())->method('inverse');
 
-        $schema->method('includePaths')->willReturn(['foo', 'bar']);
+        $schema->method('query')->willReturn($query = $this->createMock(Query::class));
+        $query->method('includePaths')->willReturn(['foo', 'bar']);
 
         $this->assertEquals(
             new AllowedIncludePaths(['foo', 'bar']),
@@ -218,7 +222,8 @@ class RuleTest extends TestCase
             $schema = $this->createMock(Schema::class)
         );
 
-        $schema->method('includePaths')->willReturn(['foo', 'bar']);
+        $schema->method('query')->willReturn($query = $this->createMock(Query::class));
+        $query->method('includePaths')->willReturn(['foo', 'bar']);
 
         $this->assertEquals(
             new AllowedIncludePaths(['foo', 'bar']),
@@ -241,11 +246,13 @@ class RuleTest extends TestCase
             ['bar', $bar = $this->createMock(Schema::class)],
         ]);
 
-        $foo->method('includePaths')->willReturn((function () {
+        $foo->method('query')->willReturn($fooQuery = $this->createMock(Query::class));
+        $fooQuery->method('includePaths')->willReturn((function () {
             yield from ['foo.bar', 'baz.bat', 'foobar.bazbat'];
         })());
 
-        $bar->method('includePaths')->willReturn(['bar.baz', 'bar.bat', 'foobar.bazbat']);
+        $bar->method('query')->willReturn($barQuery = $this->createMock(Query::class));
+        $barQuery->method('includePaths')->willReturn(['bar.baz', 'bar.bat', 'foobar.bazbat']);
 
         $this->assertEquals(
             new AllowedIncludePaths(['foo.bar', 'baz.bat', 'foobar.bazbat', 'bar.baz', 'bar.bat']),
@@ -313,7 +320,8 @@ class RuleTest extends TestCase
         );
         $this->route->expects($this->never())->method('inverse');
 
-        $schema->method('pagination')->willReturn($paginator = $this->createMock(Paginator::class));
+        $schema->method('query')->willReturn($query = $this->createMock(Query::class));
+        $query->method('pagination')->willReturn($paginator = $this->createMock(Paginator::class));
         $paginator->method('keys')->willReturn(['number', 'size']);
 
         $this->assertEquals(
@@ -330,7 +338,8 @@ class RuleTest extends TestCase
             $schema = $this->createMock(Schema::class)
         );
 
-        $schema->method('pagination')->willReturn($paginator = $this->createMock(Paginator::class));
+        $schema->method('query')->willReturn($query = $this->createMock(Query::class));
+        $query->method('pagination')->willReturn($paginator = $this->createMock(Paginator::class));
         $paginator->method('keys')->willReturn(['number', 'size']);
 
         $this->assertEquals(
@@ -374,7 +383,8 @@ class RuleTest extends TestCase
         );
         $this->route->expects($this->never())->method('inverse');
 
-        $schema->method('sortFields')->willReturn([
+        $schema->method('query')->willReturn($query = $this->createMock(Query::class));
+        $query->method('sortFields')->willReturn([
             'createdAt',
             'title',
         ]);
@@ -393,7 +403,8 @@ class RuleTest extends TestCase
             $schema = $this->createMock(Schema::class)
         );
 
-        $schema->method('sortFields')->willReturn([
+        $schema->method('query')->willReturn($query = $this->createMock(Query::class));
+        $query->method('sortFields')->willReturn([
             'createdAt',
             'title',
         ]);
