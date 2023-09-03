@@ -36,10 +36,17 @@ class CreationRulesParserTest extends TestCase
     /**
      * @return void
      */
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->request = $this->createMock(Request::class);
+    }
+
+    /**
+     * @return void
+     */
     public function test(): void
     {
-        $this->request = $this->createMock(Request::class);
-
         $expected = [
             'title' => ['required', 'string', 'between:5,255'],
             'slug' => ['required', 'string', 'between:5,255', 'unique:posts,slug'],
@@ -88,7 +95,7 @@ class CreationRulesParserTest extends TestCase
         $field = $this->createMock(TestField::class);
         $field->method('name')->willReturn($name);
         $field->expects($this->never())->method('rulesForUpdate');
-        $field->method('rulesForCreate')
+        $field->method('rulesForCreation')
             ->with($this->identicalTo($this->request))
             ->willReturn($rules);
 

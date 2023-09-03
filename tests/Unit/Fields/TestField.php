@@ -36,7 +36,7 @@ class TestField implements Field, IsValidated
         // TODO: Implement isSparseField() method.
     }
 
-    public function rulesForCreate(?Request $request): Closure|array|null
+    public function rulesForCreation(?Request $request): Closure|array|null
     {
         // TODO: Implement rulesForCreate() method.
     }

@@ -33,7 +33,7 @@ interface IsValidated
      * @param Request|null $request
      * @return Closure|array|null
      */
-    public function rulesForCreate(?Request $request): Closure|array|null;
+    public function rulesForCreation(?Request $request): Closure|array|null;
 
     /**
      * Get validation rules for the field when the resource is being updated.

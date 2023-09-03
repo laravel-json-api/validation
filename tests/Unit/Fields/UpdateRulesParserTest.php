@@ -101,7 +101,7 @@ class UpdateRulesParserTest extends TestCase
     {
         $field = $this->createMock(TestField::class);
         $field->method('name')->willReturn($name);
-        $field->expects($this->never())->method('rulesForCreate');
+        $field->expects($this->never())->method('rulesForCreation');
         $field->method('rulesForUpdate')
             ->with($this->identicalTo($this->request), $this->identicalTo($this->model))
             ->willReturn($rules);

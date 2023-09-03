@@ -38,10 +38,10 @@ abstract class FieldRulesParser
     private string $position = '';
 
     /**
-     * @param IsValidated&Field $field
+     * @param IsValidated $field
      * @return Closure|array|null
      */
-    abstract protected function extract(Field&IsValidated $field): Closure|array|null;
+    abstract protected function extract(IsValidated $field): Closure|array|null;
 
     /**
      * FieldRulesParser constructor

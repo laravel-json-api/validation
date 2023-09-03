@@ -20,7 +20,6 @@ declare(strict_types=1);
 namespace LaravelJsonApi\Validation\Fields;
 
 use Closure;
-use LaravelJsonApi\Contracts\Schema\Field;
 
 class UpdateRulesParser extends FieldRulesParser
 {
@@ -36,10 +35,10 @@ class UpdateRulesParser extends FieldRulesParser
     }
 
     /**
-     * @param IsValidated&Field $field
+     * @param IsValidated $field
      * @return Closure|array|null
      */
-    protected function extract(IsValidated&Field $field): Closure|array|null
+    protected function extract(IsValidated $field): Closure|array|null
     {
         assert($this->model !== null, 'Expecting model to be injected.');
 
