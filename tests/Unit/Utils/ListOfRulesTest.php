@@ -17,16 +17,16 @@
 
 declare(strict_types=1);
 
-namespace LaravelJsonApi\Validation\Tests\Unit\Fields;
+namespace LaravelJsonApi\Validation\Tests\Unit\Utils;
 
 use Closure;
 use Illuminate\Http\Request;
-use LaravelJsonApi\Validation\Fields\FieldRules;
 use LaravelJsonApi\Validation\Rules\JsonBoolean;
+use LaravelJsonApi\Validation\Utils\ListOfRules;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 
-class FieldRulesTest extends TestCase
+class ListOfRulesTest extends TestCase
 {
     /**
      * @return array
@@ -41,24 +41,24 @@ class FieldRulesTest extends TestCase
 
         return [
             'rules' => [
-                function (): FieldRules {
-                    return FieldRules::make()
-                        ->always()
+                function (): ListOfRules {
+                    return ListOfRules::make()
+                        ->defaults()
                         ->rules('required', 'email', 'max:255')
                         ->append();
                 },
                 ['required', 'email', 'max:255'],
             ],
             'rules array' => [
-                function (): FieldRules {
-                    return FieldRules::make()
+                function (): ListOfRules {
+                    return ListOfRules::make()
                         ->rules(['required', 'email', 'max:255']);
                 },
                 ['required', 'email', 'max:255'],
             ],
             'rules closure' => [
-                function (Request $request, object $model): FieldRules {
-                    return FieldRules::make()
+                function (Request $request, object $model): ListOfRules {
+                    return ListOfRules::make()
                         ->rules(static function ($r, $m) use ($request, $model): array {
                             Assert::assertSame($request, $r);
                             Assert::assertSame($model, $m);
@@ -68,57 +68,57 @@ class FieldRulesTest extends TestCase
                 ['required', 'email', 'max:255'],
             ],
             'rules with objects' => [
-                function () use ($closure, $rule): FieldRules {
-                    return FieldRules::make()
+                function () use ($closure, $rule): ListOfRules {
+                    return ListOfRules::make()
                         ->rules($closure, $rule);
                 },
                 [$closure, $rule],
             ],
-            'always without required and nullable' => [
-                function (): FieldRules {
-                    return FieldRules::make()
-                        ->always('string')
+            'defaults without required and nullable' => [
+                function (): ListOfRules {
+                    return ListOfRules::make()
+                        ->defaults('string')
                         ->rules('email', 'max:255')
                         ->append();
                 },
                 ['string', 'email', 'max:255'],
             ],
-            'always with required' => [
-                function (): FieldRules {
-                    return FieldRules::make()
-                        ->always('string')
+            'defaults with required' => [
+                function (): ListOfRules {
+                    return ListOfRules::make()
+                        ->defaults('string')
                         ->rules('required', 'email', 'max:255');
                 },
                 ['required', 'string', 'email', 'max:255'],
             ],
-            'always with nullable' => [
-                function (): FieldRules {
-                    return FieldRules::make()
-                        ->always('string', 'blah!')
+            'defaults with nullable' => [
+                function (): ListOfRules {
+                    return ListOfRules::make()
+                        ->defaults('string', 'blah!')
                         ->rules('nullable', 'email', 'max:255');
                 },
                 ['nullable', 'string', 'blah!', 'email', 'max:255'],
             ],
-            'always with required not first' => [
-                function (): FieldRules {
-                    return FieldRules::make()
-                        ->always('string')
+            'defaults with required not first' => [
+                function (): ListOfRules {
+                    return ListOfRules::make()
+                        ->defaults('string')
                         ->rules('bail', 'required', 'email', 'max:255');
                 },
                 ['bail', 'required', 'string', 'email', 'max:255'],
             ],
-            'always with nullable not first' => [
-                function () use ($rule): FieldRules {
-                    return FieldRules::make()
-                        ->always($rule)
+            'defaults with nullable not first' => [
+                function () use ($rule): ListOfRules {
+                    return ListOfRules::make()
+                        ->defaults($rule)
                         ->rules('bail', 'nullable', 'email', 'max:255');
                 },
                 ['bail', 'nullable', $rule, 'email', 'max:255'],
             ],
-            'always closure' => [
-                function (Request $request, object $model): FieldRules {
-                    return FieldRules::make()
-                        ->always(static function ($r, $m) use ($request, $model): array {
+            'defaults closure' => [
+                function (Request $request, object $model): ListOfRules {
+                    return ListOfRules::make()
+                        ->defaults(static function ($r, $m) use ($request, $model): array {
                             Assert::assertSame($request, $r);
                             Assert::assertSame($model, $m);
                             return ['string', 'blah!'];
@@ -128,27 +128,27 @@ class FieldRulesTest extends TestCase
                 ['required', 'string', 'blah!', 'email', 'max:255'],
             ],
             'append' => [
-                function (): FieldRules {
-                    return FieldRules::make()
-                        ->always('string')
+                function (): ListOfRules {
+                    return ListOfRules::make()
+                        ->defaults('string')
                         ->rules('required', 'email', 'max:255')
                         ->append('unique:users,email', 'blah!');
                 },
                 ['required', 'string', 'email', 'max:255', 'unique:users,email', 'blah!'],
             ],
             'append array' => [
-                function (): FieldRules {
-                    return FieldRules::make()
-                        ->always('string')
+                function (): ListOfRules {
+                    return ListOfRules::make()
+                        ->defaults('string')
                         ->rules('required', 'email', 'max:255')
                         ->append(['unique:users,email', 'blah!']);
                 },
                 ['required', 'string', 'email', 'max:255', 'unique:users,email', 'blah!'],
             ],
             'append closure' => [
-                function (Request $request, object $model): FieldRules {
-                    return FieldRules::make()
-                        ->always('string')
+                function (Request $request, object $model): ListOfRules {
+                    return ListOfRules::make()
+                        ->defaults('string')
                         ->rules('required', 'email', 'max:255')
                         ->append(static function ($r, $m) use ($request, $model): array {
                             Assert::assertSame($request, $r);
@@ -159,9 +159,9 @@ class FieldRulesTest extends TestCase
                 ['required', 'string', 'email', 'max:255', 'unique:users,email', 'blah!'],
             ],
             'append with rule objects' => [
-                function () use ($closure, $rule): FieldRules {
-                    return FieldRules::make()
-                        ->always('string')
+                function () use ($closure, $rule): ListOfRules {
+                    return ListOfRules::make()
+                        ->defaults('string')
                         ->rules('required', 'email', 'max:255')
                         ->append('unique:users,email', $closure, $rule);
                 },
@@ -171,7 +171,7 @@ class FieldRulesTest extends TestCase
     }
 
     /**
-     * @param Closure(Request $request, object $model): FieldRules $scenario
+     * @param Closure(Request $request, object $model): ListOfRules $scenario
      * @param array $expected
      * @return void
      * @dataProvider scenarioProvider

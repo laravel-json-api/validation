@@ -21,8 +21,9 @@ namespace LaravelJsonApi\Validation\Fields;
 
 use Closure;
 use Illuminate\Http\Request;
+use LaravelJsonApi\Validation\Utils\ListOfRules;
 
-trait Validated
+trait ValidatedWithListOfRules
 {
     /**
      * @var array
@@ -78,8 +79,8 @@ trait Validated
      */
     public function rulesForCreation(?Request $request): array
     {
-        $rules = FieldRules::make()
-            ->always($this->defaultRules())
+        $rules = ListOfRules::make()
+            ->defaults($this->defaultRules())
             ->rules(...$this->rules)
             ->append(...$this->creationRules);
 
@@ -93,8 +94,8 @@ trait Validated
      */
     public function rulesForUpdate(?Request $request, object $model): array
     {
-        $rules = FieldRules::make()
-            ->always($this->defaultRules())
+        $rules = ListOfRules::make()
+            ->defaults($this->defaultRules())
             ->rules(...$this->rules)
             ->append(...$this->updateRules);
 

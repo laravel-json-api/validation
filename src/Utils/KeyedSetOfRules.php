@@ -17,17 +17,18 @@
 
 declare(strict_types=1);
 
-namespace LaravelJsonApi\Validation\Fields;
+namespace LaravelJsonApi\Validation\Utils;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 
-class FieldRules
+class KeyedSetOfRules
 {
     /**
      * @var Closure|array
      */
-    private Closure|array $always = [];
+    private Closure|array $prepend = [];
 
     /**
      * @var Closure|array
@@ -58,77 +59,56 @@ class FieldRules
      */
     public function __invoke(?Request $request, object $model = null): array
     {
-        $rules = [
-            ...$this->resolve($this->rules, $request, $model),
-            ...$this->resolve($this->append, $request, $model),
-        ];
+        $rules = $this->resolve($this->prepend, $request, $model);
 
-        $always = $this->resolve($this->always, $request, $model);
-
-        if (empty($always)) {
-            return $rules;
+        foreach ($this->resolve($this->rules, $request, $model) as $key => $value) {
+            $rules[$key] = [
+                ...Arr::wrap($rules[$key] ?? null),
+                ...Arr::wrap($value),
+            ];
         }
 
-        $startAt = array_search('required', $rules, true);
-        $startAt = ($startAt === false) ? array_search('nullable', $rules, true) : $startAt;
-
-        if ($startAt === false) {
-            return [...$always, ...$rules];
+        foreach ($this->resolve($this->append, $request, $model) as $key => $value) {
+            $rules[$key] = [
+                ...Arr::wrap($rules[$key] ?? null),
+                ...Arr::wrap($value),
+            ];
         }
 
-        return [
-            ...array_slice($rules, 0, $startAt + 1),
-            ...$always,
-            ...array_slice($rules, $startAt + 1),
-        ];
+        return $rules;
     }
 
     /**
-     * Set rules that must always be set.
-     *
-     * @param mixed ...$args
+     * @param Closure|array|null $rules
      * @return $this
      */
-    public function always(mixed ...$args): self
+    public function prepend(Closure|array|null $rules): self
     {
-        $this->always = $this->parse($args);
+        $this->prepend = $rules ?? [];
 
         return $this;
     }
 
     /**
-     * @param mixed ...$args
+     * @param Closure|array|null $rules
      * @return $this
      */
-    public function rules(mixed ...$args): self
+    public function rules(Closure|array|null $rules): self
     {
-        $this->rules = $this->parse($args);
+        $this->rules = $rules ?? [];
 
         return $this;
     }
 
     /**
-     * @param mixed ...$args
+     * @param Closure|array|null $rules
      * @return $this
      */
-    public function append(mixed ...$args): self
+    public function append(Closure|array|null $rules): self
     {
-        $this->append = $this->parse($args);
+        $this->append = $rules ?? [];
 
         return $this;
-    }
-
-    /**
-     * @param mixed $args
-     * @return Closure|array
-     */
-    private function parse(array $args): Closure|array
-    {
-        if (count($args) === 1 && (is_array($args[0]) || $args[0] instanceof Closure)) {
-            return $args[0];
-        }
-
-        return $args;
     }
 
     /**
@@ -145,6 +125,6 @@ class FieldRules
 
         assert(is_array($value), 'Expecting closure to return an array or null.');
 
-        return array_values((array) array_filter($value, static fn($item): bool => $item !== null));
+        return $value;
     }
 }
