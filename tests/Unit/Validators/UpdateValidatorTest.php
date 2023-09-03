@@ -19,6 +19,7 @@ declare(strict_types=1);
 
 namespace LaravelJsonApi\Validation\Tests\Unit\Validators;
 
+use Generator;
 use Illuminate\Contracts\Validation\Factory;
 use Illuminate\Contracts\Validation\Validator;
 use LaravelJsonApi\Core\Document\Input\Values\ResourceObject;
@@ -121,6 +122,11 @@ class UpdateValidatorTest extends TestCase
     {
         $sequence = [];
 
+        $fields = (function (): Generator {
+            yield 'foo' => 'bar';
+            yield 'baz' => 'bat';
+        })();
+
         $this->extractor
             ->expects($this->once())
             ->method('extract')
@@ -130,7 +136,7 @@ class UpdateValidatorTest extends TestCase
         $this->schema
             ->expects($this->once())
             ->method('fields')
-            ->willReturn($fields = new \ArrayObject(['foo', 'bar', 'baz']));
+            ->willReturn($fields);
 
         $this->parser
             ->expects($this->once())

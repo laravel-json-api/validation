@@ -87,10 +87,14 @@ class QueryOneValidator implements QueryOneValidatorContract
      */
     private function rules(Query $query): array
     {
-        return [
+        $rules = [
             ...$this->defaultRules($query),
             ...$this->filterParser->with($query)->parse($this->schema->filters()),
         ];
+
+        ksort($rules);
+
+        return $rules;
     }
 
     /**
@@ -115,8 +119,8 @@ class QueryOneValidator implements QueryOneValidatorContract
                 'string',
                 $this->rules->includePaths(),
             ],
-            'page' => new ParameterNotSupported(),
-            'sort' => new ParameterNotSupported(),
+            'page' => $this->rules->notSupported(),
+            'sort' => $this->rules->notSupported(),
             ExtendedQueryParameters::withCount() => [
                 'nullable',
                 'string',

@@ -22,7 +22,7 @@ namespace LaravelJsonApi\Validation\Extractors;
 use LaravelJsonApi\Core\Document\ResourceObject;
 use LaravelJsonApi\Validation\ValidatedSchema;
 
-class DeleteExtractor
+class DeletionExtractor
 {
     /**
      * DeleteExtractor constructor
@@ -44,7 +44,7 @@ class DeleteExtractor
     {
         $resource = $this->updateExtractor->existing($model);
         $fields = ResourceObject::fromArray($resource)->all();
-        $meta = $this->schema->metaForDelete($model);
+        $meta = $this->schema->metaForDeletion($model);
 
         $fields['meta'] = [
             ...$resource['meta'] ?? [],

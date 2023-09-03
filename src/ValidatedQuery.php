@@ -19,6 +19,7 @@ declare(strict_types=1);
 
 namespace LaravelJsonApi\Validation;
 
+use Generator;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Request;
 use LaravelJsonApi\Contracts\Schema\Container as SchemaContainer;
@@ -72,12 +73,19 @@ class ValidatedQuery
     }
 
     /**
-     * @return iterable
+     * @return Generator
      */
-    public function filters(): iterable
+    public function filters(): Generator
     {
-        yield from $this->schema->filters();
-        yield from $this->relation?->filters() ?? [];
+        foreach ($this->schema->filters() as $filter) {
+            yield $filter;
+        }
+
+        if ($this->relation) {
+            foreach ($this->relation->filters() as $filter) {
+                yield $filter;
+            }
+        }
     }
 
     /**

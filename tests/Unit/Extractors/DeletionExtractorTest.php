@@ -19,12 +19,12 @@ declare(strict_types=1);
 
 namespace LaravelJsonApi\Validation\Tests\Unit\Extractors;
 
-use LaravelJsonApi\Validation\Extractors\DeleteExtractor;
+use LaravelJsonApi\Validation\Extractors\DeletionExtractor;
 use LaravelJsonApi\Validation\Extractors\UpdateExtractor;
 use LaravelJsonApi\Validation\ValidatedSchema;
 use PHPUnit\Framework\TestCase;
 
-class DeleteExtractorTest extends TestCase
+class DeletionExtractorTest extends TestCase
 {
     /**
      * @return void
@@ -53,7 +53,7 @@ class DeleteExtractorTest extends TestCase
         ];
 
         $model = new \stdClass();
-        $extractor = new DeleteExtractor(
+        $extractor = new DeletionExtractor(
             $schema = $this->createMock(ValidatedSchema::class),
             $updateExtractor = $this->createMock(UpdateExtractor::class),
         );
@@ -66,7 +66,7 @@ class DeleteExtractorTest extends TestCase
 
         $schema
             ->expects($this->once())
-            ->method('metaForDelete')
+            ->method('metaForDeletion')
             ->with($this->identicalTo($model))
             ->willReturn(['baz' => 'bat', 'foobar' => 'bazbat']);
 

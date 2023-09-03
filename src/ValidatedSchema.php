@@ -19,6 +19,7 @@ declare(strict_types=1);
 
 namespace LaravelJsonApi\Validation;
 
+use Generator;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -45,9 +46,9 @@ class ValidatedSchema
     }
 
     /**
-     * @return iterable
+     * @return Generator
      */
-    public function fields(): iterable
+    public function fields(): Generator
     {
         yield from $this->schema->attributes();
         yield from $this->schema->relationships();
@@ -237,10 +238,10 @@ class ValidatedSchema
      * @param object $model
      * @return array
      */
-    public function deleteRules(object $model): array
+    public function deletionRules(object $model): array
     {
-        if (method_exists($this->schema, 'deleteRules')) {
-            return $this->schema->deleteRules($this->request, $model);
+        if (method_exists($this->schema, 'deletionRules')) {
+            return $this->schema->deletionRules($this->request, $model);
         }
 
         return [];
@@ -250,10 +251,10 @@ class ValidatedSchema
      * @param object $model
      * @return array
      */
-    public function metaForDelete(object $model): array
+    public function metaForDeletion(object $model): array
     {
-        if (method_exists($this->schema, 'metaForDelete')) {
-            return (array) $this->schema->metaForDelete($this->request, $model);
+        if (method_exists($this->schema, 'metaForDeletion')) {
+            return (array) $this->schema->metaForDeletion($this->request, $model);
         }
 
         return [];
@@ -262,13 +263,13 @@ class ValidatedSchema
     /**
      * @return array
      */
-    public function deleteMessages(): array
+    public function deletionMessages(): array
     {
         $default = $this->messages();
         $extra = [];
 
-        if (method_exists($this->schema, 'deleteMessages')) {
-            $extra = $this->schema->deleteMessages();
+        if (method_exists($this->schema, 'deletionMessages')) {
+            $extra = $this->schema->deletionMessages();
         }
 
         return [...$default, ...$extra];
@@ -277,13 +278,13 @@ class ValidatedSchema
     /**
      * @return array
      */
-    public function deleteAttributes(): array
+    public function deletionAttributes(): array
     {
         $default = $this->attributes();
         $extra = [];
 
-        if (method_exists($this->schema, 'deleteAttributes')) {
-            $extra = $this->schema->deleteAttributes();
+        if (method_exists($this->schema, 'deletionAttributes')) {
+            $extra = $this->schema->deletionAttributes();
         }
 
         return [...$default, ...$extra];
@@ -295,10 +296,10 @@ class ValidatedSchema
      * @param object $model
      * @return void
      */
-    public function withDeleteValidator(Validator $validator, Delete $operation, object $model): void
+    public function withDeletionValidator(Validator $validator, Delete $operation, object $model): void
     {
-        if (method_exists($this->schema, 'withDeleteValidator')) {
-            $this->schema->withDeleteValidator($validator, $this->request, $operation, $model);
+        if (method_exists($this->schema, 'withDeletionValidator')) {
+            $this->schema->withDeletionValidator($validator, $this->request, $operation, $model);
         }
     }
 
@@ -308,10 +309,10 @@ class ValidatedSchema
      * @param object $model
      * @return void
      */
-    public function afterDeleteValidation(Validator $validator, Delete $operation, object $model): void
+    public function afterDeletionValidation(Validator $validator, Delete $operation, object $model): void
     {
-        if (method_exists($this->schema, 'afterDeleteValidation')) {
-            $this->schema->afterDeleteValidation($validator, $operation, $model);
+        if (method_exists($this->schema, 'afterDeletionValidation')) {
+            $this->schema->afterDeletionValidation($validator, $this->request, $operation, $model);
         }
     }
 }

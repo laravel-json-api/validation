@@ -25,7 +25,7 @@ use LaravelJsonApi\Contracts\Schema\Schema;
 use LaravelJsonApi\Contracts\Server\Server;
 use LaravelJsonApi\Contracts\Validation\Factory as FactoryContract;
 use LaravelJsonApi\Validation\Extractors\CreationExtractor;
-use LaravelJsonApi\Validation\Extractors\DeleteExtractor;
+use LaravelJsonApi\Validation\Extractors\DeletionExtractor;
 use LaravelJsonApi\Validation\Extractors\RelationshipExtractor;
 use LaravelJsonApi\Validation\Extractors\UpdateExtractor;
 use LaravelJsonApi\Validation\Fields\CreationRulesParser;
@@ -96,9 +96,9 @@ class Factory implements FactoryContract
     /**
      * @inheritDoc
      */
-    public function store(): StoreValidator
+    public function store(): CreationValidator
     {
-        return new StoreValidator(
+        return new CreationValidator(
             $this->validatorFactory,
             $this->schema(),
             new CreationExtractor(),
@@ -122,13 +122,13 @@ class Factory implements FactoryContract
     /**
      * @inheritDoc
      */
-    public function destroy(): ?DestroyValidator
+    public function destroy(): ?DeletionValidator
     {
         if (method_exists($this->schema, 'deleteRules')) {
-            return new DestroyValidator(
+            return new DeletionValidator(
                 $this->validatorFactory,
                 $schema = $this->schema(),
-                new DeleteExtractor(
+                new DeletionExtractor(
                     $schema,
                     new UpdateExtractor($schema, $this->server->encoder(), $this->request),
                 ),
@@ -146,7 +146,7 @@ class Factory implements FactoryContract
         return new RelationshipValidator(
             $this->validatorFactory,
             $this->schema(),
-            new RelationshipExtractor($this->schema, $this->server->resources()),
+            new RelationshipExtractor(),
             new UpdateRulesParser($this->request),
         );
     }

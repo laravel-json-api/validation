@@ -21,18 +21,18 @@ namespace LaravelJsonApi\Validation\Tests\Unit\Validators;
 
 use Illuminate\Contracts\Validation\Factory;
 use Illuminate\Contracts\Validation\Validator;
-use LaravelJsonApi\Core\Document\Input\Values\ResourceObject;
-use LaravelJsonApi\Core\Extensions\Atomic\Operations\Create;
+use LaravelJsonApi\Core\Extensions\Atomic\Operations\Delete;
+use LaravelJsonApi\Core\Extensions\Atomic\Values\Href;
+use LaravelJsonApi\Core\Extensions\Atomic\Values\ParsedHref;
 use LaravelJsonApi\Core\Values\ResourceId;
 use LaravelJsonApi\Core\Values\ResourceType;
-use LaravelJsonApi\Validation\Extractors\CreationExtractor;
-use LaravelJsonApi\Validation\Fields\CreationRulesParser;
+use LaravelJsonApi\Validation\Extractors\DeletionExtractor;
 use LaravelJsonApi\Validation\ValidatedSchema;
-use LaravelJsonApi\Validation\Validators\StoreValidator;
+use LaravelJsonApi\Validation\Validators\DeletionValidator;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-class StoreValidatorTest extends TestCase
+class DeletionValidatorTest extends TestCase
 {
     /**
      * @var Factory&MockObject
@@ -45,24 +45,14 @@ class StoreValidatorTest extends TestCase
     private ValidatedSchema&MockObject $schema;
 
     /**
-     * @var MockObject&CreationExtractor
+     * @var MockObject&DeletionExtractor
      */
-    private CreationExtractor&MockObject $extractor;
+    private DeletionExtractor&MockObject $extractor;
 
     /**
-     * @var MockObject&CreationRulesParser
+     * @var DeletionValidator
      */
-    private CreationRulesParser&MockObject $parser;
-
-    /**
-     * @var StoreValidator
-     */
-    private StoreValidator $validator;
-
-    /**
-     * @var Create
-     */
-    private Create $operation;
+    private DeletionValidator $validator;
 
     /**
      * @return void
@@ -71,19 +61,10 @@ class StoreValidatorTest extends TestCase
     {
         parent::setUp();
 
-        $this->validator = new StoreValidator(
+        $this->validator = new DeletionValidator(
             $this->factory = $this->createMock(Factory::class),
             $this->schema = $this->createMock(ValidatedSchema::class),
-            $this->extractor = $this->createMock(CreationExtractor::class),
-            $this->parser = $this->createMock(CreationRulesParser::class),
-        );
-
-        $this->operation = new Create(
-            null,
-            new ResourceObject(
-                type: new ResourceType('posts'),
-                id: new ResourceId('123'),
-            ),
+            $this->extractor = $this->createMock(DeletionExtractor::class),
         );
     }
 
@@ -92,19 +73,28 @@ class StoreValidatorTest extends TestCase
      */
     public function testItExtractsData(): void
     {
+        $model = new \stdClass();
+
+        $operation = new Delete(
+            new ParsedHref(
+                new Href('/posts/123'),
+                new ResourceType('posts'),
+                new ResourceId('123'),
+            ),
+        );
+
         $expected = ['foo' => 'bar'];
 
         $this->factory->expects($this->never())->method($this->anything());
         $this->schema->expects($this->never())->method($this->anything());
-        $this->parser->expects($this->never())->method($this->anything());
 
         $this->extractor
             ->expects($this->once())
             ->method('extract')
-            ->with($this->identicalTo($this->operation))
+            ->with($this->identicalTo($model))
             ->willReturn($expected);
 
-        $this->assertSame($expected, $this->validator->extract($this->operation));
+        $this->assertSame($expected, $this->validator->extract($operation, $model));
     }
 
     /**
@@ -112,33 +102,38 @@ class StoreValidatorTest extends TestCase
      */
     public function testItBuildsValidator(): void
     {
+        $model = new \stdClass();
+
+        $operation = new Delete(
+            new ParsedHref(
+                new Href('/posts/123'),
+                new ResourceType('posts'),
+                new ResourceId('123'),
+            ),
+        );
+
         $sequence = [];
 
         $this->extractor
             ->expects($this->once())
             ->method('extract')
-            ->with($this->identicalTo($this->operation))
+            ->with($this->identicalTo($model))
             ->willReturn($data = ['foo' => 'bar']);
 
         $this->schema
             ->expects($this->once())
-            ->method('fields')
-            ->willReturn($fields = new \ArrayObject(['foo', 'bar', 'baz']));
-
-        $this->parser
-            ->expects($this->once())
-            ->method('parse')
-            ->with($this->identicalTo($fields))
+            ->method('deletionRules')
+            ->with($this->identicalTo($model))
             ->willReturn($rules = ['foo' => 'required']);
 
         $this->schema
             ->expects($this->once())
-            ->method('messages')
+            ->method('deletionMessages')
             ->willReturn($messages = ['foo.required' => 'Foo is required.']);
 
         $this->schema
             ->expects($this->once())
-            ->method('attributes')
+            ->method('deletionAttributes')
             ->willReturn($attributes = ['foo']);
 
         $this->factory
@@ -147,39 +142,20 @@ class StoreValidatorTest extends TestCase
             ->with($data, $rules, $messages, $attributes)
             ->willReturn($validator = $this->createMock(Validator::class));
 
-        $this->schema->expects($this->never())->method('withUpdateValidator');
-        $this->schema->expects($this->never())->method('afterUpdateValidation');
-
         $this->schema
             ->expects($this->once())
-            ->method('withValidator')
-            ->with($this->identicalTo($validator), $this->identicalTo($this->operation))
+            ->method('withDeletionValidator')
+            ->with($this->identicalTo($validator), $this->identicalTo($operation), $this->identicalTo($model))
             ->willReturnCallback(function () use (&$sequence): void {
-                $sequence[] = 'withValidator';
+                $sequence[] = 'withDeleteValidator';
             });
 
         $this->schema
             ->expects($this->once())
-            ->method('withCreationValidator')
-            ->with($this->identicalTo($validator), $this->identicalTo($this->operation))
-            ->willReturnCallback(function () use (&$sequence): void {
-                $sequence[] = 'withCreationValidator';
-            });
-
-        $this->schema
-            ->expects($this->once())
-            ->method('afterValidation')
-            ->with($this->identicalTo($validator), $this->identicalTo($this->operation))
-            ->willReturnCallback(function () use (&$sequence): void {
-                $sequence[] = 'afterValidation';
-            });
-
-        $this->schema
-            ->expects($this->once())
-            ->method('afterCreationValidation')
-            ->with($this->identicalTo($validator), $this->identicalTo($this->operation))
-            ->willReturnCallback(function () use (&$sequence): void {
-                $sequence[] = 'afterCreationValidation';
+            ->method('afterDeletionValidation')
+            ->with($this->identicalTo($validator), $this->identicalTo($operation), $this->identicalTo($model))
+            ->willReturnCallback(function (Validator $v) use (&$sequence): void {
+                $sequence[] = 'afterDeleteValidation';
             });
 
         $validator
@@ -190,15 +166,9 @@ class StoreValidatorTest extends TestCase
                 $callback($validator);
             });
 
-        $actual = $this->validator->make($this->operation);
+        $actual = $this->validator->make($operation, $model);
 
         $this->assertSame($validator, $actual);
-        $this->assertSame([
-            'withValidator',
-            'withCreationValidator',
-            'after',
-            'afterValidation',
-            'afterCreationValidation',
-        ], $sequence);
+        $this->assertSame(['withDeleteValidator', 'after', 'afterDeleteValidation'], $sequence);
     }
 }

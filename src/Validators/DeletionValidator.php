@@ -21,56 +21,51 @@ namespace LaravelJsonApi\Validation\Validators;
 
 use Illuminate\Contracts\Validation\Factory as ValidatorFactory;
 use Illuminate\Contracts\Validation\Validator;
-use LaravelJsonApi\Contracts\Validation\StoreValidator as StoreValidatorContract;
-use LaravelJsonApi\Core\Extensions\Atomic\Operations\Create;
-use LaravelJsonApi\Validation\Extractors\CreationExtractor;
-use LaravelJsonApi\Validation\Fields\CreationRulesParser;
+use LaravelJsonApi\Contracts\Validation\DeletionValidator as DeletionValidatorContract;
+use LaravelJsonApi\Core\Extensions\Atomic\Operations\Delete;
+use LaravelJsonApi\Validation\Extractors\DeletionExtractor;
 use LaravelJsonApi\Validation\ValidatedSchema;
 
-class StoreValidator implements StoreValidatorContract
+class DeletionValidator implements DeletionValidatorContract
 {
     /**
-     * StoreValidator constructor
+     * DeletionValidator constructor
      *
      * @param ValidatorFactory $factory
      * @param ValidatedSchema $schema
-     * @param CreationExtractor $extractor
-     * @param CreationRulesParser $parser
+     * @param DeletionExtractor $extractor
      */
     public function __construct(
         private readonly ValidatorFactory $factory,
         private readonly ValidatedSchema $schema,
-        private readonly CreationExtractor $extractor,
-        private readonly CreationRulesParser $parser,
+        private readonly DeletionExtractor $extractor,
     ) {
     }
 
     /**
      * @inheritDoc
      */
-    public function extract(Create $operation): array
+    public function extract(Delete $operation, object $model): array
     {
-        return $this->extractor->extract($operation);
+        return $this->extractor->extract($model);
     }
 
     /**
      * @inheritDoc
      */
-    public function make(Create $operation): Validator
+    public function make(Delete $operation, object $model): Validator
     {
         $validator = $this->factory->make(
-            $this->extract($operation),
-            $this->parser->parse($this->schema->fields()),
-            $this->schema->messages(),
-            $this->schema->attributes(),
+            $this->extract($operation, $model),
+            $this->schema->deletionRules($model),
+            $this->schema->deletionMessages(),
+            $this->schema->deletionAttributes(),
         );
 
-        $this->schema->withValidator($validator, $operation);
-        $this->schema->withCreationValidator($validator, $operation);
+        $this->schema->withDeletionValidator($validator, $operation, $model);
 
-        $validator->after(function (Validator $v) use ($operation): void {
-            $this->schema->afterValidation($v, $operation);
-            $this->schema->afterCreationValidation($v, $operation);
+        $validator->after(function (Validator $v) use ($operation, $model): void {
+            $this->schema->afterDeletionValidation($v, $operation, $model);
         });
 
         return $validator;
