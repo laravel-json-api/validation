@@ -65,7 +65,7 @@ class ValueTest extends TestCase
     /**
      * @return array
      */
-    public function invalidProvider(): array
+    public static function invalidProvider(): array
     {
         return [
             'integer' => ['total', 5.5, 'The total field must be an integer.'],

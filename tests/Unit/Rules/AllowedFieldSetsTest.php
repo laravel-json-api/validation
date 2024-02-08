@@ -28,7 +28,7 @@ class AllowedFieldSetsTest extends TestCase
     /**
      * @return array
      */
-    public function allowedProvider(): array
+    public static function allowedProvider(): array
     {
         return [
             'valid' => [
@@ -82,7 +82,7 @@ class AllowedFieldSetsTest extends TestCase
     /**
      * @return array[]
      */
-    public function schemaProvider(): array
+    public static function schemaProvider(): array
     {
         return [
             [

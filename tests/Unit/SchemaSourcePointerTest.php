@@ -62,7 +62,7 @@ class SchemaSourcePointerTest extends TestCase
     /**
      * @return array
      */
-    public function keyProvider(): array
+    public static function keyProvider(): array
     {
         return [
             ['type', '/type'],

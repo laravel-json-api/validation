@@ -54,7 +54,7 @@ class ValidatorErrorIteratorTest extends TestCase
     /**
      * @return array
      */
-    public function sourcePrefixProvider(): array
+    public static function sourcePrefixProvider(): array
     {
         return [
             ['/data/attributes', '/data/attributes'],

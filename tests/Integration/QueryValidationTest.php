@@ -70,7 +70,7 @@ class QueryValidationTest extends TestCase
     /**
      * @return array
      */
-    public function validProvider(): array
+    public static function validProvider(): array
     {
         return [
             'all' => [
@@ -168,7 +168,7 @@ class QueryValidationTest extends TestCase
     /**
      * @return array
      */
-    public function invalidProvider(): array
+    public static function invalidProvider(): array
     {
         return [
             'fields:not array' => [

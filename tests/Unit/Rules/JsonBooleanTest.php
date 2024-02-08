@@ -27,7 +27,7 @@ class JsonBooleanTest extends TestCase
     /**
      * @return array
      */
-    public function valueProvider(): array
+    public static function valueProvider(): array
     {
         return [
             'true' => [true],
@@ -55,7 +55,7 @@ class JsonBooleanTest extends TestCase
     /**
      * @return array[]
      */
-    public function stringProvider(): array
+    public static function stringProvider(): array
     {
         return [
             'true' => ['true', true],

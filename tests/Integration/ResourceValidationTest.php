@@ -100,7 +100,7 @@ class ResourceValidationTest extends TestCase
     /**
      * @return array
      */
-    public function invalidProvider(): array
+    public static function invalidProvider(): array
     {
         return [
             [
