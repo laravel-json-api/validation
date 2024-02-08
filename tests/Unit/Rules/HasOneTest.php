@@ -31,7 +31,7 @@ class HasOneTest extends TestCase
     /**
      * @return array
      */
-    public function validProvider(): array
+    public static function validProvider(): array
     {
         return [
             'null' => [
@@ -60,7 +60,7 @@ class HasOneTest extends TestCase
     /**
      * @return array
      */
-    public function invalidProvider(): array
+    public static function invalidProvider(): array
     {
         return [
             'empty has-many' => [

@@ -28,7 +28,7 @@ class JsonNumberTest extends TestCase
     /**
      * @return array[]
      */
-    public function valueProvider(): array
+    public static function valueProvider(): array
     {
         return [
             'int1' => [0, true],
@@ -66,7 +66,7 @@ class JsonNumberTest extends TestCase
     /**
      * @return array
      */
-    public function integerProvider(): array
+    public static function integerProvider(): array
     {
         return [
             'integer1' => [0],

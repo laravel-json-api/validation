@@ -90,7 +90,7 @@ class RuleTest extends TestCase
     /**
      * @return array
      */
-    public function filterProvider(): array
+    public static function filterProvider(): array
     {
         return [
             ['foo', ['foo']],
@@ -170,7 +170,7 @@ class RuleTest extends TestCase
     /**
      * @return array
      */
-    public function includePathsProvider(): array
+    public static function includePathsProvider(): array
     {
         return [
             ['foo', ['foo']],
@@ -256,7 +256,7 @@ class RuleTest extends TestCase
     /**
      * @return array
      */
-    public function notSupportedProvider(): array
+    public static function notSupportedProvider(): array
     {
         return [
             [null],
@@ -281,7 +281,7 @@ class RuleTest extends TestCase
     /**
      * @return array
      */
-    public function pageProvider(): array
+    public static function pageProvider(): array
     {
         return [
             ['number', ['number']],
@@ -342,7 +342,7 @@ class RuleTest extends TestCase
     /**
      * @return array
      */
-    public function sortProvider(): array
+    public static function sortProvider(): array
     {
         return [
             ['createdAt', ['createdAt']],
