@@ -23,13 +23,29 @@ use LaravelJsonApi\Validation\Rules\ClientId;
 use LaravelJsonApi\Validation\Rules\DateTimeIso8601;
 use LaravelJsonApi\Validation\Rules\HasMany;
 use LaravelJsonApi\Validation\Rules\HasOne;
+use LaravelJsonApi\Validation\Rules\JsonArray;
 use LaravelJsonApi\Validation\Rules\JsonBoolean;
 use LaravelJsonApi\Validation\Rules\JsonNumber;
+use LaravelJsonApi\Validation\Rules\JsonObject;
 use LaravelJsonApi\Validation\Rules\ParameterNotSupported;
 use function is_null;
 
 class Rule
 {
+    /**
+     * Get a validation rule for an array.
+     *
+     * In JSON an array is always zero-indexed, which means it should decode
+     * to an array list in PHP. This rule ensures the value is always an empty
+     * array or a zero-indexed array list.
+     *
+     * @return JsonArray
+     */
+    public static function arr(): JsonArray
+    {
+        return new JsonArray();
+    }
+
     /**
      * Get a validation rule for a boolean.
      *
@@ -216,6 +232,16 @@ class Rule
     public static function number(): JsonNumber
     {
         return new JsonNumber();
+    }
+
+    /**
+     * Get a JSON object rule.
+     *
+     * @return JsonObject
+     */
+    public static function obj(): JsonObject
+    {
+        return new JsonObject();
     }
 
     /**

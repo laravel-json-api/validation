@@ -29,8 +29,10 @@ use LaravelJsonApi\Validation\Rules\ClientId;
 use LaravelJsonApi\Validation\Rules\DateTimeIso8601;
 use LaravelJsonApi\Validation\Rules\HasMany;
 use LaravelJsonApi\Validation\Rules\HasOne;
+use LaravelJsonApi\Validation\Rules\JsonArray;
 use LaravelJsonApi\Validation\Rules\JsonBoolean;
 use LaravelJsonApi\Validation\Rules\JsonNumber;
+use LaravelJsonApi\Validation\Rules\JsonObject;
 use LaravelJsonApi\Validation\Rules\ParameterNotSupported;
 use PHPUnit\Framework\MockObject\MockObject;
 
@@ -50,6 +52,16 @@ class RuleTest extends TestCase
         parent::setUp();
 
         $this->app->instance(Route::class, $this->route = $this->createMock(Route::class));
+    }
+
+    public function testArray(): void
+    {
+        $this->assertEquals(new JsonArray(), Rule::arr());
+    }
+
+    public function testObject(): void
+    {
+        $this->assertEquals(new JsonObject(), Rule::obj());
     }
 
     public function testDateTime(): void
