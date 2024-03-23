@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+## [4.1.0] - 2024-03-23
+
 ### Added
 
 - New rule objects:
