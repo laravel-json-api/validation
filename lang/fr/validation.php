@@ -78,11 +78,10 @@ return [
         'plural' => 'Les paramètres de pagination :values ne sont pas autorisés.',
     ],
 
-    /** @TODO requires translation */
     'allowed_countable_fields' => [
-        'default' => 'Count fields must contain only allowed ones.',
-        'singular' => 'Field :values is not countable.',
-        'plural' => 'Fields :values are not countable.',
+        'default' => 'Les champs de comptage ne doivent contenir que ceux autorisés.',
+        'singular' => 'Field :values n’est pas dénombrable.',
+        'plural' => 'Champ :values ne sont pas dénombrables.',
     ],
 
     'boolean_string' => 'Le champ :attribute doit être vrai ou faux.',
