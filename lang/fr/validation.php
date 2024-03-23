@@ -97,6 +97,10 @@ return [
 
     'json_number' => 'Le champ :attribute doit être un nombre.',
 
+    'json_array' => 'Le champ :attribute doit être un tableau.',
+
+    'json_object' => 'Le champ :attribute doit être un objet.',
+
     'parameter_not_supported' => "Le paramètre :name n'est pas autorisé.",
 
     'has_one' => 'Le champ :attribute doit être une relation "to-one" contenant des ressources de type :types.',

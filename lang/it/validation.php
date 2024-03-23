@@ -96,6 +96,10 @@ return [
 
     'json_number' => 'Il campo :attribute deve essere un numero.',
 
+    'json_array' => 'Il campo :attribute deve essere un array.',
+
+    'json_object' => 'Il campo :attribute deve essere un oggetto.',
+
     'parameter_not_supported' => 'Il parametro :name non è consentito.',
 
     'has_one' => 'Il campo :attribute deve essere una relazione to-one contenente risorse :types.',

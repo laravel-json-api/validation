@@ -98,6 +98,10 @@ return [
 
     'json_number' => 'Het veld :attribute moet een nummer zijn.',
 
+    'json_array' => 'Het veld :attribute moet een array zijn.',
+
+    'json_object' => 'Het :attribute-veld moet een object zijn.',
+
     'parameter_not_supported' => 'Parameter :name is niet toegestaan.',
 
     'has_one' => 'Het veld :attribute moet een naar-één relatie zijn die :types resources bevat.',
