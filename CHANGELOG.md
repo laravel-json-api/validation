@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+## [4.1.0] - 2024-03-23
+
+### Added
+
+- New rule objects:
+    - `JsonArray` - ensures a value is a zero-indexed array, i.e. it would have been an array in JSON.
+    - `JsonObject` - ensures a value is an associative array, i.e. it would have been an object in JSON.
+
 ## [4.0.0] - 2024-03-12
 
 ### Changed
