@@ -18,7 +18,7 @@ use LaravelJsonApi\Core\Extensions\Atomic\Operations\Delete;
 use LaravelJsonApi\Validation\Extractors\DeletionExtractor;
 use LaravelJsonApi\Validation\ValidatedSchema;
 
-class DeletionValidator implements DeletionValidatorContract
+final readonly class DeletionValidator implements DeletionValidatorContract
 {
     /**
      * DeletionValidator constructor
@@ -28,9 +28,9 @@ class DeletionValidator implements DeletionValidatorContract
      * @param DeletionExtractor $extractor
      */
     public function __construct(
-        private readonly ValidatorFactory $factory,
-        private readonly ValidatedSchema $schema,
-        private readonly DeletionExtractor $extractor,
+        private ValidatorFactory $factory,
+        private ValidatedSchema $schema,
+        private DeletionExtractor $extractor,
     ) {
     }
 

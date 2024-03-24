@@ -25,7 +25,7 @@ use LaravelJsonApi\Validation\QueryRules;
 use LaravelJsonApi\Validation\Rules\ParameterNotSupported;
 use LaravelJsonApi\Validation\ValidatedQuery;
 
-class QueryOneValidator implements QueryOneValidatorContract
+final readonly class QueryOneValidator implements QueryOneValidatorContract
 {
     /**
      * QueryOneValidator constructor
@@ -36,10 +36,10 @@ class QueryOneValidator implements QueryOneValidatorContract
      * @param QueryRules $rules
      */
     public function __construct(
-        private readonly ValidatorFactory $factory,
-        private readonly ValidatedQuery $schema,
-        private readonly QueryOneParser $filterParser,
-        private readonly QueryRules $rules,
+        private ValidatorFactory $factory,
+        private ValidatedQuery $schema,
+        private QueryOneParser $filterParser,
+        private QueryRules $rules,
     ) {
     }
 

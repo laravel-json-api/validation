@@ -12,17 +12,17 @@ declare(strict_types=1);
 namespace LaravelJsonApi\Validation;
 
 use Illuminate\Contracts\Validation\Validator;
-use LaravelJsonApi\Contracts\Validation\DestroyErrorFactory as DestroyErrorFactoryContract;
+use LaravelJsonApi\Contracts\Validation\DeletionErrorFactory as DeletionErrorFactoryContract;
 use LaravelJsonApi\Core\Document\ErrorList;
 
-class DestroyErrorFactory implements DestroyErrorFactoryContract
+final readonly class DeletionErrorFactory implements DeletionErrorFactoryContract
 {
     /**
-     * DestroyErrorFactory constructor
+     * DeletionErrorFactory constructor
      *
      * @param Translator $translator
      */
-    public function __construct(private readonly Translator $translator)
+    public function __construct(private Translator $translator)
     {
     }
 

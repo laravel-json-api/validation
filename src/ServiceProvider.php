@@ -12,8 +12,9 @@ declare(strict_types=1);
 namespace LaravelJsonApi\Validation;
 
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
+use LaravelJsonApi\Contracts\Validation as Contracts;
 
-class ServiceProvider extends BaseServiceProvider
+final class ServiceProvider extends BaseServiceProvider
 {
     /**
      * Boot application services.
@@ -40,21 +41,9 @@ class ServiceProvider extends BaseServiceProvider
     public function register(): void
     {
         $this->app->singleton(Translator::class);
-        $this->app->bind(
-            \LaravelJsonApi\Contracts\Validation\ResourceErrorFactory::class,
-            ResourceErrorFactory::class,
-        );
-        $this->app->bind(
-            \LaravelJsonApi\Contracts\Validation\QueryErrorFactory::class,
-            QueryErrorFactory::class,
-        );
-        $this->app->bind(
-            \LaravelJsonApi\Contracts\Validation\DestroyErrorFactory::class,
-            DestroyErrorFactory::class,
-        );
-        $this->app->bind(
-            \LaravelJsonApi\Contracts\Validation\Container::class,
-            Container::class,
-        );
+        $this->app->bind(Contracts\ResourceErrorFactory::class, ResourceErrorFactory::class);
+        $this->app->bind(Contracts\QueryErrorFactory::class, QueryErrorFactory::class);
+        $this->app->bind(Contracts\DeletionErrorFactory::class, DeletionErrorFactory::class);
+        $this->app->bind(Contracts\Container::class, Container::class);
     }
 }

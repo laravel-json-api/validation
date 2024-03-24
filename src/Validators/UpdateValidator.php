@@ -19,7 +19,7 @@ use LaravelJsonApi\Validation\Extractors\UpdateExtractor;
 use LaravelJsonApi\Validation\Fields\UpdateRulesParser;
 use LaravelJsonApi\Validation\ValidatedSchema;
 
-class UpdateValidator implements UpdateValidatorContract
+final readonly class UpdateValidator implements UpdateValidatorContract
 {
     /**
      * UpdateValidator constructor
@@ -30,10 +30,10 @@ class UpdateValidator implements UpdateValidatorContract
      * @param UpdateRulesParser $parser
      */
     public function __construct(
-        private readonly ValidatorFactory $factory,
-        private readonly ValidatedSchema $schema,
-        private readonly UpdateExtractor $extractor,
-        private readonly UpdateRulesParser $parser,
+        private ValidatorFactory $factory,
+        private ValidatedSchema $schema,
+        private UpdateExtractor $extractor,
+        private UpdateRulesParser $parser,
     ) {
     }
 

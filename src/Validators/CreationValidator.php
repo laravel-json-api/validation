@@ -19,7 +19,7 @@ use LaravelJsonApi\Validation\Extractors\CreationExtractor;
 use LaravelJsonApi\Validation\Fields\CreationRulesParser;
 use LaravelJsonApi\Validation\ValidatedSchema;
 
-class CreationValidator implements CreationValidatorContract
+final readonly class CreationValidator implements CreationValidatorContract
 {
     /**
      * CreationValidator constructor
@@ -30,10 +30,10 @@ class CreationValidator implements CreationValidatorContract
      * @param CreationRulesParser $parser
      */
     public function __construct(
-        private readonly ValidatorFactory $factory,
-        private readonly ValidatedSchema $schema,
-        private readonly CreationExtractor $extractor,
-        private readonly CreationRulesParser $parser,
+        private ValidatorFactory $factory,
+        private ValidatedSchema $schema,
+        private CreationExtractor $extractor,
+        private CreationRulesParser $parser,
     ) {
     }
 

@@ -20,7 +20,7 @@ use LaravelJsonApi\Validation\Extractors\RelationshipExtractor;
 use LaravelJsonApi\Validation\Fields\UpdateRulesParser;
 use LaravelJsonApi\Validation\ValidatedSchema;
 
-class RelationshipValidator implements RelationshipValidatorContract
+final readonly class RelationshipValidator implements RelationshipValidatorContract
 {
     /**
      * RelationshipValidator constructor
@@ -31,10 +31,10 @@ class RelationshipValidator implements RelationshipValidatorContract
      * @param UpdateRulesParser $parser
      */
     public function __construct(
-        private readonly ValidatorFactory $factory,
-        private readonly ValidatedSchema $schema,
-        private readonly RelationshipExtractor $extractor,
-        private readonly UpdateRulesParser $parser,
+        private ValidatorFactory $factory,
+        private ValidatedSchema $schema,
+        private RelationshipExtractor $extractor,
+        private UpdateRulesParser $parser,
     ){
     }
 

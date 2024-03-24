@@ -28,7 +28,7 @@ use LaravelJsonApi\Validation\QueryRules;
 use LaravelJsonApi\Validation\ValidatedQuery;
 use LaravelJsonApi\Validation\ValidatedSchema;
 
-class Factory implements FactoryContract
+final class Factory implements FactoryContract
 {
     /**
      * @var Request|null

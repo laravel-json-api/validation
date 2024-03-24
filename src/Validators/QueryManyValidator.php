@@ -23,7 +23,7 @@ use LaravelJsonApi\Validation\Filters\QueryManyParser;
 use LaravelJsonApi\Validation\QueryRules;
 use LaravelJsonApi\Validation\ValidatedQuery;
 
-class QueryManyValidator implements QueryManyValidatorContract
+final readonly class QueryManyValidator implements QueryManyValidatorContract
 {
     /**
      * QueryManyValidator constructor
@@ -34,10 +34,10 @@ class QueryManyValidator implements QueryManyValidatorContract
      * @param QueryRules $rules
      */
     public function __construct(
-        private readonly ValidatorFactory $factory,
-        private readonly ValidatedQuery $schema,
-        private readonly QueryManyParser $filterParser,
-        private readonly QueryRules $rules,
+        private ValidatorFactory $factory,
+        private ValidatedQuery $schema,
+        private QueryManyParser $filterParser,
+        private QueryRules $rules,
     ) {
     }
 

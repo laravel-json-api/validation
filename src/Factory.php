@@ -15,7 +15,7 @@ use Illuminate\Contracts\Validation\Validator;
 use LaravelJsonApi\Contracts\Schema\Schema;
 
 /**
- * @deprecated 4.0
+ * @deprecated 5.0
  */
 class Factory
 {
