@@ -35,9 +35,8 @@ class ValidatedWithKeyedSetOfRulesTest extends TestCase
         $request = $this->createMock(Request::class);
 
         $field
-            ->rules(function (Request $r, ?object $m) use ($request): array {
+            ->rules(function (Request $r) use ($request): array {
                 $this->assertSame($request, $r);
-                $this->assertNull($m);
                 return ['foo' => 'string', 'bar' => 'integer'];
             })
             ->creationRules(['foo' => 'unique:users,email']);

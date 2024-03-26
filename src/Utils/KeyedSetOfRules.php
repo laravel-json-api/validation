@@ -45,22 +45,21 @@ class KeyedSetOfRules
     /**
      * Convert the object to a set of rules.
      *
-     * @param Request|null $request
-     * @param object|null $model
+     * @param mixed ...$args
      * @return array
      */
-    public function __invoke(?Request $request, object $model = null): array
+    public function __invoke(mixed ...$args): array
     {
-        $rules = $this->resolve($this->prepend, $request, $model);
+        $rules = $this->resolve($this->prepend, $args);
 
-        foreach ($this->resolve($this->rules, $request, $model) as $key => $value) {
+        foreach ($this->resolve($this->rules, $args) as $key => $value) {
             $rules[$key] = [
                 ...Arr::wrap($rules[$key] ?? null),
                 ...Arr::wrap($value),
             ];
         }
 
-        foreach ($this->resolve($this->append, $request, $model) as $key => $value) {
+        foreach ($this->resolve($this->append, $args) as $key => $value) {
             $rules[$key] = [
                 ...Arr::wrap($rules[$key] ?? null),
                 ...Arr::wrap($value),
@@ -105,14 +104,13 @@ class KeyedSetOfRules
 
     /**
      * @param Closure|array $value
-     * @param Request|null $request
-     * @param object|null $model
+     * @param array<int, mixed> $args
      * @return array
      */
-    private function resolve(Closure|array $value, ?Request $request, ?object $model): array
+    private function resolve(Closure|array $value, array $args): array
     {
         if ($value instanceof Closure){
-            $value = $value($request, $model) ?? [];
+            $value = $value(...$args) ?? [];
         }
 
         assert(is_array($value), 'Expecting closure to return an array or null.');
