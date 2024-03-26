@@ -13,6 +13,7 @@ namespace LaravelJsonApi\Validation\Utils;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 
 class ListOfRules
 {
@@ -115,11 +116,11 @@ class ListOfRules
      */
     private function parse(array $args): Closure|array
     {
-        if (count($args) === 1 && (is_array($args[0]) || $args[0] instanceof Closure)) {
-            return $args[0];
-        }
-
-        return $args;
+        return match (true) {
+            count($args) === 1 && $args[0] instanceof Closure => $args[0],
+            count($args) === 1 => Arr::wrap($args[0]),
+            default => $args,
+        };
     }
 
     /**

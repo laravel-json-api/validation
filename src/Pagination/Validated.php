@@ -9,17 +9,15 @@
 
 declare(strict_types=1);
 
-namespace LaravelJsonApi\Validation\Filters;
+namespace LaravelJsonApi\Validation\Pagination;
 
 use Closure;
 use Illuminate\Http\Request;
 use LaravelJsonApi\Core\Query\Input\Query;
 use LaravelJsonApi\Validation\Utils\KeyedSetOfRules;
 
-trait ValidatedWithKeyedSetOfRules
+trait Validated
 {
-    use Validated;
-
     /**
      * @var Closure|array
      */
