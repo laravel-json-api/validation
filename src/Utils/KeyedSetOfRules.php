@@ -15,7 +15,7 @@ use Closure;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
-class KeyedSetOfRules
+final class KeyedSetOfRules
 {
     /**
      * @var Closure|array

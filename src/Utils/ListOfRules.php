@@ -14,7 +14,7 @@ namespace LaravelJsonApi\Validation\Utils;
 use Closure;
 use Illuminate\Support\Arr;
 
-class ListOfRules
+final class ListOfRules
 {
     /**
      * @var Closure|array
