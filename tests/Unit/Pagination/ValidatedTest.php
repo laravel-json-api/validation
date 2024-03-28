@@ -46,7 +46,7 @@ class ValidatedTest extends TestCase
         $actual = $paginator->validationRules($request, $query);
 
         $this->assertSame([
-            '.' => 'array',
+            '.' => ['array'],
             'bar' => ['integer'],
             'foo' => ['string'],
         ], $actual);

@@ -44,7 +44,7 @@ class ValidatedWithArrayKeysTest extends TestCase
         $actual = $field->rulesForCreation($request);
 
         $this->assertSame([
-            '.' => 'array',
+            '.' => ['array'],
             'bar' => ['integer'],
             'foo' => ['string', 'unique:users,email'],
         ], $actual);
@@ -78,7 +78,7 @@ class ValidatedWithArrayKeysTest extends TestCase
         $actual = $field->rulesForUpdate($request, $model);
 
         $this->assertSame([
-            '.' => 'array',
+            '.' => ['array'],
             'bar' => ['integer'],
             'foo' => ['string', 'unique:users,email'],
         ], $actual);

@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace LaravelJsonApi\Validation\Tests\Unit\Utils;
 
 use Illuminate\Http\Request;
+use LaravelJsonApi\Validation\Rules\JsonArray;
 use LaravelJsonApi\Validation\Utils\KeyedSetOfRules;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
@@ -23,22 +24,24 @@ class KeyedSetOfRulesTest extends TestCase
      */
     public static function scenarioProvider(): array
     {
+        $list = new JsonArray();
+
         return [
             'prepend' => [
-                function (): KeyedSetOfRules {
+                static function (): KeyedSetOfRules {
                     return KeyedSetOfRules::make()
                         ->prepend(['foo' => 'string', 'bar' => 'integer'])
                         ->rules(null)
                         ->append(null);
                 },
                 [
-                    '.' => 'array:foo,bar',
-                    'bar' => 'integer',
-                    'foo' => 'string',
+                    '.' => ['array:foo,bar'],
+                    'bar' => ['integer'],
+                    'foo' => ['string'],
                 ],
             ],
             'prepend closure' => [
-                function (Request $request, object $model): KeyedSetOfRules {
+                static function (Request $request, object $model): KeyedSetOfRules {
                     return KeyedSetOfRules::make()
                         ->prepend(function ($r, $m) use ($request, $model): array {
                             Assert::assertSame($request, $r);
@@ -52,12 +55,12 @@ class KeyedSetOfRulesTest extends TestCase
                 },
                 [
                     '.' => ['array:foo,bar,baz'],
-                    'bar' => 'integer',
+                    'bar' => ['integer'],
                     'foo' => ['string'],
                 ],
             ],
             'rules' => [
-                function (): KeyedSetOfRules {
+                static function (): KeyedSetOfRules {
                     return KeyedSetOfRules::make()
                         ->prepend(null)
                         ->rules(['.' => 'required', 'foo' => 'string', 'bar' => 'integer'])
@@ -70,7 +73,7 @@ class KeyedSetOfRulesTest extends TestCase
                 ],
             ],
             'rules closure' => [
-                function (Request $request, object $model): KeyedSetOfRules {
+                static function (Request $request, object $model): KeyedSetOfRules {
                     return KeyedSetOfRules::make()
                         ->rules(function ($r, $m) use ($request, $model): array {
                             Assert::assertSame($request, $r);
@@ -89,7 +92,7 @@ class KeyedSetOfRulesTest extends TestCase
                 ],
             ],
             'append' => [
-                function (): KeyedSetOfRules {
+                static function (): KeyedSetOfRules {
                     return KeyedSetOfRules::make()
                         ->prepend(null)
                         ->rules(['.' => 'array:foo,bar,baz', 'foo' => 'string', 'bar' => 'integer'])
@@ -102,7 +105,7 @@ class KeyedSetOfRulesTest extends TestCase
                 ],
             ],
             'append closure' => [
-                function (Request $request, object $model): KeyedSetOfRules {
+                static function (Request $request, object $model): KeyedSetOfRules {
                     return KeyedSetOfRules::make()
                         ->prepend(null)
                         ->rules(static fn() => ['foo' => 'string', 'bar' => 'integer'])
@@ -119,7 +122,7 @@ class KeyedSetOfRulesTest extends TestCase
                 ],
             ],
             'all' => [
-                function (): KeyedSetOfRules {
+                static function (): KeyedSetOfRules {
                     return KeyedSetOfRules::make()
                         ->prepend(['.' => 'array:foo,bar', 'foo' => 'string', 'bar' => 'integer'])
                         ->rules(['.' => 'size:2', 'foo' => ['email', 'max:255'], 'bar' => 'min:10'])
@@ -132,7 +135,7 @@ class KeyedSetOfRulesTest extends TestCase
                 ],
             ],
             'all closures' => [
-                function (): KeyedSetOfRules {
+                static function (): KeyedSetOfRules {
                     return KeyedSetOfRules::make()
                         ->prepend(static fn () => ['.' => 'array:foo,bar', 'foo' => 'string', 'bar' => 'integer'])
                         ->rules(static fn() => ['.' => 'size:2', 'foo' => ['email', 'max:255'], 'bar' => 'min:10'])
@@ -142,6 +145,38 @@ class KeyedSetOfRulesTest extends TestCase
                     '.' => ['array:foo,bar', 'size:2', 'required'],
                     'bar' => ['integer', 'min:10'],
                     'foo' => ['string', 'email', 'max:255'],
+                ],
+            ],
+            'array list' => [
+                static function () use ($list): KeyedSetOfRules {
+                    return KeyedSetOfRules::make()
+                        ->prepend(['.' => $list])
+                        ->rules(['*' => ['string', 'email']]);
+                },
+                [
+                    '.' => [$list],
+                    '*' => ['string', 'email'],
+                ],
+            ],
+            'array list (elements not validated)' => [
+                static function () use ($list): KeyedSetOfRules {
+                    return KeyedSetOfRules::make()
+                        ->rules(['.' => $list]);
+                },
+                [
+                    '.' => [$list],
+                ],
+            ],
+            'array list containing objects' => [
+                static function () use ($list): KeyedSetOfRules {
+                    return KeyedSetOfRules::make()
+                        ->rules(['.' => $list])
+                        ->append(['*.name' => 'string', '*.email' => 'email']);
+                },
+                [
+                    '.' => [$list],
+                    '*.email' => ['email'],
+                    '*.name' => ['string'],
                 ],
             ],
         ];
@@ -160,6 +195,6 @@ class KeyedSetOfRulesTest extends TestCase
             $model = new \stdClass(),
         );
 
-        $this->assertSame($expected, $rules($request, $model));
+        $this->assertSame($expected, $rules->all($request, $model));
     }
 }

@@ -48,7 +48,7 @@ class ValidatedWithArrayKeysTest extends TestCase
         $this->assertTrue($filter->isValidatedForOne());
         $this->assertTrue($filter->isValidatedForMany());
         $this->assertSame([
-            '.' => 'array',
+            '.' => ['array'],
             'bar' => ['integer'],
             'foo' => ['string'],
         ], $actual);

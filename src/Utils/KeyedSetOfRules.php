@@ -50,35 +50,39 @@ class KeyedSetOfRules
      */
     public function __invoke(mixed ...$args): array
     {
-        $rules = $this->resolve($this->prepend, $args);
+        $rules = [];
+
+        foreach ($this->resolve($this->prepend, $args) as $key => $value) {
+            $rules[$key] = Arr::wrap($value);
+        }
 
         foreach ($this->resolve($this->rules, $args) as $key => $value) {
             $rules[$key] = [
-                ...Arr::wrap($rules[$key] ?? null),
+                ...$rules[$key] ?? [],
                 ...Arr::wrap($value),
             ];
         }
 
         foreach ($this->resolve($this->append, $args) as $key => $value) {
             $rules[$key] = [
-                ...Arr::wrap($rules[$key] ?? null),
+                ...$rules[$key] ?? [],
                 ...Arr::wrap($value),
             ];
         }
 
-        $base = Arr::wrap($rules['.'] ?? []);
+        $base = Arr::pull($rules, '.') ?? [];
+        $keys = $this->mustAddArrayRule($base) ? $this->keys($rules) : [];
 
-        if (!$this->containsArrayRule($base)) {
+        if (count($keys) > 0) {
             $base = ListOfRules::make()
-                ->defaults('array:' . implode(',', $this->keys($rules)))
+                ->defaults('array:' . implode(',', $keys))
                 ->rules($base)
                 ->all();
-            $rules['.'] = count($base) === 1 ? $base[0] : $base;
         }
 
         ksort($rules);
 
-        return $rules;
+        return count($base) === 0 ? $rules : ['.' => $base, ...$rules];
     }
 
     /**
@@ -143,15 +147,15 @@ class KeyedSetOfRules
      * @param array<int, mixed> $rules
      * @return bool
      */
-    private function containsArrayRule(array $rules): bool
+    private function mustAddArrayRule(array $rules): bool
     {
         foreach ($rules as $rule) {
             if (is_string($rule) && Str::startsWith($rule, 'array')) {
-                return true;
+                return false;
             }
         }
 
-        return false;
+        return true;
     }
 
     /**
@@ -163,7 +167,7 @@ class KeyedSetOfRules
         $keys = [];
 
         foreach ($rules as $key => $value) {
-            if ($key !== '.') {
+            if ($key !== '.' && !Str::startsWith($key, '*')) {
                 $keys[] = Str::before($key, '.');
             }
         }
