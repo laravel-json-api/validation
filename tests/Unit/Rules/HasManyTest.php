@@ -19,7 +19,6 @@ use PHPUnit\Framework\TestCase;
 
 class HasManyTest extends TestCase
 {
-
     /**
      * @return array
      */
@@ -96,7 +95,7 @@ class HasManyTest extends TestCase
      * @param $value
      * @dataProvider validProvider
      */
-    public function testValid($types, $value): void
+    public function testValidWithSchema($types, $value): void
     {
         if (is_array($types)) {
             $relation = $this->createMock(PolymorphicRelation::class);
@@ -117,9 +116,31 @@ class HasManyTest extends TestCase
     /**
      * @param $types
      * @param $value
+     * @dataProvider validProvider
+     */
+    public function testValidWithRelation($types, $value): void
+    {
+        if (is_array($types)) {
+            $relation = $this->createMock(PolymorphicRelation::class);
+            $relation->method('inverseTypes')->willReturn($types);
+        } else {
+            $relation = $this->createMock(Relation::class);
+            $relation->method('inverse')->willReturn($types);
+        }
+
+        $relation->method('name')->willReturn('authors');
+
+        $rule = new HasMany($relation);
+
+        $this->assertTrue($rule->passes('authors', $value));
+    }
+
+    /**
+     * @param $types
+     * @param $value
      * @dataProvider invalidProvider
      */
-    public function testInvalid($types, $value): void
+    public function testInvalidWithSchema($types, $value): void
     {
         if (is_array($types)) {
             $relation = $this->createMock(PolymorphicRelation::class);
@@ -137,4 +158,25 @@ class HasManyTest extends TestCase
         $this->assertFalse($rule->passes('authors', $value));
     }
 
+    /**
+     * @param $types
+     * @param $value
+     * @dataProvider invalidProvider
+     */
+    public function testInvalidWithRelation($types, $value): void
+    {
+        if (is_array($types)) {
+            $relation = $this->createMock(PolymorphicRelation::class);
+            $relation->method('inverseTypes')->willReturn($types);
+        } else {
+            $relation = $this->createMock(Relation::class);
+            $relation->method('inverse')->willReturn($types);
+        }
+
+        $relation->method('name')->willReturn('authors');
+
+        $rule = new HasMany($relation);
+
+        $this->assertFalse($rule->passes('authors', $value));
+    }
 }

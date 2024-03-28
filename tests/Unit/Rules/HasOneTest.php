@@ -19,7 +19,6 @@ use PHPUnit\Framework\TestCase;
 
 class HasOneTest extends TestCase
 {
-
     /**
      * @return array
      */
@@ -81,7 +80,7 @@ class HasOneTest extends TestCase
      * @param $value
      * @dataProvider validProvider
      */
-    public function testValid($types, $value): void
+    public function testValidWithSchema($types, $value): void
     {
         if (is_array($types)) {
             $relation = $this->createMock(PolymorphicRelation::class);
@@ -100,11 +99,33 @@ class HasOneTest extends TestCase
     }
 
     /**
+     * @param string|array $types
+     * @param $value
+     * @dataProvider validProvider
+     */
+    public function testValidWithRelation($types, $value): void
+    {
+        if (is_array($types)) {
+            $relation = $this->createMock(PolymorphicRelation::class);
+            $relation->method('inverseTypes')->willReturn($types);
+        } else {
+            $relation = $this->createMock(Relation::class);
+            $relation->method('inverse')->willReturn($types);
+        }
+
+        $relation->method('name')->willReturn('author');
+
+        $rule = new HasOne($relation);
+
+        $this->assertTrue($rule->passes('author', $value));
+    }
+
+    /**
      * @param $types
      * @param $value
      * @dataProvider invalidProvider
      */
-    public function testInvalid($types, $value): void
+    public function testInvalidWithSchema($types, $value): void
     {
         if (is_array($types)) {
             $relation = $this->createMock(PolymorphicRelation::class);
@@ -118,6 +139,28 @@ class HasOneTest extends TestCase
         $schema->method('relationship')->with('author')->willReturn($relation);
 
         $rule = new HasOne($schema);
+
+        $this->assertFalse($rule->passes('author', $value));
+    }
+
+    /**
+     * @param $types
+     * @param $value
+     * @dataProvider invalidProvider
+     */
+    public function testInvalidWithRelation($types, $value): void
+    {
+        if (is_array($types)) {
+            $relation = $this->createMock(PolymorphicRelation::class);
+            $relation->method('inverseTypes')->willReturn($types);
+        } else {
+            $relation = $this->createMock(Relation::class);
+            $relation->method('inverse')->willReturn($types);
+        }
+
+        $relation->method('name')->willReturn('author');
+
+        $rule = new HasOne($relation);
 
         $this->assertFalse($rule->passes('author', $value));
     }

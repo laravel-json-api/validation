@@ -14,41 +14,36 @@ namespace LaravelJsonApi\Validation\Rules;
 use Illuminate\Contracts\Validation\Rule;
 use LaravelJsonApi\Contracts\Schema\PolymorphicRelation;
 use LaravelJsonApi\Contracts\Schema\Schema;
+use LaravelJsonApi\Contracts\Schema\Relation;
 use LaravelJsonApi\Validation\JsonApiValidation;
+use LogicException;
 
 class HasOne implements Rule
 {
-
-    /**
-     * @var Schema
-     */
-    private Schema $schema;
-
     /**
      * @var array|null
      */
-    private ?array $types;
+    private ?array $types = null;
 
     /**
      * HasOne constructor.
      *
-     * @param Schema $schema
+     * @param Schema|Relation $schemaOrRelation
      */
-    public function __construct(Schema $schema)
+    public function __construct(private readonly Schema|Relation $schemaOrRelation)
     {
-        $this->schema = $schema;
     }
 
     /**
      * @inheritDoc
      */
-    public function passes($attribute, $value)
+    public function passes($attribute, $value): bool
     {
         if (!is_null($value) && !is_array($value)) {
             return false;
         }
 
-        $relation = $this->schema->relationship($attribute);
+        $relation = $this->relation($attribute);
 
         if ($relation instanceof PolymorphicRelation) {
             $this->types = $relation->inverseTypes();
@@ -95,4 +90,24 @@ class HasOne implements Rule
         );
     }
 
+    /**
+     * @param string $name
+     * @return Relation
+     */
+    private function relation(string $name): Relation
+    {
+        if ($this->schemaOrRelation instanceof Schema) {
+            return $this->schemaOrRelation->relationship($name);
+        }
+
+        if ($this->schemaOrRelation->name() === $name) {
+            return $this->schemaOrRelation;
+        }
+
+        throw new LogicException(sprintf(
+            'Expecting to validate relation %s but received %s.',
+            $this->schemaOrRelation->name(),
+            $name,
+        ));
+    }
 }
