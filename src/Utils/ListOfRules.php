@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace LaravelJsonApi\Validation\Utils;
 
 use Closure;
-use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 
 class ListOfRules
@@ -46,7 +45,7 @@ class ListOfRules
      * Convert the object to a set of rules.
      *
      * @param mixed ...$args
-     * @return array
+     * @return array<int, mixed>
      */
     public function __invoke(mixed ...$args): array
     {
@@ -73,6 +72,15 @@ class ListOfRules
             ...$defaults,
             ...array_slice($rules, $startAt + 1),
         ];
+    }
+
+    /**
+     * @param mixed ...$args
+     * @return array<int, mixed>
+     */
+    public function all(mixed ...$args): array
+    {
+        return $this(...$args);
     }
 
     /**

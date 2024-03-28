@@ -47,8 +47,8 @@ class ValidatedTest extends TestCase
 
         $this->assertSame([
             '.' => 'array',
-            'foo' => ['string'],
             'bar' => ['integer'],
+            'foo' => ['string'],
         ], $actual);
     }
 }

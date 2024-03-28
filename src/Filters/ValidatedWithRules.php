@@ -16,7 +16,7 @@ use Illuminate\Http\Request;
 use LaravelJsonApi\Core\Query\Input\Query;
 use LaravelJsonApi\Validation\Utils\ListOfRules;
 
-trait ValidatedWithListOfRules
+trait ValidatedWithRules
 {
     use Validated;
 
@@ -43,11 +43,10 @@ trait ValidatedWithListOfRules
      */
     public function validationRules(?Request $request, Query $query): array
     {
-        $rules = ListOfRules::make()
+        return ListOfRules::make()
             ->defaults($this->defaultRules())
-            ->rules(...$this->rules);
-
-        return $rules($request, $query);
+            ->rules(...$this->rules)
+            ->all($request, $query);
     }
 
     /**

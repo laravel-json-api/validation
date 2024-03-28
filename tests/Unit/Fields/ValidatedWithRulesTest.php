@@ -13,10 +13,10 @@ namespace LaravelJsonApi\Validation\Tests\Unit\Fields;
 
 use Illuminate\Http\Request;
 use LaravelJsonApi\Validation\Fields\IsValidated;
-use LaravelJsonApi\Validation\Fields\ValidatedWithKeyedSetOfRules;
+use LaravelJsonApi\Validation\Fields\ValidatedWithRules;
 use PHPUnit\Framework\TestCase;
 
-class ValidatedWithKeyedSetOfRulesTest extends TestCase
+class ValidatedWithRulesTest extends TestCase
 {
     /**
      * @return void
@@ -24,11 +24,11 @@ class ValidatedWithKeyedSetOfRulesTest extends TestCase
     public function testItGetsRulesForCreation(): void
     {
         $field = new class implements IsValidated {
-            use ValidatedWithKeyedSetOfRules;
+            use ValidatedWithRules;
 
             protected function defaultRules(): array
             {
-                return ['.' => 'array'];
+                return ['string'];
             }
         };
 
@@ -37,17 +37,13 @@ class ValidatedWithKeyedSetOfRulesTest extends TestCase
         $field
             ->rules(function (Request $r) use ($request): array {
                 $this->assertSame($request, $r);
-                return ['foo' => 'string', 'bar' => 'integer'];
+                return ['required', 'email', 'max:255'];
             })
-            ->creationRules(['foo' => 'unique:users,email']);
+            ->creationRules('unique:users,email');
 
         $actual = $field->rulesForCreation($request);
 
-        $this->assertSame([
-            '.' => 'array',
-            'foo' => ['string', 'unique:users,email'],
-            'bar' => ['integer'],
-        ], $actual);
+        $this->assertSame(['required', 'string', 'email', 'max:255', 'unique:users,email'], $actual);
     }
 
     /**
@@ -56,11 +52,11 @@ class ValidatedWithKeyedSetOfRulesTest extends TestCase
     public function testItGetsRuleForUpdate(): void
     {
         $field = new class implements IsValidated {
-            use ValidatedWithKeyedSetOfRules;
+            use ValidatedWithRules;
 
             protected function defaultRules(): array
             {
-                return ['.' => 'array'];
+                return ['string'];
             }
         };
 
@@ -71,16 +67,12 @@ class ValidatedWithKeyedSetOfRulesTest extends TestCase
             ->rules(function (Request $r, ?object $m) use ($request, $model): array {
                 $this->assertSame($request, $r);
                 $this->assertSame($model, $m);
-                return ['foo' => 'string', 'bar' => 'integer'];
+                return ['required', 'email', 'max:255'];
             })
-            ->updateRules(['foo' => 'unique:users,email']);
+            ->updateRules('unique:users,email');
 
         $actual = $field->rulesForUpdate($request, $model);
 
-        $this->assertSame([
-            '.' => 'array',
-            'foo' => ['string', 'unique:users,email'],
-            'bar' => ['integer'],
-        ], $actual);
+        $this->assertSame(['required', 'string', 'email', 'max:255', 'unique:users,email'], $actual);
     }
 }

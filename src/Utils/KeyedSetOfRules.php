@@ -12,8 +12,8 @@ declare(strict_types=1);
 namespace LaravelJsonApi\Validation\Utils;
 
 use Closure;
-use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 class KeyedSetOfRules
 {
@@ -46,7 +46,7 @@ class KeyedSetOfRules
      * Convert the object to a set of rules.
      *
      * @param mixed ...$args
-     * @return array
+     * @return array<string, mixed>
      */
     public function __invoke(mixed ...$args): array
     {
@@ -66,7 +66,28 @@ class KeyedSetOfRules
             ];
         }
 
+        $base = Arr::wrap($rules['.'] ?? []);
+
+        if (!$this->containsArrayRule($base)) {
+            $base = ListOfRules::make()
+                ->defaults('array:' . implode(',', $this->keys($rules)))
+                ->rules($base)
+                ->all();
+            $rules['.'] = count($base) === 1 ? $base[0] : $base;
+        }
+
+        ksort($rules);
+
         return $rules;
+    }
+
+    /**
+     * @param mixed ...$args
+     * @return array<string, mixed>
+     */
+    public function all(mixed ...$args): array
+    {
+        return $this(...$args);
     }
 
     /**
@@ -116,5 +137,41 @@ class KeyedSetOfRules
         assert(is_array($value), 'Expecting closure to return an array or null.');
 
         return $value;
+    }
+
+    /**
+     * @param array<int, mixed> $rules
+     * @return bool
+     */
+    private function containsArrayRule(array $rules): bool
+    {
+        foreach ($rules as $rule) {
+            if (is_string($rule) && Str::startsWith($rule, 'array')) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param array<string, array<int, mixed>> $rules
+     * @return array
+     */
+    private function keys(array $rules): array
+    {
+        $keys = [];
+
+        foreach ($rules as $key => $value) {
+            if ($key !== '.') {
+                $keys[] = Str::before($key, '.');
+            }
+        }
+
+        $keys = array_values(array_unique($keys));
+
+        ksort($keys);
+
+        return $keys;
     }
 }

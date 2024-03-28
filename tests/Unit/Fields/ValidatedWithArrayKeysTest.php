@@ -13,10 +13,10 @@ namespace LaravelJsonApi\Validation\Tests\Unit\Fields;
 
 use Illuminate\Http\Request;
 use LaravelJsonApi\Validation\Fields\IsValidated;
-use LaravelJsonApi\Validation\Fields\ValidatedWithListOfRules;
+use LaravelJsonApi\Validation\Fields\ValidatedWithArrayKeys;
 use PHPUnit\Framework\TestCase;
 
-class ValidatedWithListOfRulesTest extends TestCase
+class ValidatedWithArrayKeysTest extends TestCase
 {
     /**
      * @return void
@@ -24,11 +24,11 @@ class ValidatedWithListOfRulesTest extends TestCase
     public function testItGetsRulesForCreation(): void
     {
         $field = new class implements IsValidated {
-            use ValidatedWithListOfRules;
+            use ValidatedWithArrayKeys;
 
             protected function defaultRules(): array
             {
-                return ['string'];
+                return ['.' => 'array'];
             }
         };
 
@@ -37,13 +37,17 @@ class ValidatedWithListOfRulesTest extends TestCase
         $field
             ->rules(function (Request $r) use ($request): array {
                 $this->assertSame($request, $r);
-                return ['required', 'email', 'max:255'];
+                return ['foo' => 'string', 'bar' => 'integer'];
             })
-            ->creationRules('unique:users,email');
+            ->creationRules(['foo' => 'unique:users,email']);
 
         $actual = $field->rulesForCreation($request);
 
-        $this->assertSame(['required', 'string', 'email', 'max:255', 'unique:users,email'], $actual);
+        $this->assertSame([
+            '.' => 'array',
+            'bar' => ['integer'],
+            'foo' => ['string', 'unique:users,email'],
+        ], $actual);
     }
 
     /**
@@ -52,11 +56,11 @@ class ValidatedWithListOfRulesTest extends TestCase
     public function testItGetsRuleForUpdate(): void
     {
         $field = new class implements IsValidated {
-            use ValidatedWithListOfRules;
+            use ValidatedWithArrayKeys;
 
             protected function defaultRules(): array
             {
-                return ['string'];
+                return ['.' => 'array'];
             }
         };
 
@@ -67,12 +71,16 @@ class ValidatedWithListOfRulesTest extends TestCase
             ->rules(function (Request $r, ?object $m) use ($request, $model): array {
                 $this->assertSame($request, $r);
                 $this->assertSame($model, $m);
-                return ['required', 'email', 'max:255'];
+                return ['foo' => 'string', 'bar' => 'integer'];
             })
-            ->updateRules('unique:users,email');
+            ->updateRules(['foo' => 'unique:users,email']);
 
         $actual = $field->rulesForUpdate($request, $model);
 
-        $this->assertSame(['required', 'string', 'email', 'max:255', 'unique:users,email'], $actual);
+        $this->assertSame([
+            '.' => 'array',
+            'bar' => ['integer'],
+            'foo' => ['string', 'unique:users,email'],
+        ], $actual);
     }
 }

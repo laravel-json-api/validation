@@ -15,7 +15,7 @@ use Closure;
 use Illuminate\Http\Request;
 use LaravelJsonApi\Validation\Utils\KeyedSetOfRules;
 
-trait ValidatedWithKeyedSetOfRules
+trait ValidatedWithArrayKeys
 {
     /**
      * @var Closure|array
@@ -71,12 +71,11 @@ trait ValidatedWithKeyedSetOfRules
      */
     public function rulesForCreation(?Request $request): array
     {
-        $rules = KeyedSetOfRules::make()
+        return KeyedSetOfRules::make()
             ->prepend($this->defaultRules())
             ->rules($this->rules)
-            ->append($this->creationRules);
-
-        return $rules($request);
+            ->append($this->creationRules)
+            ->all($request);
     }
 
     /**
@@ -86,12 +85,11 @@ trait ValidatedWithKeyedSetOfRules
      */
     public function rulesForUpdate(?Request $request, object $model): array
     {
-        $rules = KeyedSetOfRules::make()
+        return KeyedSetOfRules::make()
             ->prepend($this->defaultRules())
             ->rules($this->rules)
-            ->append($this->updateRules);
-
-        return $rules($request, $model);
+            ->append($this->updateRules)
+            ->all($request, $model);
     }
 
     /**

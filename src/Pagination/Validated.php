@@ -41,11 +41,10 @@ trait Validated
      */
     public function validationRules(?Request $request, Query $query): array
     {
-        $rules = KeyedSetOfRules::make()
+        return KeyedSetOfRules::make()
             ->prepend($this->defaultRules())
-            ->rules($this->rules);
-
-        return $rules($request, $query);
+            ->rules($this->rules)
+            ->all($request, $query);
     }
 
     /**

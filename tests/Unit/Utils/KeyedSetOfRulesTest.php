@@ -27,14 +27,14 @@ class KeyedSetOfRulesTest extends TestCase
             'prepend' => [
                 function (): KeyedSetOfRules {
                     return KeyedSetOfRules::make()
-                        ->prepend(['.' => 'array:foo,bar', 'foo' => 'string', 'bar' => 'integer'])
+                        ->prepend(['foo' => 'string', 'bar' => 'integer'])
                         ->rules(null)
                         ->append(null);
                 },
                 [
                     '.' => 'array:foo,bar',
-                    'foo' => 'string',
                     'bar' => 'integer',
+                    'foo' => 'string',
                 ],
             ],
             'prepend closure' => [
@@ -44,29 +44,29 @@ class KeyedSetOfRulesTest extends TestCase
                             Assert::assertSame($request, $r);
                             Assert::assertSame($model, $m);
                             return [
-                                '.' => ['array:foo,bar'],
+                                '.' => ['array:foo,bar,baz'],
                                 'foo' => ['string'],
                                 'bar' => 'integer'
                             ];
                         });
                 },
                 [
-                    '.' => ['array:foo,bar'],
-                    'foo' => ['string'],
+                    '.' => ['array:foo,bar,baz'],
                     'bar' => 'integer',
+                    'foo' => ['string'],
                 ],
             ],
             'rules' => [
                 function (): KeyedSetOfRules {
                     return KeyedSetOfRules::make()
                         ->prepend(null)
-                        ->rules(['.' => 'array:foo,bar', 'foo' => 'string', 'bar' => 'integer'])
+                        ->rules(['.' => 'required', 'foo' => 'string', 'bar' => 'integer'])
                         ->append(null);
                 },
                 [
-                    '.' => ['array:foo,bar'],
-                    'foo' => ['string'],
+                    '.' => ['required', 'array:foo,bar'],
                     'bar' => ['integer'],
+                    'foo' => ['string'],
                 ],
             ],
             'rules closure' => [
@@ -84,28 +84,28 @@ class KeyedSetOfRulesTest extends TestCase
                 },
                 [
                     '.' => ['array:foo,bar'],
-                    'foo' => ['string'],
                     'bar' => ['integer'],
+                    'foo' => ['string'],
                 ],
             ],
             'append' => [
                 function (): KeyedSetOfRules {
                     return KeyedSetOfRules::make()
                         ->prepend(null)
-                        ->rules(['.' => 'array:foo,bar', 'foo' => 'string', 'bar' => 'integer'])
+                        ->rules(['.' => 'array:foo,bar,baz', 'foo' => 'string', 'bar' => 'integer'])
                         ->append(['.' => 'size:2', 'foo' => ['email', 'max:255'], 'bar' => 'min:10']);
                 },
                 [
-                    '.' => ['array:foo,bar', 'size:2'],
-                    'foo' => ['string', 'email', 'max:255'],
+                    '.' => ['array:foo,bar,baz', 'size:2'],
                     'bar' => ['integer', 'min:10'],
+                    'foo' => ['string', 'email', 'max:255'],
                 ],
             ],
             'append closure' => [
                 function (Request $request, object $model): KeyedSetOfRules {
                     return KeyedSetOfRules::make()
                         ->prepend(null)
-                        ->rules(static fn() => ['.' => 'array:foo,bar', 'foo' => 'string', 'bar' => 'integer'])
+                        ->rules(static fn() => ['foo' => 'string', 'bar' => 'integer'])
                         ->append(function ($r, $m) use ($request, $model): array {
                             Assert::assertSame($request, $r);
                             Assert::assertSame($model, $m);
@@ -114,8 +114,8 @@ class KeyedSetOfRulesTest extends TestCase
                 },
                 [
                     '.' => ['array:foo,bar', 'size:2'],
-                    'foo' => ['string', 'email', 'max:255'],
                     'bar' => ['integer', 'min:10'],
+                    'foo' => ['string', 'email', 'max:255'],
                 ],
             ],
             'all' => [
@@ -127,8 +127,8 @@ class KeyedSetOfRulesTest extends TestCase
                 },
                 [
                     '.' => ['array:foo,bar', 'size:2', 'required'],
-                    'foo' => ['string', 'email', 'max:255'],
                     'bar' => ['integer', 'min:10'],
+                    'foo' => ['string', 'email', 'max:255'],
                 ],
             ],
             'all closures' => [
@@ -140,8 +140,8 @@ class KeyedSetOfRulesTest extends TestCase
                 },
                 [
                     '.' => ['array:foo,bar', 'size:2', 'required'],
-                    'foo' => ['string', 'email', 'max:255'],
                     'bar' => ['integer', 'min:10'],
+                    'foo' => ['string', 'email', 'max:255'],
                 ],
             ],
         ];

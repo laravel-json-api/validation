@@ -16,7 +16,7 @@ use Illuminate\Http\Request;
 use LaravelJsonApi\Core\Query\Input\Query;
 use LaravelJsonApi\Validation\Utils\KeyedSetOfRules;
 
-trait ValidatedWithKeyedSetOfRules
+trait ValidatedWithArrayKeys
 {
     use Validated;
 
@@ -43,11 +43,10 @@ trait ValidatedWithKeyedSetOfRules
      */
     public function validationRules(?Request $request, Query $query): array
     {
-        $rules = KeyedSetOfRules::make()
+        return KeyedSetOfRules::make()
             ->prepend($this->defaultRules())
-            ->rules($this->rules);
-
-        return $rules($request, $query);
+            ->rules($this->rules)
+            ->all($request, $query);
     }
 
     /**
