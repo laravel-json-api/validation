@@ -100,6 +100,8 @@ return [
 
     'json_object' => 'Il campo :attribute deve essere un oggetto.',
 
+    'list_of_ids' => 'Il campo :attribute deve essere un elenco di identificatori di risorse.',
+
     'parameter_not_supported' => 'Il parametro :name non è consentito.',
 
     'has_one' => 'Il campo :attribute deve essere una relazione to-one contenente risorse :types.',

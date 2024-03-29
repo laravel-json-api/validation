@@ -100,6 +100,8 @@ return [
 
     'json_object' => 'The :attribute field must be an object.',
 
+    'list_of_ids' => 'The :attribute field must be a list of resource identifiers.',
+
     'parameter_not_supported' => 'Parameter :name is not allowed.',
 
     'has_one' => 'The :attribute field must be a to-one relationship containing :types resources.',

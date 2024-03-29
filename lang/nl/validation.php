@@ -98,7 +98,9 @@ return [
 
     'json_array' => 'Het veld :attribute moet een array zijn.',
 
-    'json_object' => 'Het :attribute-veld moet een object zijn.',
+    'json_object' => 'Het veld :attribute moet een object zijn.',
+
+    'list_of_ids' => "Het veld :attribute moet een lijst met resource-ID's zijn.",
 
     'parameter_not_supported' => 'Parameter :name is niet toegestaan.',
 
