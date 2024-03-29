@@ -13,6 +13,7 @@ namespace LaravelJsonApi\Validation;
 
 use Illuminate\Support\Arr;
 use LaravelJsonApi\Contracts\Schema\ID;
+use LaravelJsonApi\Contracts\Schema\Schema;
 use LaravelJsonApi\Core\Facades\JsonApi;
 use LaravelJsonApi\Validation\Rules\AllowedCountableFields;
 use LaravelJsonApi\Validation\Rules\AllowedFieldSets;
@@ -71,12 +72,13 @@ class Rule
     /**
      * Get a validation rule for a client-generated ID.
      *
+     * @param Schema|ID|null $schemaOrId
      * @return ClientId
      */
-    public static function clientId(): ClientId
+    public static function clientId(Schema|ID|null $schemaOrId = null): ClientId
     {
         return new ClientId(
-            JsonApi::route()->schema()
+            $schemaOrId ?? JsonApi::route()->schema(),
         );
     }
 

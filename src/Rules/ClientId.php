@@ -12,26 +12,26 @@ declare(strict_types=1);
 namespace LaravelJsonApi\Validation\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
+use LaravelJsonApi\Contracts\Schema\ID;
 use LaravelJsonApi\Contracts\Schema\Schema;
 use LaravelJsonApi\Validation\JsonApiValidation;
 use function is_string;
 
-class ClientId implements Rule
+final readonly class ClientId implements Rule
 {
-
     /**
-     * @var Schema
+     * @var ID
      */
-    private Schema $schema;
+    private ID $id;
 
     /**
      * ClientId constructor.
      *
-     * @param Schema $schema
+     * @param Schema|ID $schemaOrId
      */
-    public function __construct(Schema $schema)
+    public function __construct(Schema|ID $schemaOrId)
     {
-        $this->schema = $schema;
+        $this->id = ($schemaOrId instanceof Schema) ? $schemaOrId->id() : $schemaOrId;
     }
 
     /**
@@ -40,7 +40,7 @@ class ClientId implements Rule
     public function passes($attribute, $value)
     {
         if (is_string($value)) {
-            return $this->schema->id()->match($value);
+            return $this->id->match($value);
         }
 
         return false;
@@ -53,5 +53,4 @@ class ClientId implements Rule
     {
         return trans(JsonApiValidation::translationKeyForRule($this));
     }
-
 }
