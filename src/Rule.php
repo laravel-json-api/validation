@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace LaravelJsonApi\Validation;
 
 use Illuminate\Support\Arr;
+use LaravelJsonApi\Contracts\Schema\ID;
 use LaravelJsonApi\Core\Facades\JsonApi;
 use LaravelJsonApi\Validation\Rules\AllowedCountableFields;
 use LaravelJsonApi\Validation\Rules\AllowedFieldSets;
@@ -27,6 +28,7 @@ use LaravelJsonApi\Validation\Rules\JsonArray;
 use LaravelJsonApi\Validation\Rules\JsonBoolean;
 use LaravelJsonApi\Validation\Rules\JsonNumber;
 use LaravelJsonApi\Validation\Rules\JsonObject;
+use LaravelJsonApi\Validation\Rules\ListOfIds;
 use LaravelJsonApi\Validation\Rules\ParameterNotSupported;
 use function is_null;
 
@@ -165,6 +167,18 @@ class Rule
         return AllowedFilterParameters::make(
             $route->schema()
         );
+    }
+
+    /**
+     * Get list of IDs rule.
+     *
+     * @param ID $id
+     * @param string $delimiter
+     * @return ListOfIds
+     */
+    public static function ids(ID $id, string $delimiter = ''): ListOfIds
+    {
+        return new ListOfIds($id, $delimiter);
     }
 
     /**

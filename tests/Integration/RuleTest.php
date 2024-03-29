@@ -15,6 +15,7 @@ use LaravelJsonApi\Contracts\Pagination\Paginator;
 use LaravelJsonApi\Contracts\Routing\Route;
 use LaravelJsonApi\Contracts\Schema\Container;
 use LaravelJsonApi\Contracts\Schema\Filter;
+use LaravelJsonApi\Contracts\Schema\ID;
 use LaravelJsonApi\Contracts\Schema\Query;
 use LaravelJsonApi\Contracts\Schema\Relation;
 use LaravelJsonApi\Contracts\Schema\Schema;
@@ -33,6 +34,7 @@ use LaravelJsonApi\Validation\Rules\JsonArray;
 use LaravelJsonApi\Validation\Rules\JsonBoolean;
 use LaravelJsonApi\Validation\Rules\JsonNumber;
 use LaravelJsonApi\Validation\Rules\JsonObject;
+use LaravelJsonApi\Validation\Rules\ListOfIds;
 use LaravelJsonApi\Validation\Rules\ParameterNotSupported;
 use PHPUnit\Framework\MockObject\MockObject;
 
@@ -67,6 +69,14 @@ class RuleTest extends TestCase
     public function testDateTime(): void
     {
         $this->assertEquals(new DateTimeIso8601(), Rule::dateTime());
+    }
+
+    public function testListOfIds(): void
+    {
+        $id = $this->createMock(ID::class);
+
+        $this->assertEquals(new ListOfIds($id), Rule::ids($id));
+        $this->assertEquals(new ListOfIds($id, ','), Rule::ids($id, ','));
     }
 
     public function testFieldSets(): void
