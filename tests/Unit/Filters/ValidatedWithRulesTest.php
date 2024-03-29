@@ -15,10 +15,10 @@ use Illuminate\Http\Request;
 use LaravelJsonApi\Core\Query\Input\QueryMany;
 use LaravelJsonApi\Core\Values\ResourceType;
 use LaravelJsonApi\Validation\Filters\IsValidated;
-use LaravelJsonApi\Validation\Filters\Validated;
+use LaravelJsonApi\Validation\Filters\ValidatedWithRules;
 use PHPUnit\Framework\TestCase;
 
-class ValidatedTest extends TestCase
+class ValidatedWithRulesTest extends TestCase
 {
     /**
      * @return void
@@ -26,7 +26,7 @@ class ValidatedTest extends TestCase
     public function testItGetsRulesWithDefaults(): void
     {
         $filter = new class implements IsValidated {
-            use Validated;
+            use ValidatedWithRules;
 
             protected function defaultRules(): array
             {
@@ -56,7 +56,7 @@ class ValidatedTest extends TestCase
     public function testItGetsRules(): void
     {
         $filter = new class implements IsValidated {
-            use Validated;
+            use ValidatedWithRules;
         };
 
         $request = $this->createMock(Request::class);
@@ -81,7 +81,7 @@ class ValidatedTest extends TestCase
     public function testItGetsKeyedRulesWithDefaults(): void
     {
         $filter = new class implements IsValidated {
-            use Validated;
+            use ValidatedWithRules;
 
             protected function defaultRules(): array
             {
@@ -115,7 +115,7 @@ class ValidatedTest extends TestCase
     public function testItGetsKeyedRules(): void
     {
         $filter = new class implements IsValidated {
-            use Validated;
+            use ValidatedWithRules;
         };
 
         $request = $this->createMock(Request::class);
@@ -142,7 +142,7 @@ class ValidatedTest extends TestCase
     public function testItIsValidatedForOne(): void
     {
         $filter = new class implements IsValidated {
-            use Validated;
+            use ValidatedWithRules;
         };
 
         $this->assertSame($filter, $filter->onlyToOne());
@@ -156,7 +156,7 @@ class ValidatedTest extends TestCase
     public function testItIsValidatedForMany(): void
     {
         $filter = new class implements IsValidated {
-            use Validated;
+            use ValidatedWithRules;
         };
 
         $this->assertSame($filter, $filter->onlyToMany());

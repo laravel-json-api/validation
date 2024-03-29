@@ -11,18 +11,8 @@ declare(strict_types=1);
 
 namespace LaravelJsonApi\Validation\Filters;
 
-use Closure;
-use Illuminate\Http\Request;
-use LaravelJsonApi\Core\Query\Input\Query;
-use LaravelJsonApi\Validation\Utils\UnknownSetOfRules;
-
 trait Validated
 {
-    /**
-     * @var array<int, mixed>
-     */
-    private array $rules = [];
-
     /**
      * @var bool
      */
@@ -77,37 +67,5 @@ trait Validated
     public function isValidatedForMany(): bool
     {
         return $this->validateToMany;
-    }
-
-    /**
-     * @param mixed ...$args
-     * @return $this
-     */
-    public function rules(mixed ...$args): static
-    {
-        $this->rules = $args;
-
-        return $this;
-    }
-
-    /**
-     * @param Request|null $request
-     * @param Query $query
-     * @return array
-     */
-    public function validationRules(?Request $request, Query $query): array
-    {
-        return UnknownSetOfRules::make()
-            ->defaults($this->defaultRules())
-            ->rules(...$this->rules)
-            ->all($request, $query);
-    }
-
-    /**
-     * @return Closure|array
-     */
-    protected function defaultRules(): Closure|array
-    {
-        return [];
     }
 }
