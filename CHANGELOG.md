@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+## [3.0.1] - 2024-06-20
+
 ### Fixed
 
 - [laravel#287](https://github.com/laravel-json-api/laravel/issues/287) Use `array_shift` to avoid potential problem
