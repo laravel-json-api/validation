@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. This project adheres to
 [Semantic Versioning](http://semver.org/) and [this changelog format](http://keepachangelog.com/).
 
+## Unreleased
+
+### Fixed
+
+- [laravel#287](https://github.com/laravel-json-api/laravel/issues/287) Use `array_shift` to avoid potential problem
+  introduced in Laravel.
+
 ## [3.0.0] - 2023-02-14
 
 ### Changed
