@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+### Fixed
+
+- [laravel#287](https://github.com/laravel-json-api/laravel/issues/287) Use `array_shift` to avoid potential problem
+  introduced in Laravel.
+
 ## [4.1.0] - 2024-03-23
 
 ### Added
@@ -20,6 +25,13 @@ All notable changes to this project will be documented in this file. This projec
 - Package is now licensed under the [MIT License.](./LICENSE)
 - **BREAKING** Package now requires Laravel 11.
 - Minimum PHP version is now `8.2`.
+
+## [3.0.1] - 2024-06-20
+
+### Fixed
+
+- [laravel#287](https://github.com/laravel-json-api/laravel/issues/287) Use `array_shift` to avoid potential problem
+  introduced in Laravel.
 
 ## [3.0.0] - 2023-02-14
 
