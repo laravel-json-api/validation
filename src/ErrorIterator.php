@@ -106,13 +106,15 @@ abstract class ErrorIterator implements IteratorAggregate, Countable, Serializab
         $failed = $this->failed();
 
         foreach ($this->validator->errors()->messages() as $key => $messages) {
-            $failures = $this->translator->validationFailures($failed[$key] ?? []);
+            $failures = $this->translator
+                ->validationFailures($failed[$key] ?? [])
+                ->all();
 
             foreach ($messages as $message) {
                 yield $this->createError(
                     $key,
                     $message,
-                    $failures->shift() ?: []
+                    array_shift($failures) ?: [],
                 );
             }
         }
