@@ -46,7 +46,7 @@ class Translator
      *      rule failure details
      * @return Error
      */
-    public function invalid(string $pointer, string $detail = null, array $failed = []): Error
+    public function invalid(string $pointer, ?string $detail = null, array $failed = []): Error
     {
         return Error::make()
             ->setStatus(422)
@@ -67,7 +67,7 @@ class Translator
      *      rule failure details
      * @return Error
      */
-    public function invalidResource(string $pointer, string $detail = null, array $failed = []): Error
+    public function invalidResource(string $pointer, ?string $detail = null, array $failed = []): Error
     {
         return Error::make()
             ->setStatus(422)
@@ -88,7 +88,7 @@ class Translator
      *      rule failure details.
      * @return Error
      */
-    public function invalidQueryParameter(string $param, string $detail = null, array $failed = []): Error
+    public function invalidQueryParameter(string $param, ?string $detail = null, array $failed = []): Error
     {
         return Error::make()
             ->setStatus(400)
@@ -106,7 +106,7 @@ class Translator
      *      the validation message (already translated).
      * @return Error
      */
-    public function invalidDeleteRequest(string $detail = null): Error
+    public function invalidDeleteRequest(?string $detail = null): Error
     {
         return Error::make()
             ->setStatus(422)
