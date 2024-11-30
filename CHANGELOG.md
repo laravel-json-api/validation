@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+### Added
+
+- Package now requires `laravel-json-api/core` v4 or v5.
+
 ### Fixed
 
 - Remove deprecation notices in PHP 8.4.
