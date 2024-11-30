@@ -31,7 +31,7 @@ jobs:
         ini-values: error_reporting=E_ALL
 
     - name: Set Laravel JSON:API Core Version
-      run: composer require "laravel-json-api/core:^${{ matrix.laravel }}" --no-update
+      run: composer require "laravel-json-api/core:^${{ matrix.core }}" --no-update
 
     - name: Install dependencies
       uses: nick-fields/retry@v3
