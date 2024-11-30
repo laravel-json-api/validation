@@ -66,7 +66,7 @@ class JsonApiValidation
      * @param string|null $path
      * @return string
      */
-    public static function translationKeyForRule($rule, string $path = null): string
+    public static function translationKeyForRule($rule, ?string $path = null): string
     {
         $name = Str::snake(class_basename($rule));
 
@@ -80,7 +80,7 @@ class JsonApiValidation
      * @param string|null $path
      * @return string
      */
-    public static function qualifyTranslationKey(string $key, string $path = null): string
+    public static function qualifyTranslationKey(string $key, ?string $path = null): string
     {
         $namespace = self::$translationNamespace;
         $qualified = "{$namespace}::validation.{$key}";

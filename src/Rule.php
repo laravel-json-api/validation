@@ -132,7 +132,7 @@ class Rule
      * @param array|null $allowed
      * @return AllowedFieldSets
      */
-    public static function fieldSets(array $allowed = null): AllowedFieldSets
+    public static function fieldSets(?array $allowed = null): AllowedFieldSets
     {
         if (is_null($allowed)) {
             return AllowedFieldSets::make(
@@ -233,7 +233,7 @@ class Rule
      * @param string|null $name
      * @return ParameterNotSupported
      */
-    public static function notSupported(string $name = null): ParameterNotSupported
+    public static function notSupported(?string $name = null): ParameterNotSupported
     {
         return new ParameterNotSupported($name);
     }

@@ -68,7 +68,7 @@ class AllowedFieldSets implements Rule
      *      the allowed fields, empty array for none allowed, or null for all allowed.
      * @return $this
      */
-    public function allow(string $resourceType, array $fields = null): self
+    public function allow(string $resourceType, ?array $fields = null): self
     {
         $this->allowed[$resourceType] = $fields;
 
