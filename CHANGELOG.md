@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+## [4.2.0] - 2024-11-30
+
 ### Added
 
 - Package now requires `laravel-json-api/core` v4 or v5.
