@@ -19,7 +19,7 @@
         },
         {
             "name": "Christopher Gammie",
-            "email": "contact@gammie.co.uk"
+            "email": "chris@cloudcreativity.co.uk"
         }
     ],
     "require": {
@@ -53,7 +53,7 @@
             ]
         }
     },
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "prefer-stable": true,
     "config": {
         "sort-packages": true
