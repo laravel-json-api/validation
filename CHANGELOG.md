@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file. This projec
 
 ## Unreleased
 
+### Changed
+
+- Removed support for `laravel-json-api/core` v4.
+
 ## [4.3.0] - 2025-02-24
 
 ### Added
